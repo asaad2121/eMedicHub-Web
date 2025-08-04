@@ -21,6 +21,18 @@ ng serve
 
 Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
 
+## GIT workflow
+
+Tested, well formatted code (Use Prettier) is to be pushed to their respective `feature` or `bugfix` branches.
+Branch names and commit messages should start with the JIRA ID.
+
+Examples:
+
+Branch Name -- feature/KAN-123_sample_branchName_camelCase
+Commit Message -- KAN-123: This is a sample commit message. A quick brown fox doesn't jump over dogs very often
+
+PR should be approved by atleast 1 member before branch can be merged to 'Main'
+
 ## Code scaffolding
 
 Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
