@@ -1,0 +1,22 @@
+# Ignore Node.js module dependencies
+node_modules
+
+# Ignore distribution files
+dist
+
+# Ignore editor and IDE files
+.vscode
+.idea
+.env
+
+# Ignore Git files
+.git
+.gitignore
+
+# Ignore logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Ignore any local configuration files
+*.local

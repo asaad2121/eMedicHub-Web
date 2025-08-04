@@ -1,0 +1,22 @@
+# Define the services (containers) for your application
+services:
+  # This service is for the Angular development environment
+  angular-dev:
+    # Build the image using the `Dockerfile.dev` file
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    
+    # Map port 4200 on the host to port 4200 in the container
+    ports:
+      - "4200:4200"
+    
+    # Mount the current directory on the host machine to the /app directory in the container
+    # This is crucial for live reloading, as it syncs your local code changes to the container
+    # We also create a separate anonymous volume for `node_modules` to avoid permission issues
+    volumes:
+      - .:/app
+      - /app/node_modules
+
+    # Ensure the container is restarted if it stops unexpectedly
+    restart: always

@@ -1,0 +1,22 @@
+# Use a Node.js image as the base image for our development container
+FROM node:20-alpine
+
+# Set the working directory inside the container
+WORKDIR /app
+
+# Copy the package.json and package-lock.json files
+# This allows Docker to cache the npm install step, speeding up subsequent builds
+COPY package*.json ./
+
+# Install npm dependencies
+# The --legacy-peer-deps flag is used here to avoid issues with peer dependency conflicts.
+# The --omit=dev flag is not used because we need dev dependencies for development.
+RUN npm install --legacy-peer-deps
+
+# Expose port 4200, which is the default port for the Angular development server
+EXPOSE 4200
+
+# Set the default command to run when the container starts
+# `ng serve` starts the Angular dev server
+# `--host 0.0.0.0` makes the server accessible from outside the container
+CMD ["npm", "start", "--", "--host", "0.0.0.0"]
