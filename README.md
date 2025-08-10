@@ -6,17 +6,22 @@ This font-end project was generated using [Angular CLI](https://github.com/angul
 
 [Recommended]Start local development server using docker.
 
-Install Docker for your machine.
-Run:
+Install Docker for your machine, run:
 
 ```bash
 docker compose up --build
 ```
 
-[Using Vite] To start a local development server, run:
+[Vite] To start a local development server, run:
 
 ```bash
 ng serve
+```
+
+[Vite] To resolve dependencies and initialize node_modules, run:
+
+```bash
+npm install
 ```
 
 Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
@@ -38,8 +43,10 @@ PR should be approved by atleast 1 member before branch can be merged to 'Main'
 Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
 
 ```bash
-ng generate component component-name
+ng generate component emh-component-name
 ```
+
+(Use emh prefix to denote eMedicHub custom components)
 
 For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
 
