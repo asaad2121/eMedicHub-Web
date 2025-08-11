@@ -8,7 +8,7 @@ export const routes: Routes = [
     component: EmhLandingPage
   },
   {
-    path: "login",
+    path: "doctor/login",
     component: EmhLoginComponent,
   },
 ];

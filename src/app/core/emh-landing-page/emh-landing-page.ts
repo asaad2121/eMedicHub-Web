@@ -21,12 +21,13 @@ export class EmhLandingPage implements OnInit {
  * @param role - The role selected by the user (Doctor, Patient, Pharmacist)
  */
   loginAs(role: UserTypes) {
+    const path = 'login';
     if (role === UserTypes.DOCTOR) {
-      this.router.navigate(['/login']);
+      this.router.navigate([`/doctor/${path}`]);
     } else if (role === UserTypes.PATIENT) {
-      // Add navigation for Patient
+      this.router.navigate([`/patient/${path}`]);
     } else if (role === UserTypes.PHARMACY) {
-      // Add navigation for Pharmacist
+      this.router.navigate([`/pharmacist/${path}`]);
     } else {
       this.router.navigate(['/']);
     }
