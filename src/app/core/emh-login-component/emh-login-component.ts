@@ -12,6 +12,7 @@ import { MatIcon } from "@angular/material/icon";
 import { UserLoginDTO, UserTypes } from "../../shared/DTO/user";
 import { UserStreamService } from "../../shared/services/user-stream.service";
 import { SnackbarService } from "../../shared/services/snackbar.service";
+import { UserRoleService } from "../../shared/services/user-role.service";
 
 @Component({
   selector: "emh-login-component",
@@ -40,14 +41,17 @@ export class EmhLoginComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private userStream: UserStreamService,
-    private snackbar: SnackbarService
+    private snackbar: SnackbarService, 
+    private userRoleService : UserRoleService
   ) {}
 
   ngOnInit(): void {
+    const role = this.userRoleService.getRole();
+    this.userType = role ?? UserTypes.DOCTOR;   
     this.loginForm = this.fb.group({
       email: ["", [Validators.required, Validators.email]],
       password: ["", Validators.required],
-    });
+    });    
   }
 
   public async onLogin() {
