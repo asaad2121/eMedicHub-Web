@@ -1,0 +1,70 @@
+.landing-container {
+    position: relative;
+    min-height: 100vh;   
+    background: url("/assets/images/landing-page.png") no-repeat center center / cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.overlay {
+    width: 100%;   
+    min-height: 100vh; 
+    display: flex;
+    align-items: flex-start;    
+    justify-content: center;
+}
+
+.emedichub-logo {
+    position: relative;
+    width: 100%;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url("/assets/images/emedichub-logo-text.png");
+}
+
+.content {
+    text-align: center;
+    color: #fff;
+    padding: 20px;
+    min-width: 30%;
+    max-width: 50%;
+}
+
+.login-title {
+    font-size: 28px;
+    margin: 32px 0;
+}
+
+.buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    align-items: center;
+}
+
+.role-btn {
+    width: 50%;
+    min-width: 200px;
+    color: #000;
+    border: none;
+    margin: 10px;
+    padding: 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 25px;
+    font-weight: 600;
+    transition: background 0.3s ease;
+}
+
+.role-btn:hover {
+    background-color: #f0f0f0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .brand {
+        font-size: 1.5rem;
+    }
+}

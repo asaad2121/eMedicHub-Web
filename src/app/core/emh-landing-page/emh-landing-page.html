@@ -1,0 +1,14 @@
+<div class="landing-container">
+  <div class="overlay">
+    <div class="content">
+      <img src="/assets/images/emedichub-logo-text.png" class="emedichub-logo" alt="eMedicHub Logo" />
+      <h2 class="login-title">Login as</h2>
+      <div class="buttons">
+        <button mat-raised-button color="primary" class="role-btn" (click)="loginAs(userTypes.DOCTOR)">Doctor</button>
+        <button mat-raised-button color="primary" class="role-btn" (click)="loginAs(userTypes.PATIENT)">Patient</button>
+        <button mat-raised-button color="primary" class="role-btn"
+          (click)="loginAs(userTypes.PHARMACY)">Pharmacist</button>
+      </div>
+    </div>
+  </div>
+</div>
