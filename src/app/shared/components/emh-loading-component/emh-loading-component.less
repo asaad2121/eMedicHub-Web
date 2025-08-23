@@ -1,0 +1,21 @@
+.spinner-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.3);
+  z-index: 9999;
+
+  &.fullscreen {
+    position: fixed; // Covers the entire viewport
+  }
+
+  // You can further style mat-spinner if needed, though inputs handle most
+  mat-spinner {
+    // Override default Material spinner background/box-shadow if necessary
+  }
+}

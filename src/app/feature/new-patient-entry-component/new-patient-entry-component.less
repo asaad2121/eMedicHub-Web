@@ -1,0 +1,106 @@
+@background-light: #f3f4f6;
+@card-max-width: 800px;
+@card-shadow:
+  0 10px 15px -3px rgba(0, 0, 0, 0.1),
+  0 4px 6px -2px rgba(0, 0, 0, 0.05);
+@border-radius-md: 0.375rem; // For buttons
+@border-radius-lg: 0.5rem; // For mat-card
+@global-primary-color: #4a67e6;
+
+.new-patient-entry-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: @background-light;
+  padding: 1rem;
+
+  @media (min-width: 600px) {
+    padding: 1.5rem;
+  }
+  @media (min-width: 960px) {
+    padding: 2rem;
+  }
+}
+
+mat-card {
+  &.new-patient-card {
+    width: 100%;
+    max-width: @card-max-width;
+    border-radius: @border-radius-lg;
+    box-shadow: @card-shadow;
+    padding: 1.5rem;
+
+    @media (min-width: 600px) {
+      padding: 2rem;
+    }
+  }
+
+  mat-card-header {
+    &.new-patient-card-header {
+      margin-bottom: 24px;
+    }
+
+    .mat-mdc-card-subtitle {
+      font-weight: 100;
+    }
+  }
+
+  mat-card-content {
+    .new-patient-form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px; // Space between form fieldsq
+    }
+
+    mat-form-field {
+      width: 100%;
+    }
+
+    .blood-group-section {
+      margin-bottom: 1rem;
+
+      .blood-group-title {
+        color: #374151;
+
+        font-weight: 300;
+        margin-bottom: 8px;
+        margin-top: 0px;
+      }
+
+      .blood-group-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+
+        @media (min-width: 600px) {
+          grid-template-columns: repeat(3, 1fr);
+        }
+
+        button {
+          // ... existing styles ...
+          &.selected {
+            background-color: @global-primary-color;
+            color: white; // Ensure text is white for contrast
+            border-color: @global-primary-color;
+            .mdc-button__label {
+              color: white; // Ensure label color is white
+            }
+          }
+        }
+      }
+    }
+
+    .form-buttons {
+      // Targeting the specific class
+      display: flex;
+      justify-content: flex-end;
+      gap: 16px;
+      margin-top: 24px;
+
+      button {
+        border-radius: @border-radius-md; // Use variable
+      }
+    }
+  }
+}
