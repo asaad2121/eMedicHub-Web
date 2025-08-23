@@ -1,5 +1,3 @@
 describe('Sanity', () => {
-  it('works', () => {
-    expect(true).toBeTrue();
-  });
+  it('works', () => expect(true).toBeTrue());
 });
