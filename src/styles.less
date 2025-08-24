@@ -5,8 +5,15 @@ body {
   margin: 0;
 
   font: inter;
-  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    "Helvetica Neue", Arial, sans-serif;
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    "Helvetica Neue",
+    Arial,
+    sans-serif;
   font-weight: 300;
 }
 
@@ -15,5 +22,76 @@ app-root {
   height: 100%;
 }
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+// For Material UI Overrides
+@global-primary-color: #4a67e6;
+@global-warn-color: #f44336;
+
+:root {
+  // Primary Palette
+  --mdc-theme-primary: @global-primary-color;
+  --mdc-theme-on-primary: white; // Text color on primary background
+
+  --mat-sys-primary: @global-primary-color;
+  --mdc-filled-button-container-color: @global-primary-color;
+  --mdc-filled-button-label-text-color: white;
+  --mdc-outlined-button-outline-color: @global-primary-color;
+  --mdc-outlined-button-label-text-color: @global-primary-color;
+  --mdc-text-button-label-text-color: @global-primary-color; // For mat-button without flat/stroked
+
+  // Form Fields (outline, label, focus colors)
+  --mdc-outlined-text-field-hover-border-color: @global-primary-color;
+  --mdc-outlined-text-field-focus-outline-color: @global-primary-color;
+  --mdc-filled-text-field-hover-border-color: @global-primary-color;
+  --mdc-filled-text-field-focus-active-indicator-color: @global-primary-color;
+  --mdc-text-field-focus-label-text-color: @global-primary-color;
+
+  // Datepicker
+  --mat-datepicker-content-range-header-selected-range-color: @global-primary-color;
+  --mat-datepicker-date-range-end-label-text-color: @global-primary-color;
+  --mat-datepicker-calendar-date-selected-state-background-color: @global-primary-color;
+  --mat-datepicker-calendar-date-selected-state-text-color: white;
+  --mat-datepicker-calendar-header-text-color: @global-primary-color;
+  --mat-calendar-body-active-cell-background-color: @global-primary-color; // Current day highlight
+
+  // Select
+  --mat-mdc-select-value-text-color: @global-primary-color;
+  --mat-mdc-select-arrow-color: @global-primary-color;
+  --mdc-outlined-select-hover-border-color: @global-primary-color;
+  --mdc-outlined-select-focus-outline-color: @global-primary-color;
+  --mdc-filled-select-focus-active-indicator-color: @global-primary-color;
+  --mdc-select-focus-label-text-color: @global-primary-color;
+
+  // Checkbox/Radio/Slider (common interactive elements)
+  --mdc-checkbox-selected-focus-state-layer-color: @global-primary-color;
+  --mdc-checkbox-selected-hover-state-layer-color: @global-primary-color;
+  --mdc-checkbox-selected-pressed-state-layer-color: @global-primary-color;
+  --mdc-checkbox-selected-icon-color: @global-primary-color;
+
+  --mdc-radio-selected-focus-state-layer-color: @global-primary-color;
+  --mdc-radio-selected-hover-state-layer-color: @global-primary-color;
+  --mdc-radio-selected-pressed-state-layer-color: @global-primary-color;
+  --mdc-radio-selected-icon-color: @global-primary-color;
+
+  --mdc-slider-active-track-color: @global-primary-color;
+  --mdc-slider-handle-color: @global-primary-color;
+  --mdc-slider-halo-color: fade(@global-primary-color, 20%);
+
+  // Warn Palette
+  --mdc-theme-error: @global-warn-color;
+  --mdc-theme-on-error: white;
+
+  --mdc-filled-button-container-color-error: @global-warn-color;
+  --mdc-filled-button-label-text-color-error: white;
+  --mdc-outlined-button-outline-color-error: @global-warn-color;
+  --mdc-outlined-button-label-text-color-error: @global-warn-color;
+  --mdc-text-button-label-text-color-error: @global-warn-color;
+}

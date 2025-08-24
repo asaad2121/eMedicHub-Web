@@ -1,0 +1,306 @@
+@if (loading) {
+  <emh-loading-component></emh-loading-component>
+} @else {
+  <div class="new-patient-entry-container">
+    <mat-card class="new-patient-card">
+      <mat-card-header class="new-patient-card-header">
+        <mat-card-title class="new-patient-card-title"
+          >Add New Patient</mat-card-title
+        >
+        <mat-card-subtitle class="new-patient-card-subtitle"
+          >Register a New Patient in the system</mat-card-subtitle
+        >
+      </mat-card-header>
+      <mat-card-content>
+        <form
+          class="new-patient-form"
+          [formGroup]="patientForm"
+          (ngSubmit)="onSubmit()"
+        >
+          <!-- First Name -->
+          <mat-form-field appearance="outline">
+            <mat-label>First Name</mat-label>
+            <input
+              matInput
+              placeholder="Enter first name"
+              formControlName="first_name"
+              required
+            />
+            <mat-hint>2 - 64 characters</mat-hint>
+            <mat-error
+              *ngIf="
+                patientForm.get('first_name')?.hasError('required') &&
+                patientForm.get('first_name')?.touched
+              "
+            >
+              First Name is required.
+            </mat-error>
+          </mat-form-field>
+
+          <!-- Last Name -->
+          <mat-form-field appearance="outline">
+            <mat-label>Last Name</mat-label>
+            <input
+              matInput
+              placeholder="Enter last name"
+              formControlName="last_name"
+              required
+            />
+            <mat-hint>2 - 64 characters</mat-hint>
+            <mat-error
+              *ngIf="
+                patientForm.get('last_name')?.hasError('required') &&
+                patientForm.get('last_name')?.touched
+              "
+            >
+              Last Name is required.
+            </mat-error>
+          </mat-form-field>
+
+          <!-- Date of Birth -->
+          <mat-form-field appearance="outline">
+            <mat-label>Date of Birth</mat-label>
+            <input
+              matInput
+              [matDatepicker]="picker"
+              placeholder="dd/mm/yyyy"
+              formControlName="dob"
+              required
+            />
+            <mat-datepicker-toggle
+              matSuffix
+              [for]="picker"
+            ></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+            <mat-error
+              *ngIf="
+                patientForm.get('dob')?.hasError('required') &&
+                patientForm.get('dob')?.touched
+              "
+            >
+              Date of Birth is required.
+            </mat-error>
+          </mat-form-field>
+
+          <!-- Phone Number -->
+          <mat-form-field appearance="outline">
+            <mat-label>Phone Number</mat-label>
+            <input
+              matInput
+              type="tel"
+              placeholder="Enter phone number"
+              formControlName="phone_no"
+              required
+            />
+            <mat-error
+              *ngIf="
+                patientForm.get('phone_no')?.hasError('required') &&
+                patientForm.get('phone_no')?.touched
+              "
+            >
+              Phone Number is required.
+            </mat-error>
+            <mat-error
+              *ngIf="
+                patientForm.get('phone_no')?.hasError('pattern') &&
+                patientForm.get('phone_no')?.touched
+              "
+            >
+              Please enter a valid phone number (e.g., 9 digits).
+            </mat-error>
+          </mat-form-field>
+
+          <!-- Email -->
+          <mat-form-field appearance="outline">
+            <mat-label>Email</mat-label>
+            <input
+              matInput
+              type="email"
+              placeholder="example@gmail.com"
+              formControlName="email"
+              required
+            />
+            <mat-error
+              *ngIf="
+                patientForm.get('email')?.hasError('required') &&
+                patientForm.get('email')?.touched
+              "
+            >
+              Email is required.
+            </mat-error>
+            <mat-error
+              *ngIf="
+                patientForm.get('email')?.hasError('email') &&
+                patientForm.get('email')?.touched
+              "
+            >
+              Please enter a valid email address.
+            </mat-error>
+          </mat-form-field>
+
+          <!-- Password -->
+          <mat-form-field appearance="outline">
+            <mat-label>Password</mat-label>
+            <mat-hint>At least 8 characters and include a digit.</mat-hint>
+            <input
+              matInput
+              type="password"
+              placeholder="Enter password"
+              formControlName="password"
+              required
+            />
+            <mat-error
+              *ngIf="
+                patientForm.get('password')?.hasError('required') &&
+                patientForm.get('password')?.touched
+              "
+            >
+              Password is required.
+            </mat-error>
+            <mat-error
+              *ngIf="
+                patientForm.get('password')?.hasError('minlength') &&
+                patientForm.get('password')?.touched
+              "
+            >
+              Password must be at least
+              {{
+                patientForm.get("password")?.errors?.["minlength"]
+                  ?.requiredLength
+              }}
+              characters long.
+            </mat-error>
+          </mat-form-field>
+
+          <!-- Blood Group -->
+          <div class="blood-group-section">
+            <p class="blood-group-title">Blood Group</p>
+            <div class="blood-group-grid">
+              @for (group of bloodGroups; track group) {
+                <button
+                  mat-stroked-button
+                  type="button"
+                  (click)="patientForm.get('blood_grp')?.setValue(group)"
+                  [class.selected]="
+                    patientForm.get('blood_grp')?.value === group
+                  "
+                >
+                  {{ group }}
+                </button>
+              }
+            </div>
+            <mat-error
+              *ngIf="
+                patientForm.get('blood_grp')?.hasError('required') &&
+                patientForm.get('blood_grp')?.touched
+              "
+            >
+              Blood Group is required.
+            </mat-error>
+          </div>
+
+          <!-- Select a General Practitioner -->
+          <mat-form-field appearance="outline">
+            <mat-label>Select a General Practitioner</mat-label>
+            <mat-select formControlName="gp_id" required>
+              @if (!availableDoctors.length) {
+                <mat-option disabled>Loading doctors...</mat-option>
+              }
+              @for (doctor of availableDoctors; track doctor.id) {
+                <mat-option [value]="doctor.id">
+                  {{ doctor.name }}
+                </mat-option>
+              }
+            </mat-select>
+            <mat-error
+              *ngIf="
+                patientForm.get('gp_id')?.hasError('required') &&
+                patientForm.get('gp_id')?.touched
+              "
+            >
+              General Practitioner is required.
+            </mat-error>
+          </mat-form-field>
+
+          <!-- Address -->
+          <mat-form-field appearance="outline">
+            <mat-label>Address</mat-label>
+            <textarea
+              matInput
+              placeholder="Enter address"
+              rows="3"
+              formControlName="address"
+              required
+            ></textarea>
+            <mat-error
+              *ngIf="
+                patientForm.get('address')?.hasError('required') &&
+                patientForm.get('address')?.touched
+              "
+            >
+              Address is required.
+            </mat-error>
+          </mat-form-field>
+
+          <!-- ID Type -->
+          <mat-form-field appearance="outline">
+            <mat-label>ID Type</mat-label>
+            <mat-select formControlName="id_type" required>
+              @for (type of patientIdTypes; track type) {
+                <mat-option [value]="type">
+                  {{ type }}
+                </mat-option>
+              }
+            </mat-select>
+            @if (
+              patientForm.get("id_type")?.hasError("required") &&
+              patientForm.get("id_type")?.touched
+            ) {
+              <mat-error> ID Type is required. </mat-error>
+            }
+          </mat-form-field>
+
+          <!-- ID Number -->
+          <mat-form-field appearance="outline">
+            <mat-label>ID Number</mat-label>
+            <input
+              matInput
+              placeholder="Enter ID number"
+              formControlName="id_number"
+              required
+            />
+            <mat-error
+              *ngIf="
+                patientForm.get('id_number')?.hasError('required') &&
+                patientForm.get('id_number')?.touched
+              "
+            >
+              ID Number is required.
+            </mat-error>
+          </mat-form-field>
+
+          <!-- Buttons -->
+          <div class="form-buttons">
+            <button
+              mat-stroked-button
+              color="warn"
+              type="button"
+              (click)="onCancel()"
+            >
+              Cancel
+            </button>
+
+            <button
+              mat-flat-button
+              color="primary"
+              type="submit"
+              [disabled]="patientForm.invalid"
+            >
+              Add Patient
+            </button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </div>
+}

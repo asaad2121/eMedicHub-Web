@@ -4,6 +4,12 @@ export enum UserTypes {
   PATIENT = "Patients",
 }
 
+export enum UserResponseTypes {
+  DOCTOR = "doctor",
+  PHARMACY = "pharma",
+  PATIENT = "patient",
+}
+
 export type UserLoginDTO = {
   message: string;
   data: User;
@@ -14,5 +20,5 @@ export class User {
   firstName: string = "";
   lastname: string = "";
   email: string = "";
-  type: UserTypes = UserTypes.PATIENT;
+  type: UserTypes | UserResponseTypes = UserTypes.PATIENT;
 }
