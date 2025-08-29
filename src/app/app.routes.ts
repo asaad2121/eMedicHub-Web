@@ -3,6 +3,7 @@ import { EmhLoginComponent } from "./core/emh-login-component/emh-login-componen
 import { EmhLandingPage } from "./core/emh-landing-page/emh-landing-page";
 import { EmhDashboardComponent } from "./shared/components/emh-dashboard-component/emh-dashboard-component";
 import { NewPatientEntryComponent } from "./feature/new-patient-entry-component/new-patient-entry-component";
+import { AddNewOrder } from "./feature/add-new-order/add-new-order";
 
 export const routes: Routes = [
   {
@@ -21,4 +22,8 @@ export const routes: Routes = [
     path: "new-patient-entry",
     component: NewPatientEntryComponent,
   },
+  {
+    path: "add-new-order",
+    component:AddNewOrder
+  }
 ];
