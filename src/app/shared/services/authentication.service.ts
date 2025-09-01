@@ -15,15 +15,15 @@ export class AuthenticationService {
   public async userLogin(
     userType: UserTypes,
     email: string,
-    password: string
+    password: string,
   ): Promise<UserLoginDTO> {
     const loginPayload = { email, password };
 
     return lastValueFrom(
       this.http.post<UserLoginDTO>(
-        `${this.apiUrl}/${userType}/login`,
-        loginPayload
-      )
+        `${this.apiUrl}/${userType.toLowerCase()}/login`,
+        loginPayload,
+      ),
     );
   }
 }
