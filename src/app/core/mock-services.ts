@@ -3,6 +3,8 @@ import { ApiResponse } from "../shared/DTO/common";
 import { Doctor, DoctorsDTO } from "../shared/DTO/doctor";
 import { Patient } from "../shared/DTO/patient";
 import { UserTypes, UserLoginDTO, User } from "../shared/DTO/user";
+import { Observable, of } from "rxjs";
+import { Medicine } from "../shared/DTO/medicine";
 
 export class MockAuthenticationService {
   userLogin = (
@@ -51,6 +53,25 @@ export class MockUserStreamService {
   };
 
   createNewPatient = (): Promise<ApiResponse> => {
+    return Promise.resolve({} as ApiResponse);
+  };
+}
+
+export class MockMedicineService {
+  searchMedicines(query: string): Observable<Medicine[]> {
+    const mockData: Medicine[] = [
+      { id: "1", name: "Paracetamol", price: 5.25 },
+      { id: "2", name: "Ibuprofen", price: 7.5 },
+      { id: "3", name: "Amoxicillin", price: 12.0 },
+    ];
+
+    const filteredData = mockData.filter((m) =>
+      m.name.toLowerCase().includes(query.toLowerCase()),
+    );
+    return of(filteredData);
+  }
+
+  addMedicine = (): Promise<ApiResponse> => {
     return Promise.resolve({} as ApiResponse);
   };
 }
