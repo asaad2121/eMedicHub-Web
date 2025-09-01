@@ -13,6 +13,7 @@ import { UserLoginDTO, UserTypes } from "../../shared/DTO/user";
 import { UserStreamService } from "../../shared/services/user-stream.service";
 import { SnackbarService } from "../../shared/services/snackbar.service";
 import { UserRoleService } from "../../shared/services/user-role.service";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "emh-login-component",
@@ -35,23 +36,23 @@ export class EmhLoginComponent implements OnInit {
   // TODO: Implement a spinner later, maybe.
   public loading = false;
 
-  @Input()
-  userType: UserTypes = UserTypes.DOCTOR;
+  public userType: UserTypes = UserTypes.DOCTOR;
 
   constructor(
     private fb: FormBuilder,
     private userStream: UserStreamService,
-    private snackbar: SnackbarService, 
-    private userRoleService : UserRoleService
+    private snackbar: SnackbarService,
+    private userRoleService: UserRoleService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
     const role = this.userRoleService.getRole();
-    this.userType = role ?? UserTypes.DOCTOR;   
+    this.userType = role ?? UserTypes.DOCTOR;
     this.loginForm = this.fb.group({
       email: ["", [Validators.required, Validators.email]],
       password: ["", Validators.required],
-    });    
+    });
   }
 
   public async onLogin() {
@@ -70,6 +71,8 @@ export class EmhLoginComponent implements OnInit {
           password
         );
         this.toastMessage = user.message;
+
+        this.router.navigate([`/${this.userType.toLowerCase()}/dashboard`]);
       } catch (error) {
         this.toastMessage = "Login failed. Invalid credentials.";
       }

@@ -1,0 +1,80 @@
+<div class="add-new-medicine">
+    <mat-card class="prescription-card">
+        <h2>Prescription Management</h2>
+        <!-- Medicines Table -->
+        <div class="section medicine-section">
+            <div class="medicines-bar">
+                <h3>
+                    Medicines : <span style="font-weight: 300;">{{ selectedPatient.name }}</span>
+                </h3>
+            </div>
+            <div class="medicines-header" *ngIf="medicines.length > 0">
+                <span>Name</span>
+                <span>Quantity</span>
+                <span>Time Slots</span>
+                <span>Total Price<br />(Quantity × Price)</span>
+                <span>Delete</span>
+            </div>
+            <div class="no-medicines" *ngIf="medicines.length === 0">
+                Please click on <strong>Add new medicine</strong> to continue...
+            </div>
+            <div *ngFor="let med of medicines" class="medicine-row">
+                <mat-form-field appearance="fill" class="med-name">
+                    <input type="text" placeholder="Search medicine" matInput [matAutocomplete]="auto"
+                        [(ngModel)]="med.medicineInput" (ngModelChange)="filterMedicines(med)"
+                        [disabled]="!selectedPatient" />
+
+                    <small class="hint-text">Enter at least 4 letters to search</small>
+                    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onMedicineSelected($event, med)">
+                        <mat-option *ngFor="let m of med.filteredOptions" [value]="m.name">
+                            {{ m.name }}
+                        </mat-option>
+                    </mat-autocomplete>
+                </mat-form-field>
+                <div class="quantity-controls">
+                    <button mat-mini-button (click)="changeQuantity(med, false)"
+                        [disabled]="!med.selectedMedicine">−</button>
+                    <input type="number" class="centered-number" [value]="med.quantity" readonly />
+                    <button mat-mini-button (click)="changeQuantity(med, true)"
+                        [disabled]="!med.selectedMedicine">+</button>
+                </div>
+                <div class="time-slots">
+                    <button mat-raised-button *ngFor="let option of med.options" class="slot-chip"
+                        [ngClass]="{ selected: option.selected }" [disabled]="!med.selectedMedicine"
+                        (click)="toggleOption(med, option)">
+                        {{ option.label }}
+                    </button>
+                </div>
+                <div class="price">
+                    {{ ((med.selectedMedicine?.price ?? 0) * med.quantity) | currency:'USD' }}
+                </div>
+                <div class="delete">
+                    <button mat-icon-button color="warn" (click)="removeMedicine(med)">
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                </div>
+            </div>
+            <div class="message-box" *ngIf="searchMessage">
+                <small class="message">
+                    <b>{{searchMessage}}</b>
+                </small>
+            </div>
+            <div class="actions-row">
+                <button mat-button color="primary" class="add-button" (click)="addMedicine()"
+                    [disabled]="!canAddMoreMedicines() || !selectedPatient">
+                    <mat-icon>add</mat-icon> Add new medicine
+                </button>
+                <div class="total-price-box">
+                    Total Price: <strong>{{ totalPrice | currency:'USD' }}</strong>
+                </div>
+            </div>
+            <div class="submit-row">
+                <button mat-raised-button class="submit-but" color="primary" [disabled]="!canSubmit()"
+                    (click)="submit()">
+                    Submit
+                </button>
+            </div>
+        </div>
+
+    </mat-card>
+</div>

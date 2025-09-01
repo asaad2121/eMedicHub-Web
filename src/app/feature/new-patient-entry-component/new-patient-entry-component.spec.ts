@@ -1,22 +1,22 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { EmhLoginComponent } from "./emh-login-component";
+import { NewPatientEntryComponent } from "./new-patient-entry-component";
 import { UserStreamService } from "../../shared/services/user-stream.service";
-import { MockUserStreamService } from "../mock-services";
+import { MockUserStreamService } from "../../core/mock-services";
 
-describe("EmhLoginComponent", () => {
-  let component: EmhLoginComponent;
-  let fixture: ComponentFixture<EmhLoginComponent>;
+describe("NewPatientEntryComponent", () => {
+  let component: NewPatientEntryComponent;
+  let fixture: ComponentFixture<NewPatientEntryComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [EmhLoginComponent],
+      imports: [NewPatientEntryComponent],
       providers: [
         { provide: UserStreamService, useClass: MockUserStreamService },
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(EmhLoginComponent);
+    fixture = TestBed.createComponent(NewPatientEntryComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

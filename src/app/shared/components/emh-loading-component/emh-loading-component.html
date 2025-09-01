@@ -1,0 +1,10 @@
+@if (isLoading) {
+  <div class="spinner-overlay" [class.fullscreen]="fullscreen">
+    <mat-spinner
+      [diameter]="diameter"
+      [strokeWidth]="strokeWidth"
+      [color]="color"
+      mode="indeterminate"
+    ></mat-spinner>
+  </div>
+}
