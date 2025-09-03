@@ -9,10 +9,14 @@ import {
 import { Observable, throwError } from "rxjs";
 import { catchError } from "rxjs/operators";
 import { Router } from "@angular/router";
+import { SnackbarService } from "./shared/services/snackbar.service";
 
 @Injectable()
 export class Http_Interceptor implements HttpInterceptor {
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private snackbar: SnackbarService,
+  ) {}
 
   intercept(
     request: HttpRequest<unknown>,
@@ -25,9 +29,9 @@ export class Http_Interceptor implements HttpInterceptor {
     return next.handle(request).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
-          console.error(
-            "Unauthorized request caught by interceptor. Redirecting to home page",
-          );
+          const message = "Session expired. Redirecting to home page";
+          console.error(message);
+          this.snackbar.openSnackbarWithAction(message);
           this.router.navigate(["/"]);
         }
 
