@@ -17,7 +17,7 @@ export class UserService {
   public getAllDoctors(): Promise<Doctor[]> {
     return lastValueFrom(
       this.http
-        .get<{ data: Doctor[] }>(`${this.apiUrl}/doctors/getDoctors`)
+        .get<{ data: Doctor[] }>(`${this.apiUrl}/patients/getDoctors`)
         .pipe(map((items) => items.data)),
     );
   }

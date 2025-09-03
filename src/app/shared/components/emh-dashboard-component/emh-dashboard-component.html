@@ -1,3 +1,6 @@
 @if (user.type === UserResponseTypes.DOCTOR) {
   <doctor-dashboard [user]="user"></doctor-dashboard>
 }
+@if (user.type === UserResponseTypes.PATIENT) {
+  <patient-dashboard [user]="user"></patient-dashboard>
+}

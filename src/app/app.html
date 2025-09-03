@@ -1,12 +1,16 @@
-@if (showHeader) {
+<div class="app-container">
+  @if (showHeader) {
     <div class="header-container">
-        <div class="img-class">
-            <img src="assets/images/logo-with-text.png" />
-        </div>
-        <div class="user-info">
-            <div class="avatar-placeholder"></div>
-            <span class="user-name">{{fullName}}</span>
-        </div>
+      <div class="img-class">
+        <img src="assets/images/logo-with-text.png" />
+      </div>
+      <div class="user-info">
+        <div class="avatar-placeholder"></div>
+        <span class="user-name">{{ fullName }}</span>
+      </div>
     </div>
-}
-<router-outlet />
+  }
+  <div [class.main-content]="showHeader">
+    <router-outlet />
+  </div>
+</div>
