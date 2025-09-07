@@ -1,38 +1,43 @@
 <div class="dialog-container">
-    <h2 mat-dialog-title>Filters</h2>
-    <div mat-dialog-content class="filter-container">
-
-        <mat-form-field appearance="fill" class="full-width">
-            <mat-label>Age Range</mat-label>
-            <mat-select [(value)]="selectedAge" placeholder="">
-                <mat-option *ngFor="let age of ageRanges" [value]="age">
-                    {{ age }}
-                </mat-option>
-            </mat-select>
-        </mat-form-field>
-
-        <mat-form-field appearance="fill" class="full-width">
-            <mat-label>Blood Group</mat-label>
-            <mat-select [(value)]="selectedBlood" placeholder="">
-                <mat-option *ngFor="let group of bloodGroups" [value]="group">
-                    {{ group }}
-                </mat-option>
-            </mat-select>
-        </mat-form-field>
-
-        <mat-form-field appearance="fill" class="full-width">
-            <mat-label>Appointment</mat-label>
-            <mat-select [(value)]="selectedTime" placeholder="">
-                <mat-option *ngFor="let time of timeRanges" [value]="time">
-                    {{ time }}
-                </mat-option>
-            </mat-select>
-        </mat-form-field>
-
-    </div>
-
-    <div mat-dialog-actions align="end">
-        <button mat-button (click)="cancel()">Cancel</button>
-        <button mat-flat-button color="primary" (click)="applyFilters()">Apply Filters</button>
+    <div mat-dialog-content class="filter-dialog">
+        <h2 mat-dialog-title class="dialog-title">Filters</h2>
+        <div class="filter-form">
+            <!-- Age Range Filter -->
+            <mat-form-field appearance="outline" class="filter-field">
+                <mat-label>Age Range</mat-label>
+                <mat-select [(value)]="selectedAge" placeholder="Select age range" name="ageRange">
+                    <mat-option *ngFor="let age of ageRanges" [value]="age">
+                        {{ age }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <!-- Blood Group Filter -->
+            <mat-form-field appearance="outline" class="filter-field">
+                <mat-label>Blood Group</mat-label>
+                <mat-select [(value)]="selectedBlood" placeholder="Select blood group" name="bloodGroup">
+                    <mat-option *ngFor="let group of bloodGroups" [value]="group">
+                        {{ group }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <!-- Appointment Time Filter -->
+            <mat-form-field appearance="outline" class="filter-field">
+                <mat-label>Appointment</mat-label>
+                <mat-select [(value)]="selectedTime" placeholder="Select time range" name="timeRange">
+                    <mat-option *ngFor="let time of timeRanges" [value]="time">
+                        {{ time }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <!-- Dialog Actions -->
+        <div mat-dialog-actions class="dialog-actions">
+            <button mat-button class="cancel-button" (click)="cancel()">
+                Cancel
+            </button>
+            <button mat-raised-button color="primary" class="apply-button" (click)="applyFilters()">
+                Apply Filters
+            </button>
+        </div>
     </div>
 </div>

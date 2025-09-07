@@ -142,14 +142,14 @@ export class ViewPatients implements OnInit {
     });
   }
 
-  applyPatientFilters(result: any) {
-    console.log('filters', result);
+  applyPatientFilters(result: any) {    
+    const hasEmpty = Object.values(result).some(value => value === '');
     if (result.time) {
       result.time = this.getFilterDate(result.time);
     }
-    this.loading = true;
-
-    this.patientService.getPatientsByFilter(this.doctorId, result, this.pageSize, this.currentPage, this.searchText)
+    this.loading = true;    
+    if(!hasEmpty) {
+      this.patientService.getPatientsByFilter(this.doctorId, result, this.pageSize, this.currentPage, this.searchText)
       .subscribe({
         next: (res: { success: boolean; data: Patient[]; totalPatients: number }) => {
           this.loading = false;
@@ -175,6 +175,11 @@ export class ViewPatients implements OnInit {
           this.totalPatients = 0;
         }
       });
+    }
+    else {
+      this.loadPatients();
+    }
+    
   }
 
   getFilterDate(option: string) {
@@ -203,8 +208,7 @@ export class ViewPatients implements OnInit {
     this.loadPatients();
   }
 
-  loadPatients() {
-    console.log('insodie load');
+  loadPatients() {    
     this.loading = true;
     this.patientService.getPatients(this.doctorId, this.currentPage, this.pageSize, this.searchText).subscribe(
       (res: { success: boolean; data: Patient[]; totalPatients: number }) => {
