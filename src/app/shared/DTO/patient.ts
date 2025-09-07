@@ -13,3 +13,11 @@ export type Patient = {
   id_number: string;
   last_gp_visited: string;
 };
+
+export type BookingDetails = {
+  patient_id: string;
+  doctor_id: string;
+  date: string;
+  start_time: string;
+  note: string;
+};

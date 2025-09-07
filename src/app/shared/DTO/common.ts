@@ -1,7 +1,7 @@
 export type ApiResponse = {
   success: boolean;
   message: string;
-  error: {
+  error?: {
     type: string;
     value: string;
     msg: string;
