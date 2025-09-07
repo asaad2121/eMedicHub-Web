@@ -19,6 +19,8 @@ export class User {
   id: string = "";
   firstName: string = "";
   lastname: string = "";
+  first_name: string = "";
+  last_name: string = "";
   email: string = "";
   type: UserTypes | UserResponseTypes = UserTypes.PATIENT;
 }

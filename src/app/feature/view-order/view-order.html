@@ -1,0 +1,13 @@
+@if (!loading) {
+  @if (user.type === UserResponseTypes.DOCTOR) {
+    <doctor-view-order [user]="user"></doctor-view-order>
+  }
+  @if (user.type === UserResponseTypes.PATIENT) {
+    <patient-view-order [user]="user" [orders]="orders"></patient-view-order>
+  }
+  @if (user.type === UserResponseTypes.PHARMACY) {
+    <pharma-view-order [user]="user"></pharma-view-order>
+  }
+} @else {
+  <emh-loading-component></emh-loading-component>
+}

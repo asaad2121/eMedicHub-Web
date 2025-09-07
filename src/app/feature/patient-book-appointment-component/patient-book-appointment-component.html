@@ -14,7 +14,7 @@
             <div
               class="doctor-card"
               [ngClass]="{
-                'doctor-card-active': selectedDoctor()?.id === doctor.id,
+                'doctor-card-active': selectedDoctor().id === doctor.id,
               }"
               (click)="selectDoctor(doctor)"
             >
