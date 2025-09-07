@@ -1,0 +1,121 @@
+@if (loading) {
+  <emh-loading-component></emh-loading-component>
+} @else {
+  <div class="container">
+    <div class="card">
+      <h1 class="title">Book Appointment</h1>
+      <p class="subtitle">Schedule your appointment with our Doctors</p>
+
+      <!-- Select a Doctor Section -->
+      <div class="section-container">
+        <h2 class="section-title">Select a Doctor</h2>
+        <div class="doctor-list">
+          @for (doctor of availableDoctors; track doctor.id) {
+            <div
+              class="doctor-card"
+              [ngClass]="{
+                'doctor-card-active': selectedDoctor().id === doctor.id,
+              }"
+              (click)="selectDoctor(doctor)"
+            >
+              <h3 class="doctor-name">
+                {{ "Dr. " }}{{ doctor.first_name }} {{ doctor.last_name }}
+              </h3>
+              <p class="doctor-specialty">{{ "General Practitioner" }}</p>
+              <p class="doctor-availability">
+                Available: {{ getAvailabilityString(doctor.visiting_hours) }}
+              </p>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Select Date Section -->
+      <div class="section-container" (click)="dateInput.showPicker()">
+        <h2 class="section-title">Select Date</h2>
+        <div class="input-container">
+          <input
+            #dateInput
+            type="date"
+            class="input"
+            [value]="selectedDate()"
+            [min]="today()"
+            [max]="maxDate()"
+            (change)="onDateChange($event)"
+          />
+        </div>
+        <p class="input-subtitle">
+          Select a date to check available Time slots
+        </p>
+      </div>
+
+      <!-- Check Available Slots Button -->
+      <div class="section-container">
+        <button
+          class="button primary-button"
+          (click)="checkAvailability()"
+          [disabled]="!selectedDoctor().id || !selectedDate()"
+        >
+          Check Available Slots
+        </button>
+      </div>
+
+      <!-- Available Time Slots Section -->
+      @if (showTimeSlots() && availableSlots().length > 0) {
+        <div class="section-container">
+          <h2 class="section-title">Available Time Slots</h2>
+          <div class="time-slots-grid">
+            @for (slot of availableSlots(); track $index) {
+              <button
+                class="time-slot-button"
+                [ngClass]="{
+                  'time-slot-selected': selectedTimeSlot() === slot,
+                }"
+                (click)="selectTimeSlot(slot)"
+              >
+                {{ slot }}
+              </button>
+            }
+          </div>
+        </div>
+      } @else if (showTimeSlots() && availableSlots().length === 0) {
+        <div class="section-container">
+          <p class="error-message">No available slots for the selected date.</p>
+        </div>
+      }
+
+      <!-- Additional Information Section -->
+      <div class="info-section">
+        <h2 class="section-title">Additional Information for Doctor</h2>
+        <p class="info-text">
+          Please provide any symptoms, concerns, or additional information you'd
+          like your doctor to know about before your appointment. This can help
+          them prepare better for your consultation.
+        </p>
+        <div>
+          <label for="notes" class="input-label">Notes for Doctor</label>
+          <textarea
+            id="notes"
+            rows="4"
+            class="textarea"
+            placeholder="Describe your symptoms, concerns, or any specific questions you have for the doctor."
+            [(ngModel)]="additionalNotes"
+          ></textarea>
+        </div>
+      </div>
+
+      <div class="button-row">
+        <button class="button secondary-button" (click)="back()">Back</button>
+        <button
+          class="button primary-button"
+          (click)="bookAppointment()"
+          [disabled]="
+            !selectedDoctor().id || !selectedDate() || !selectedTimeSlot()
+          "
+        >
+          Book Appointment
+        </button>
+      </div>
+    </div>
+  </div>
+}

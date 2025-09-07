@@ -75,3 +75,13 @@ export class MockMedicineService {
     return Promise.resolve({} as ApiResponse);
   };
 }
+
+export class MockPatientService {
+  getDoctorAvailability = (): Promise<ApiResponse> => {
+    return Promise.resolve({} as ApiResponse);
+  };
+
+  bookAppointment = (): Promise<ApiResponse> => {
+    return Promise.resolve({} as ApiResponse);
+  };
+}
