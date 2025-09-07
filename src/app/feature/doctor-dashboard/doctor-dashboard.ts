@@ -20,4 +20,7 @@ export class DoctorDashboard {
   onAddNewOrder() {
     this.router.navigate(["/add-new-order"]);
   }
+  viewPatient() {
+    this.router.navigate(["/view-patients"]);
+  }
 }

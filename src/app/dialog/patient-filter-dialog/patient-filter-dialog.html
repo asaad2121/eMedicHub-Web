@@ -1,0 +1,38 @@
+<div class="dialog-container">
+    <h2 mat-dialog-title>Filters</h2>
+    <div mat-dialog-content class="filter-container">
+
+        <mat-form-field appearance="fill" class="full-width">
+            <mat-label>Age Range</mat-label>
+            <mat-select [(value)]="selectedAge" placeholder="">
+                <mat-option *ngFor="let age of ageRanges" [value]="age">
+                    {{ age }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="full-width">
+            <mat-label>Blood Group</mat-label>
+            <mat-select [(value)]="selectedBlood" placeholder="">
+                <mat-option *ngFor="let group of bloodGroups" [value]="group">
+                    {{ group }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="full-width">
+            <mat-label>Appointment</mat-label>
+            <mat-select [(value)]="selectedTime" placeholder="">
+                <mat-option *ngFor="let time of timeRanges" [value]="time">
+                    {{ time }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+    </div>
+
+    <div mat-dialog-actions align="end">
+        <button mat-button (click)="cancel()">Cancel</button>
+        <button mat-flat-button color="primary" (click)="applyFilters()">Apply Filters</button>
+    </div>
+</div>
