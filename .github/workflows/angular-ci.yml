@@ -58,8 +58,14 @@ jobs:
           aws cloudfront get-distribution --id $DIST_ID
 
 
-      - name: Deploy to S3 and Invalidate CloudFront
+      - name: Deploy to S3
         run: |
           npx ng build --configuration production
           aws s3 sync ./dist/eMedicHub-Web/browser s3://${{ secrets.S3_BUCKET }} --delete
-          aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
+
+      - name: Invalidate CloudFront cache
+        if: ${{ env.CLOUDFRONT_DISTRIBUTION_ID != '' }}
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id "$CLOUDFRONT_DISTRIBUTION_ID" \
+            --paths "/*"
