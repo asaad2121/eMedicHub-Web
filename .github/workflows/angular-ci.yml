@@ -44,6 +44,12 @@ jobs:
           name: dist
           path: dist
 
+      - name: Check secrets
+        run: |
+          echo "S3_BUCKET: ${{ secrets.S3_BUCKET }}"
+          echo "CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}"
+
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
