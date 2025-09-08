@@ -3,10 +3,11 @@ import { UserRoleService } from "../../services/user-role.service";
 import { UserStreamService } from "../../services/user-stream.service";
 import { User, UserResponseTypes, UserTypes } from "../../DTO/user";
 import { DoctorDashboard } from "../../../feature/doctor-dashboard/doctor-dashboard";
+import { PatientDashboard } from "../../../feature/patient-dashboard/patient-dashboard";
 
 @Component({
   selector: "emh-dashboard-component",
-  imports: [DoctorDashboard],
+  imports: [DoctorDashboard, PatientDashboard],
   templateUrl: "./emh-dashboard-component.html",
   styleUrl: "./emh-dashboard-component.less",
 })

@@ -10,12 +10,13 @@ export class SnackbarService {
   public openSnackbarWithAction(
     message: string,
     action: string = "Close",
-    duration: number = 5000
+    duration: number = 5000,
   ): void {
     this.snackBar.open(message, action, {
       duration: duration,
       verticalPosition: "top",
       horizontalPosition: "right",
+      panelClass: ["snackbar-offset"],
     });
   }
 }
