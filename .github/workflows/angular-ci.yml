@@ -51,21 +51,10 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Verify CloudFront distribution
+      - name: Deploy to S3 and Invalidate CloudFront
         run: |
-          DIST_ID=$(echo "${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}" | tr -d '[:space:]')
-          echo "Checking distribution ID: '$DIST_ID'"
-          aws cloudfront get-distribution --id $DIST_ID
-
-
-      - name: Deploy to S3
-        run: |
+          DIST_ID=$(echo ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} | tr -d '[:space:]')
+          echo "Using distribution ID: '$DIST_ID'"
           npx ng build --configuration production
           aws s3 sync ./dist/eMedicHub-Web/browser s3://${{ secrets.S3_BUCKET }} --delete
-
-      - name: Invalidate CloudFront cache
-        if: ${{ env.CLOUDFRONT_DISTRIBUTION_ID != '' }}
-        run: |
-          aws cloudfront create-invalidation \
-            --distribution-id "$CLOUDFRONT_DISTRIBUTION_ID" \
-            --paths "/*"
+          aws cloudfront create-invalidation --distribution-id $DIST_ID --paths "/*"
