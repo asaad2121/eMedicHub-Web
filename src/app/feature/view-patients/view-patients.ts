@@ -83,9 +83,9 @@ export class ViewPatients implements OnInit {
     private datePipe: DatePipe
   ) {
     const storedUser = this.userStreamService.getCurrentUserFromStorage() as any;
-    this.doctorId = storedUser.id;
-    this.doctorName = [storedUser.first_name, storedUser.last_name].filter(n => n).join(' ');
-    this.type = storedUser.type;
+    this.doctorId = storedUser?.id;
+    this.doctorName = [storedUser?.first_name, storedUser?.last_name].filter(n => n).join(' ');
+    this.type = storedUser?.type;
   }
 
 
