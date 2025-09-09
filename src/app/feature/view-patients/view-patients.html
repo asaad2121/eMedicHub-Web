@@ -1,0 +1,59 @@
+<div class="page-wrapper">
+  <div class="view-patients">
+    <!-- Header -->
+    <h2 style="margin-bottom: 16px;">Welcome Dr. {{doctorName}}</h2>
+    <!-- Toolbar: Search + Filter -->
+    <div class="toolbar" style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
+      <!-- Search Box -->
+      <mat-form-field appearance="outline" class="search-box" style="flex: 1">
+        <mat-label>Search Patients...</mat-label>
+        <input type="text" matInput [formControl]="searchControl" placeholder="Enter patient name">
+      </mat-form-field>
+      <!-- Filter Button -->
+      <button mat-raised-button class="filter-button" (click)="openFilter()">
+        <mat-icon>filter_list</mat-icon>
+        <label>Filter</label>
+      </button>
+    </div>
+    <!-- Loader -->
+    <div *ngIf="loading" class="spinner-container">
+      <mat-progress-spinner mode="indeterminate" diameter="50" color="primary">
+      </mat-progress-spinner>
+    </div>
+    <!-- Table -->
+    <div class="table-wrapper" *ngIf="!loading">
+      <table mat-table [dataSource]="patients" class="mat-elevation-z8 responsive-table">
+        <!-- Dynamic Columns -->
+        <ng-container *ngFor="let column of columns" [matColumnDef]="column.key">
+          <th mat-header-cell *matHeaderCellDef> {{ column.label }} </th>
+          <td mat-cell *matCellDef="let row"> {{ row[column.key] }} </td>
+        </ng-container>
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef> Actions </th>
+          <td mat-cell *matCellDef="let row">
+            <button mat-button color="primary" (click)="openPatientDialog(row)">
+              View Details
+            </button>
+          </td>
+        </ng-container>
+        <!-- Header Row -->
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <!-- Data Rows -->
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        <!-- No Results Row -->
+        <tr class="mat-row" *matNoDataRow>
+          <td [attr.colspan]="displayedColumns.length">
+            No results found
+          </td>
+        </tr>
+      </table>
+    </div>
+
+
+    <!-- Paginator -->
+    <mat-paginator *ngIf="!loading" [length]="totalPatients" [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 25, 100]"
+      (page)="onPageChange($event)">
+    </mat-paginator>
+
+  </div>
+</div>

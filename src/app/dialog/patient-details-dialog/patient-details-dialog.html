@@ -1,0 +1,14 @@
+<div class="details-container">
+    <h2 mat-dialog-title class="details-header"style="background-color:#36495d; color:white">Patient Details</h2>
+    <mat-dialog-content>
+        <table class="details-table">
+            <tr *ngFor="let key of objectKeys(data)">
+                <td><strong>{{ key }}</strong></td>
+                <td>{{ data[key] }}</td>
+            </tr>
+        </table>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-button mat-dialog-close class="close-button">Close</button>
+    </mat-dialog-actions>
+</div>

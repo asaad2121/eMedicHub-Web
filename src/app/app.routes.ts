@@ -5,7 +5,7 @@ import { EmhDashboardComponent } from "./shared/components/emh-dashboard-compone
 import { NewPatientEntryComponent } from "./feature/new-patient-entry-component/new-patient-entry-component";
 import { AddNewOrder } from "./feature/add-new-order/add-new-order";
 import { PatientBookAppointmentComponent } from "./feature/patient-book-appointment-component/patient-book-appointment-component";
-
+import { ViewPatients } from "./feature/view-patients/view-patients";
 export const routes: Routes = [
   {
     path: "",
@@ -25,8 +25,12 @@ export const routes: Routes = [
   },
   {
     path: "add-new-order",
-    component: AddNewOrder,
+    component: AddNewOrder
   },
+  {
+    path: "view-patients",
+    component: ViewPatients
+  },  
   {
     path: "patient-book-appoinment",
     component: PatientBookAppointmentComponent,
