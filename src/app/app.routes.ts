@@ -6,6 +6,8 @@ import { NewPatientEntryComponent } from "./feature/new-patient-entry-component/
 import { AddNewOrder } from "./feature/add-new-order/add-new-order";
 import { PatientBookAppointmentComponent } from "./feature/patient-book-appointment-component/patient-book-appointment-component";
 import { ViewOrder } from "./feature/view-order/view-order";
+import { OrderViewDetailsComponent } from "./feature/view-order/order-view-details/order-view-details";
+import { OrderDetailsGuard } from "./core/route-guards/order-details-guard";
 
 export const routes: Routes = [
   {
@@ -33,7 +35,12 @@ export const routes: Routes = [
     component: PatientBookAppointmentComponent,
   },
   {
-    path: ":role/view-order",
+    path: ":role/orders",
     component: ViewOrder,
+  },
+  {
+    path: ":role/orders/details",
+    component: OrderViewDetailsComponent,
+    canActivate: [OrderDetailsGuard],
   },
 ];

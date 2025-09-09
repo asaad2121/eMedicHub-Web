@@ -2,8 +2,9 @@ import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { environment } from "../../../environments/environment";
 import { lastValueFrom } from "rxjs";
-import { Order } from "../DTO/orders";
-import { UserResponseTypes, UserTypes } from "../DTO/user";
+
+import { UserResponseTypes } from "../DTO/user";
+import { OrderResponse, Order, OrderStatus } from "../DTO/orders";
 
 @Injectable({
   providedIn: "root",
@@ -13,7 +14,11 @@ export class OrderService {
 
   constructor(private http: HttpClient) {}
 
-  public async getOrders(userType: string, userId: string): Promise<Order[]> {
+  public async getOrders(
+    userType: string,
+    userId: string,
+    patientSearch: string = "",
+  ): Promise<Order[]> {
     let params = new HttpParams();
     let idParam = "";
 
@@ -33,9 +38,28 @@ export class OrderService {
     }
 
     params = params.set(idParam, userId);
+    params = params.set("patientSearch", patientSearch);
 
     return await lastValueFrom(
-      this.http.get<Order[]>(`${this.apiUrl}/orders/getOrders`, { params }),
+      this.http.get<OrderResponse>(`${this.apiUrl}/orders/getOrders`, {
+        params,
+      }),
+    ).then((res) => res.data);
+  }
+
+  public async updateOrderStatus(
+    pharmaId: string,
+    orderId: string,
+    status: OrderStatus,
+  ): Promise<any> {
+    const body = {
+      pharma_id: pharmaId,
+      status,
+      order_id: orderId,
+    };
+
+    return lastValueFrom(
+      this.http.post(`${this.apiUrl}/pharma/updateOrderStatus`, body),
     );
   }
 }

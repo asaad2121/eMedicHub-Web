@@ -1,13 +1,8 @@
 @if (!loading) {
-  @if (user.type === UserResponseTypes.DOCTOR) {
-    <doctor-view-order [user]="user"></doctor-view-order>
-  }
-  @if (user.type === UserResponseTypes.PATIENT) {
-    <patient-view-order [user]="user" [orders]="orders"></patient-view-order>
-  }
-  @if (user.type === UserResponseTypes.PHARMACY) {
-    <pharma-view-order [user]="user"></pharma-view-order>
-  }
+  <order-table-component
+    [user]="user"
+    [orders]="orders"
+  ></order-table-component>
 } @else {
   <emh-loading-component></emh-loading-component>
 }

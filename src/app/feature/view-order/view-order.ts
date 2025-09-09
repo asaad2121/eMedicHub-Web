@@ -1,22 +1,16 @@
 import { Component, OnInit } from "@angular/core";
 import { UserStreamService } from "../../shared/services/user-stream.service";
 import { User, UserResponseTypes } from "../../shared/DTO/user";
-import { PatientViewOrder } from "./patient-view-order/patient-view-order";
-import { PharmaDashboard } from "../pharma-dashboard/pharma-dashboard";
-import { PharmaViewOrder } from "./pharma-view-order/pharma-view-order";
-import { DoctorViewOrder } from "./doctor-view-order/doctor-view-order";
+
 import { OrderService } from "../../shared/services/order.service";
 import { Order } from "../../shared/DTO/orders";
 import { EmhLoadingComponent } from "../../shared/components/emh-loading-component/emh-loading-component";
+import { OrderTableComponent } from "./order-table-component/order-table-component";
+import { Router, RouterOutlet } from "@angular/router";
 
 @Component({
   selector: "view-order",
-  imports: [
-    PatientViewOrder,
-    PharmaViewOrder,
-    DoctorViewOrder,
-    EmhLoadingComponent,
-  ],
+  imports: [OrderTableComponent, EmhLoadingComponent, OrderTableComponent],
   templateUrl: "./view-order.html",
   styleUrl: "./view-order.less",
 })

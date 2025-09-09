@@ -15,6 +15,6 @@ export class PharmaDashboard {
   user!: User;
 
   onViewOrders() {
-    this.router.navigate([`/${this.user.type.toLowerCase()}/view-order`]);
+    this.router.navigate([`/${this.user.type.toLowerCase()}/orders`]);
   }
 }
