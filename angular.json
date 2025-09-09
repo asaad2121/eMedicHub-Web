@@ -21,6 +21,9 @@
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "less",
             "assets": ["src/assets"],
+            "outputPath": "dist/eMedicHub-Web",
+            "baseHref": "/",
+            "outputHashing": "all",
             "styles": ["src/custom-theme.scss", "src/styles.less"]
           },
           "configurations": {
@@ -43,6 +46,7 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
+              "outputPath": "dist/eMedicHub-Web",
               "outputHashing": "all"
             },
             "development": {
