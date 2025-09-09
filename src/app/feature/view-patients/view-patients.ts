@@ -143,12 +143,12 @@ export class ViewPatients implements OnInit {
   }
 
   applyPatientFilters(result: any) {    
-    const hasEmpty = Object.values(result).some(value => value === '');
+    const allEmpty = Object.entries(result).every(([key, value]) => value === "");
     if (result.time) {
       result.time = this.getFilterDate(result.time);
     }
     this.loading = true;    
-    if(!hasEmpty) {
+    if(!allEmpty) {
       this.patientService.getPatientsByFilter(this.doctorId, result, this.pageSize, this.currentPage, this.searchText)
       .subscribe({
         next: (res: { success: boolean; data: Patient[]; totalPatients: number }) => {
