@@ -9,6 +9,8 @@ import { ViewOrder } from "./feature/view-order/view-order";
 import { OrderViewDetailsComponent } from "./feature/view-order/order-view-details/order-view-details";
 import { OrderDetailsGuard } from "./core/route-guards/order-details-guard";
 
+import { ViewPatients } from "./feature/view-patients/view-patients";
+
 export const routes: Routes = [
   {
     path: "",
@@ -28,8 +30,12 @@ export const routes: Routes = [
   },
   {
     path: "add-new-order",
-    component: AddNewOrder,
+    component: AddNewOrder
   },
+  {
+    path: "view-patients",
+    component: ViewPatients
+  },  
   {
     path: "patient-book-appoinment",
     component: PatientBookAppointmentComponent,

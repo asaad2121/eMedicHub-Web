@@ -25,4 +25,8 @@ export class DoctorDashboard {
   onViewOrders() {
     this.router.navigate([`/${this.user.type.toLowerCase()}/orders`]);
   }
+
+  viewPatient() {
+    this.router.navigate(["/view-patients"]);
+  }
 }

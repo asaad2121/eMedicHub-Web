@@ -1,0 +1,111 @@
+.page-wrapper {
+  display: flex;
+  justify-content: center;
+  padding: 2px;
+
+  .view-patients {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    width: 100%;
+    max-width: 1200px;
+
+    .table-wrapper {
+      overflow-x: auto;
+
+      table {
+        width: 100%;
+        border-spacing: 0;
+
+        th,
+        td {
+          padding: 0.15rem;
+          text-align: center;
+        }
+      }
+    }
+
+    .mat-mdc-table .mat-mdc-header-row {
+      background-color: #f0f0f0;
+      color: #000;
+      border-bottom: 2px solid #aaa;
+    }
+
+    .mat-mdc-table {
+      border: 3px solid #ccc;
+      border-collapse: collapse;
+    }
+
+    .mat-mdc-table .mat-mdc-row {
+      background-color: #ffffff;
+    }
+
+
+    .mat-mdc-table .mat-mdc-row:hover {
+      background-color: #e0e0e0;
+    }
+
+    .mat-row {
+      background-color: #ffffff;
+    }
+
+    .mat-row:hover {
+      background-color: #e0e0e0;
+    }
+
+    mat-paginator {
+      background-color: white;
+      margin: 10px;
+    }
+
+  }
+
+  .no-results {
+    text-align: center;
+    padding: 16px;
+    font-style: italic;
+    color: #c45b5b;
+  }
+
+  .spinner-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+  }
+
+  .patient-link {
+    color: #1976d2;
+    text-decoration: underline;
+    cursor: pointer;
+
+    &:hover {
+      color: #0d47a1;
+    }
+  }
+}
+
+.search-box .mat-mdc-form-field-outline-start,
+.search-box .mat-mdc-form-field-outline-end {
+  border-radius: 8px !important;
+}
+
+@media (max-width: 768px) {
+  .responsive-table {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+}
+
+::ng-deep .mat-mdc-raised-button .mat-icon {
+  color: white !important;
+}
+
+.filter-button.mdc-button.mat-mdc-raised-button {
+  background-color: #36495d !important;
+  color: white;
+  margin-bottom: 10px;
+  height: 50px;
+}
