@@ -5,7 +5,12 @@ import { EmhDashboardComponent } from "./shared/components/emh-dashboard-compone
 import { NewPatientEntryComponent } from "./feature/new-patient-entry-component/new-patient-entry-component";
 import { AddNewOrder } from "./feature/add-new-order/add-new-order";
 import { PatientBookAppointmentComponent } from "./feature/patient-book-appointment-component/patient-book-appointment-component";
+import { ViewOrder } from "./feature/view-order/view-order";
+import { OrderViewDetailsComponent } from "./feature/view-order/order-view-details/order-view-details";
+import { OrderDetailsGuard } from "./core/route-guards/order-details-guard";
+
 import { ViewPatients } from "./feature/view-patients/view-patients";
+
 export const routes: Routes = [
   {
     path: "",
@@ -34,5 +39,14 @@ export const routes: Routes = [
   {
     path: "patient-book-appoinment",
     component: PatientBookAppointmentComponent,
+  },
+  {
+    path: ":role/orders",
+    component: ViewOrder,
+  },
+  {
+    path: ":role/orders/details",
+    component: OrderViewDetailsComponent,
+    canActivate: [OrderDetailsGuard],
   },
 ];

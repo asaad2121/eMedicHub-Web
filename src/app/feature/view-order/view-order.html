@@ -1,0 +1,8 @@
+@if (!loading) {
+  <order-table-component
+    [user]="user"
+    [orders]="orders"
+  ></order-table-component>
+} @else {
+  <emh-loading-component></emh-loading-component>
+}

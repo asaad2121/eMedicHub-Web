@@ -17,9 +17,15 @@ export class DoctorDashboard {
   onAddNewPatient() {
     this.router.navigate(["/new-patient-entry"]);
   }
+
   onAddNewOrder() {
     this.router.navigate(["/add-new-order"]);
   }
+
+  onViewOrders() {
+    this.router.navigate([`/${this.user.type.toLowerCase()}/orders`]);
+  }
+
   viewPatient() {
     this.router.navigate(["/view-patients"]);
   }

@@ -4,10 +4,11 @@ import { UserStreamService } from "../../services/user-stream.service";
 import { User, UserResponseTypes, UserTypes } from "../../DTO/user";
 import { DoctorDashboard } from "../../../feature/doctor-dashboard/doctor-dashboard";
 import { PatientDashboard } from "../../../feature/patient-dashboard/patient-dashboard";
+import { PharmaDashboard } from "../../../feature/pharma-dashboard/pharma-dashboard";
 
 @Component({
   selector: "emh-dashboard-component",
-  imports: [DoctorDashboard, PatientDashboard],
+  imports: [DoctorDashboard, PatientDashboard, PharmaDashboard],
   templateUrl: "./emh-dashboard-component.html",
   styleUrl: "./emh-dashboard-component.less",
 })

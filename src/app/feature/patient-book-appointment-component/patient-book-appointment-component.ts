@@ -63,10 +63,21 @@ export class PatientBookAppointmentComponent implements OnInit {
   public async checkAvailability() {
     this.loading = true;
 
-    const availableSlots = await this.patientService.getDoctorAvailability(
-      this.selectedDoctor().id,
-      this.selectedDate(),
-    );
+    let availableSlots: string[] = [];
+
+    try {
+      availableSlots = await this.patientService.getDoctorAvailability(
+        this.selectedDoctor().id,
+        this.selectedDate(),
+      );
+      this.availableSlots.set(availableSlots);
+      this.showTimeSlots.set(true);
+    } catch (error) {
+      this.availableSlots.set([]);
+      this.snackbar.openSnackbarWithAction(
+        "Doctot not available on selected date.",
+      );
+    }
 
     this.availableSlots.set(availableSlots);
 

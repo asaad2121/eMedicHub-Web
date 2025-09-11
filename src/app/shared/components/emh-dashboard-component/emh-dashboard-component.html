@@ -4,3 +4,7 @@
 @if (user.type === UserResponseTypes.PATIENT) {
   <patient-dashboard [user]="user"></patient-dashboard>
 }
+@if (user.type === UserResponseTypes.PHARMACY) {
+  {{ user.type }}
+  <pharma-dashboard [user]="user"></pharma-dashboard>
+}
