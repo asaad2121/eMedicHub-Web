@@ -6,7 +6,6 @@ import { OrderService } from "../../shared/services/order.service";
 import { Order } from "../../shared/DTO/orders";
 import { EmhLoadingComponent } from "../../shared/components/emh-loading-component/emh-loading-component";
 import { OrderTableComponent } from "./order-table-component/order-table-component";
-import { Router, RouterOutlet } from "@angular/router";
 
 @Component({
   selector: "view-order",

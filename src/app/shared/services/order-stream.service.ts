@@ -8,16 +8,6 @@ import { OrderService } from "./order.service";
 export class OrderStreamService {
   constructor(private orderService: OrderService) {}
 
-  private ordersForDetails: WritableSignal<Order[]> = signal([]);
-
-  public setOrders(orders: Order[]): void {
-    this.ordersForDetails.set(orders);
-  }
-
-  public getOrders(): Order[] {
-    return this.ordersForDetails();
-  }
-
   public async updateOrderStatus(
     userId: string,
     orderIds: string[],

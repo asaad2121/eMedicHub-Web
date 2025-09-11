@@ -27,6 +27,8 @@ import { Subject } from "rxjs/internal/Subject";
 import { debounceTime } from "rxjs/internal/operators/debounceTime";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { OrderService } from "../../../shared/services/order.service";
+import { MatDialog } from "@angular/material/dialog";
+import { OrderDetailsDialog } from "../../../shared/components/dialog/order-details-dialog/order-details-dialog";
 
 @Component({
   selector: "order-table-component",
@@ -70,6 +72,7 @@ export class OrderTableComponent implements OnInit, OnChanges {
     private orderStreamService: OrderStreamService,
     private orderService: OrderService,
     private snackbarService: SnackbarService,
+    private dialog: MatDialog,
   ) {}
 
   ngOnInit(): void {
@@ -143,9 +146,10 @@ export class OrderTableComponent implements OnInit, OnChanges {
       (o) => o.appointment_id === order.appointment_id,
     );
 
-    this.orderStreamService.setOrders(ordersForAppointment);
-
-    this.router.navigate([`/${this.user.type}/orders/details`]);
+    this.dialog.open(OrderDetailsDialog, {
+      width: "800px",
+      data: ordersForAppointment,
+    });
   }
 
   public async updateStatus(order: GroupedOrder, status: OrderStatus) {

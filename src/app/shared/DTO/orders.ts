@@ -26,6 +26,7 @@ export type Order = {
   };
   time: string;
   med_id: string;
+  medicine_name: string;
   price: number;
 
   doctor_name: string;
