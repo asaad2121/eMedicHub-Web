@@ -2,27 +2,29 @@
   <mat-card-header>
     <mat-card-title class="card-title">Orders</mat-card-title>
   </mat-card-header>
-  @if (loading) {
-    <emh-loading-component></emh-loading-component>
-  } @else {
-    @if (user.type !== UserTypes.PATIENT) {
-      <div class="search-bar-container">
-        <mat-form-field class="search-bar" appearance="outline">
-          <input
-            matInput
-            [(ngModel)]="searchText"
-            (keydown.enter)="searchOrdersByPatient(searchText)"
-            placeholder="Search by patient name..."
-          />
-          <mat-icon matSuffix (click)="searchOrdersByPatient(searchText)"
-            >search</mat-icon
-          >
-        </mat-form-field>
-      </div>
-    }
 
-    <mat-card-content>
-      <div class="table-container">
+  @if (user.type !== UserTypes.PATIENT) {
+    <div class="search-bar-container">
+      <mat-form-field class="search-bar" appearance="outline">
+        <input
+          matInput
+          [(ngModel)]="searchText"
+          (keydown.enter)="searchOrdersByPatient(searchText)"
+          placeholder="Search by patient name..."
+          (ngModelChange)="onSearchChange($event)"
+        />
+        <mat-icon matSuffix (click)="searchOrdersByPatient(searchText)"
+          >search</mat-icon
+        >
+      </mat-form-field>
+    </div>
+  }
+
+  <mat-card-content>
+    <div class="table-container">
+      @if (loading) {
+        <emh-loading-component></emh-loading-component>
+      } @else {
         <table mat-table [dataSource]="groupedOrders" class="mat-elevation-z8">
           <ng-container matColumnDef="appointment_id">
             <th mat-header-cell *matHeaderCellDef>Appointment ID</th>
@@ -110,7 +112,15 @@
             <p>No orders found.</p>
           </div>
         }
-      </div>
-    </mat-card-content>
-  }
+      }
+    </div>
+    <mat-paginator
+      [length]="totalOrders"
+      [pageSize]="limit"
+      [pageSizeOptions]="[5, 10, 25, 100]"
+      [pageIndex]="currentPageNo - 1"
+      (page)="handlePageEvent($event)"
+    >
+    </mat-paginator>
+  </mat-card-content>
 </mat-card>

@@ -1,7 +1,8 @@
 @if (!loading) {
   <order-table-component
     [user]="user"
-    [orders]="orders"
+    [orders]="orders.data"
+    [totalOrders]="orders.totalOrders"
   ></order-table-component>
 } @else {
   <emh-loading-component></emh-loading-component>

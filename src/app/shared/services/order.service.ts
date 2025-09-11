@@ -18,10 +18,11 @@ export class OrderService {
     userType: string,
     userId: string,
     patientSearch: string = "",
-  ): Promise<Order[]> {
+    limit: number,
+    currentPageNo: number,
+  ): Promise<OrderResponse> {
     let params = new HttpParams();
     let idParam = "";
-
     switch (userType) {
       case UserResponseTypes.PATIENT:
         idParam = "patient_id";
@@ -36,15 +37,16 @@ export class OrderService {
         params = params.set("type", UserResponseTypes.PHARMACY);
         break;
     }
-
     params = params.set(idParam, userId);
     params = params.set("patientSearch", patientSearch);
+    params = params.set("limit", limit.toString());
+    params = params.set("currentPageNo", currentPageNo.toString());
 
     return await lastValueFrom(
       this.http.get<OrderResponse>(`${this.apiUrl}/orders/getOrders`, {
         params,
       }),
-    ).then((res) => res.data);
+    );
   }
 
   public async updateOrderStatus(

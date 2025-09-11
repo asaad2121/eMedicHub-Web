@@ -131,6 +131,7 @@ export class ViewPatients implements OnInit {
         },
       });
   }
+
   openFilter() {
     const dialogRef = this.dialog.open(PatientFilterDialog, {
       width: "400px",
@@ -258,6 +259,7 @@ export class ViewPatients implements OnInit {
         },
       );
   }
+
   openPatientDialog(patient: Patient) {
     const formattedData = Object.fromEntries(
       Object.entries(patient).map(([key, value]) => [

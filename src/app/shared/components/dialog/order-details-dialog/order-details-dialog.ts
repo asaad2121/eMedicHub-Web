@@ -28,6 +28,7 @@ import { Order } from "../../../DTO/orders";
 })
 export class OrderDetailsDialog {
   objectKeys = Object.keys;
+
   constructor(
     public dialogRef: MatDialogRef<OrderDetailsDialog>,
     @Inject(MAT_DIALOG_DATA) public data: Order[],
