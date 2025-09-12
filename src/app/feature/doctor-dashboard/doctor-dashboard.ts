@@ -10,16 +10,12 @@ import { Router } from "@angular/router";
   styleUrl: "./doctor-dashboard.less",
 })
 export class DoctorDashboard {
-  constructor(private router: Router) {}
+  constructor(private router: Router) { }
   @Input()
   user!: User;
 
   onAddNewPatient() {
     this.router.navigate(["/new-patient-entry"]);
-  }
-
-  onAddNewOrder() {
-    this.router.navigate(["/add-new-order"]);
   }
 
   onViewOrders() {
@@ -28,5 +24,8 @@ export class DoctorDashboard {
 
   viewPatient() {
     this.router.navigate(["/view-patients"]);
+  }
+  viewAppoinment() {
+    this.router.navigate(["/view-appointments"]);
   }
 }

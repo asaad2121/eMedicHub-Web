@@ -1,11 +1,16 @@
 <div class="add-new-medicine">
     <mat-card class="prescription-card">
         <h2>Prescription Management</h2>
+        <!-- Spinner -->
+        <div *ngIf="loading" class="spinner-container">
+            <mat-progress-spinner mode="indeterminate" diameter="50" color="primary">
+            </mat-progress-spinner>
+        </div>
         <!-- Medicines Table -->
-        <div class="section medicine-section">
+        <div class="section medicine-section" *ngIf="patientId">
             <div class="medicines-bar">
                 <h3>
-                    Medicines : <span style="font-weight: 300;">{{ selectedPatient.name }}</span>
+                    Medicines : <span style="font-weight: 300;">{{ patientName }}</span>
                 </h3>
             </div>
             <div class="medicines-header" *ngIf="medicines.length > 0">
@@ -18,11 +23,11 @@
             <div class="no-medicines" *ngIf="medicines.length === 0">
                 Please click on <strong>Add new medicine</strong> to continue...
             </div>
-            <div *ngFor="let med of medicines" class="medicine-row">
+            <div *ngFor="let med of medicines; let i = index " class="medicine-row">
                 <mat-form-field appearance="fill" class="med-name">
                     <input type="text" placeholder="Search medicine" matInput [matAutocomplete]="auto"
                         [(ngModel)]="med.medicineInput" (ngModelChange)="filterMedicines(med)"
-                        [disabled]="!selectedPatient" />
+                        [disabled]="!patientId" />
 
                     <small class="hint-text">Enter at least 4 letters to search</small>
                     <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onMedicineSelected($event, med)">
@@ -49,7 +54,7 @@
                     {{ ((med.selectedMedicine?.price ?? 0) * med.quantity) | currency:'USD' }}
                 </div>
                 <div class="delete">
-                    <button mat-icon-button color="warn" (click)="removeMedicine(med)">
+                    <button mat-icon-button color="warn" (click)="removeMedicine(med, i)">
                         <mat-icon>delete</mat-icon>
                     </button>
                 </div>
@@ -61,7 +66,7 @@
             </div>
             <div class="actions-row">
                 <button mat-button color="primary" class="add-button" (click)="addMedicine()"
-                    [disabled]="!canAddMoreMedicines() || !selectedPatient">
+                    [disabled]="!canAddMoreMedicines()">
                     <mat-icon>add</mat-icon> Add new medicine
                 </button>
                 <div class="total-price-box">

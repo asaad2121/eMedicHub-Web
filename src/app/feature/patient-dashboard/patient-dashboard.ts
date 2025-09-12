@@ -17,7 +17,9 @@ export class PatientDashboard {
   onBookAppoinment() {
     this.router.navigate(["/patient-book-appoinment"]);
   }
-
+  viewAppoinment() {
+    this.router.navigate(["/view-appointments"]);
+  }
   onViewOrders() {
     this.router.navigate([`/${this.user.type.toLowerCase()}/orders`]);
   }
