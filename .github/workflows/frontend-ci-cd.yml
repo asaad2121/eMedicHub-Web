@@ -1,10 +1,10 @@
-name: Frontend CI/CD (Angular → S3 + CloudFront)
+name: Frontend CI/CD (Angular → S3 + CloudFront + Security)
 
 on:
   pull_request:
-    branches: [ "main" ]         # CI on PRs (build + tests)
+    branches: [ "main" ]        # CI on PRs (build + tests + security checks)
   push:
-    branches: [ "main" ]         # Deploy on merges to main
+    branches: [ "main" ]        # Deploy on merges to main
   workflow_dispatch:
 
 concurrency:
@@ -12,9 +12,11 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  DIST_DIR: dist/eMedicHub-Web/browser  # <- build output folder
+  NODE_VERSION: '22'
+  DIST_DIR: dist/eMedicHub-Web/browser
 
 jobs:
+  # --- PR CI: build, audit, test, build artifact ---
   build-and-test:
     runs-on: ubuntu-latest
     steps:
@@ -23,11 +25,14 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: ${{ env.NODE_VERSION }}
           cache: npm
 
-      - name: Install dependencies
+      - name: Install deps (lockfile)
         run: npm ci
+
+      - name: Audit dependencies (fail on High/Critical)
+        run: npm audit --audit-level=high
 
       - name: Setup Chrome
         uses: browser-actions/setup-chrome@v1
@@ -49,12 +54,23 @@ jobs:
           name: dist
           path: ${{ env.DIST_DIR }}
 
+  # --- Secrets scan on every PR/push ---
+  gitleaks:
+    name: Secret scan (gitleaks)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - name: Scan for secrets
+        uses: gitleaks/gitleaks-action@v2
+        with:
+          args: detect --redact
+
+  # --- Deploy to S3 + CloudFront when main is updated ---
   deploy:
-    needs: build-and-test
+    needs: [build-and-test]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    env:
-      CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
     steps:
       - name: Download dist artifact
         uses: actions/download-artifact@v4
@@ -73,8 +89,30 @@ jobs:
         run: aws s3 sync "${{ env.DIST_DIR }}" "s3://${{ secrets.S3_BUCKET }}" --delete
 
       - name: Invalidate CloudFront cache
-        if: ${{ env.CLOUDFRONT_DISTRIBUTION_ID != '' }}
-        run: |
-          aws cloudfront create-invalidation \
-            --distribution-id "$CLOUDFRONT_DISTRIBUTION_ID" \
-            --paths "/*"
+        if: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID != '' }}
+        run: aws cloudfront create-invalidation \
+             --distribution-id "${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}" \
+             --paths "/*"
+
+  # --- OWASP ZAP baseline scan against our site after deploy ---
+  zap-scan:
+    needs: deploy
+    if: needs.deploy.result == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: ZAP Baseline Scan (non-blocking to start)
+        uses: zaproxy/action-baseline@v0.10.0
+        with:
+          target: ${{ secrets.ZAP_TARGET }}       # e.g. https://d166veb4hcm2wv.cloudfront.net
+          rules_file_name: .zap/rules.tsv         # (optional) suppressions file
+          cmd_options: -a                         # aggressive passive scan
+          fail_action: false                      # set true later to fail on alerts
+
+      - name: Upload ZAP report
+        uses: actions/upload-artifact@v4
+        with:
+          name: zap-report
+          path: |
+            **/*zap*.html
+            **/*report*.html
+            **/*.log
