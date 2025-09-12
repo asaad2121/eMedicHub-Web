@@ -3,10 +3,9 @@ import { UserStreamService } from "../../shared/services/user-stream.service";
 import { User, UserResponseTypes } from "../../shared/DTO/user";
 
 import { OrderService } from "../../shared/services/order.service";
-import { Order } from "../../shared/DTO/orders";
+import { Order, OrderResponse } from "../../shared/DTO/orders";
 import { EmhLoadingComponent } from "../../shared/components/emh-loading-component/emh-loading-component";
 import { OrderTableComponent } from "./order-table-component/order-table-component";
-import { Router, RouterOutlet } from "@angular/router";
 
 @Component({
   selector: "view-order",
@@ -16,7 +15,7 @@ import { Router, RouterOutlet } from "@angular/router";
 })
 export class ViewOrder implements OnInit {
   public user!: User;
-  public orders!: Order[];
+  public orders!: OrderResponse;
 
   public loading = true;
 
@@ -37,6 +36,9 @@ export class ViewOrder implements OnInit {
     this.orders = await this.orderService.getOrders(
       this.user.type,
       this.user.id,
+      "",
+      10,
+      1,
     );
 
     this.loading = false;

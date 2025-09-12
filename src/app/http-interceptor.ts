@@ -28,7 +28,7 @@ export class Http_Interceptor implements HttpInterceptor {
 
     return next.handle(request).pipe(
       catchError((error: HttpErrorResponse) => {
-        if (error.status === 401) {
+        if (error.status === 401 || error.status === 403) {
           const message = "Session expired. Redirecting to home page";
           console.error(message);
           this.snackbar.openSnackbarWithAction(message);
