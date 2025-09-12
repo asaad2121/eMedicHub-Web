@@ -98,6 +98,7 @@ export class AddNewOrder {
 
 
   ngOnInit(): void {
+    this.appointmentId = this.route.snapshot.paramMap.get('id') || '' ;    
     this.getUserDetails();
     this.getAppoinmentDetails();    
     this.medicines = [];    
@@ -109,8 +110,8 @@ export class AddNewOrder {
   }
 
   getAppoinmentDetails() {
-    this.loading =true;
-    this.appointmentId = this.route.snapshot.paramMap.get('id') || '' ;
+    this.loading =true;  
+    this.appointmentId = this.route.snapshot.paramMap.get('id') || '' ;  
     const data = this.appointmentService.getAppointmentDetails(this.type, this.appointmentId || '')
       .subscribe({
         next: (res: any) => { 
@@ -222,6 +223,7 @@ export class AddNewOrder {
 
   /** Submit */
   submit() {
+    this.appointmentId = this.route.snapshot.paramMap.get('id') || '' ;
     const { medicines } = this.generatePrescriptionOutput();
     const res = {
       appointment_id: this.appointmentId,
@@ -230,6 +232,7 @@ export class AddNewOrder {
       pharma_id: 'PHAR-001',
       medicines
     }
+    
     this.medicineService.addMedicine(res)
       .subscribe({
         next: (response: ApiResponse) => {
@@ -263,5 +266,3 @@ export class AddNewOrder {
   }
 
 }
-
-

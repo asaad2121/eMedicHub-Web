@@ -5,9 +5,12 @@ import { EmhDashboardComponent } from "./shared/components/emh-dashboard-compone
 import { NewPatientEntryComponent } from "./feature/new-patient-entry-component/new-patient-entry-component";
 import { AddNewOrder } from "./feature/add-new-order/add-new-order";
 import { PatientBookAppointmentComponent } from "./feature/patient-book-appointment-component/patient-book-appointment-component";
+import { ViewOrder } from "./feature/view-order/view-order";
+
 import { ViewPatients } from "./feature/view-patients/view-patients";
 import { ViewAppointments } from "./feature/view-appointments/view-appointments";
 import { ViewAppointmentDetails } from "./feature/view-appointment-details/view-appointment-details";
+
 export const routes: Routes = [
   {
     path: "",
@@ -31,8 +34,8 @@ export const routes: Routes = [
   },
   {
     path: "view-patients",
-    component: ViewPatients
-  },  
+    component: ViewPatients,
+  },
   {
     path: "patient-book-appoinment",
     component: PatientBookAppointmentComponent,
@@ -42,5 +45,9 @@ export const routes: Routes = [
     component: ViewAppointments
   },
   { path: 'appointment-details/:id', 
-    component: ViewAppointmentDetails }
+    component: ViewAppointmentDetails },
+  {
+    path: ":role/orders",
+    component: ViewOrder,
+  },
 ];

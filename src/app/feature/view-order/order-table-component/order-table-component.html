@@ -1,0 +1,126 @@
+<mat-card class="order-card">
+  <mat-card-header>
+    <mat-card-title class="card-title">Orders</mat-card-title>
+  </mat-card-header>
+
+  @if (user.type !== UserTypes.PATIENT) {
+    <div class="search-bar-container">
+      <mat-form-field class="search-bar" appearance="outline">
+        <input
+          matInput
+          [(ngModel)]="searchText"
+          (keydown.enter)="searchOrdersByPatient(searchText)"
+          placeholder="Search by patient name..."
+          (ngModelChange)="onSearchChange($event)"
+        />
+        <mat-icon matSuffix (click)="searchOrdersByPatient(searchText)"
+          >search</mat-icon
+        >
+      </mat-form-field>
+    </div>
+  }
+
+  <mat-card-content>
+    <div class="table-container">
+      @if (loading) {
+        <emh-loading-component></emh-loading-component>
+      } @else {
+        <table mat-table [dataSource]="groupedOrders" class="mat-elevation-z8">
+          <ng-container matColumnDef="appointment_id">
+            <th mat-header-cell *matHeaderCellDef>Appointment ID</th>
+            <td mat-cell *matCellDef="let order">{{ order.appointment_id }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="order_ids">
+            <th mat-header-cell *matHeaderCellDef>Order ID(s)</th>
+            <td
+              mat-cell
+              *matCellDef="let order"
+              class="truncate-text"
+              [matTooltip]="order.order_ids.join(', ')"
+            >
+              {{ order.order_ids.join(", ") }}
+            </td>
+          </ng-container>
+
+          <!-- Patient Column -->
+          <ng-container matColumnDef="patient_name">
+            <th mat-header-cell *matHeaderCellDef>Patient</th>
+            <td mat-cell *matCellDef="let order">{{ order.patient_name }}</td>
+          </ng-container>
+
+          <!-- Doctor Column -->
+          <ng-container matColumnDef="doctor_name">
+            <th mat-header-cell *matHeaderCellDef>Doctor</th>
+            <td mat-cell *matCellDef="let order">{{ order.doctor_name }}</td>
+          </ng-container>
+
+          <!-- Pharmacy Column -->
+          <ng-container matColumnDef="pharma_name">
+            <th mat-header-cell *matHeaderCellDef>Pharmacy</th>
+            <td mat-cell *matCellDef="let order">{{ order.pharma_name }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef>Status</th>
+            <td mat-cell *matCellDef="let order">{{ order.status }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="total_price">
+            <th mat-header-cell *matHeaderCellDef>Total Price</th>
+            <td mat-cell *matCellDef="let order">
+              {{ "$" + order.total_price.toFixed(2) }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>Actions</th>
+            <td mat-cell *matCellDef="let order">
+              <button mat-button color="primary" (click)="viewDetails(order)">
+                View Details
+              </button>
+              @if (user.type === UserTypes.PHARMACY) {
+                @if (order.status === OrderStatus.CREATED) {
+                  <button
+                    class="ready-button"
+                    mat-button
+                    color="accent"
+                    (click)="updateStatus(order, OrderStatus.READY)"
+                  >
+                    Mark ready
+                  </button>
+                }
+                @if (order.status === OrderStatus.READY) {
+                  <button
+                    class="collected-button"
+                    mat-button
+                    color="accent"
+                    (click)="updateStatus(order, OrderStatus.COLLECTED)"
+                  >
+                    Mark collected
+                  </button>
+                }
+              }
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+        @if (!groupedOrders.length) {
+          <div class="empty-data-banner">
+            <p>No orders found.</p>
+          </div>
+        }
+      }
+    </div>
+    <mat-paginator
+      [length]="totalOrders"
+      [pageSize]="limit"
+      [pageSizeOptions]="[5, 10, 25, 100]"
+      [pageIndex]="currentPageNo - 1"
+      (page)="handlePageEvent($event)"
+    >
+    </mat-paginator>
+  </mat-card-content>
+</mat-card>

@@ -39,7 +39,9 @@ const mockDoctors: Doctor[] = [
 const mockPatient: User = {
   id: "patient-123",
   firstName: "Jane",
+  first_name: "Jane",
   lastname: "Doe",
+  last_name: "Doe",
   email: "jane.doe@example.com",
   type: UserTypes.PATIENT,
 };

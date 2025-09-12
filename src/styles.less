@@ -30,6 +30,7 @@ body {
 body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
+  background-color: white;
 }
 
 // For Material UI Overrides
@@ -95,4 +96,21 @@ body {
   --mdc-outlined-button-outline-color-error: @global-warn-color;
   --mdc-outlined-button-label-text-color-error: @global-warn-color;
   --mdc-text-button-label-text-color-error: @global-warn-color;
+
+  .mdc-list-item--selected {
+    background-color: rgba(24, 24, 94, 0.742) !important;
+    .mdc-list-item__primary-text {
+      color: white !important;
+    }
+  }
+  .mat-mdc-option .mdc-list-item {
+    background-color: rgba(255, 255, 255, 0.936) !important;
+    &:hover {
+      background-color: rgba(21, 21, 62, 0.123);
+    }
+  }
+
+  mat-snack-bar-container.header-active {
+    margin-top: 11vh !important;
+  }
 }
