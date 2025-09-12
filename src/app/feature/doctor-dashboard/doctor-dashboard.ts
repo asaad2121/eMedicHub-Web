@@ -23,4 +23,7 @@ export class DoctorDashboard {
   viewPatient() {
     this.router.navigate(["/view-patients"]);
   }
+  viewAppoinment() {
+    this.router.navigate(["/view-appointments"]);
+  }
 }

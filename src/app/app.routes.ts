@@ -6,6 +6,8 @@ import { NewPatientEntryComponent } from "./feature/new-patient-entry-component/
 import { AddNewOrder } from "./feature/add-new-order/add-new-order";
 import { PatientBookAppointmentComponent } from "./feature/patient-book-appointment-component/patient-book-appointment-component";
 import { ViewPatients } from "./feature/view-patients/view-patients";
+import { ViewAppointments } from "./feature/view-appointments/view-appointments";
+import { ViewAppointmentDetails } from "./feature/view-appointment-details/view-appointment-details";
 export const routes: Routes = [
   {
     path: "",
@@ -24,7 +26,7 @@ export const routes: Routes = [
     component: NewPatientEntryComponent,
   },
   {
-    path: "add-new-order",
+    path: "add-new-order/:id",
     component: AddNewOrder
   },
   {
@@ -35,4 +37,10 @@ export const routes: Routes = [
     path: "patient-book-appoinment",
     component: PatientBookAppointmentComponent,
   },
+  {
+    path: "view-appointments",
+    component: ViewAppointments
+  },
+  { path: 'appointment-details/:id', 
+    component: ViewAppointmentDetails }
 ];

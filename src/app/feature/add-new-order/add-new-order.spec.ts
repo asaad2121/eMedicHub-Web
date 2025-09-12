@@ -7,6 +7,10 @@ import {
   MockUserStreamService,
 } from "../../core/mock-services";
 import { MedicineService } from "../../shared/services/medicine.service";
+import { RouterTestingModule } from "@angular/router/testing";
+import { provideLocationMocks } from "@angular/common/testing";
+import { provideRouter } from "@angular/router";
+import { provideHttpClient } from "@angular/common/http";
 
 describe("AddNewOrder", () => {
   let component: AddNewOrder;
@@ -14,8 +18,15 @@ describe("AddNewOrder", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AddNewOrder],
-      providers: [{ provide: MedicineService, useClass: MockMedicineService }],
+      imports: [AddNewOrder],     
+      
+      providers: [provideHttpClient(),
+        { provide: MedicineService, useClass: MockMedicineService },
+        provideRouter([        
+        { path: 'add-new-order/:id', component: AddNewOrder },        
+      ]),
+      provideLocationMocks()
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AddNewOrder);

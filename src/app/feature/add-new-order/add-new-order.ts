@@ -1,6 +1,5 @@
 import { CommonModule, NgFor, NgIf } from "@angular/common";
-import { HttpClient } from "@angular/common/http";
-import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
+import { Component} from "@angular/core";
 import { FormControl, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from "@angular/material/autocomplete";
 import { MatButtonModule } from "@angular/material/button";
@@ -17,6 +16,10 @@ import { MedicineService } from "../../shared/services/medicine.service";
 import { SnackbarService } from "../../shared/services/snackbar.service";
 import { ApiResponse } from "../../shared/DTO/common";
 import { SLOT_CONFIGS } from "../../shared/constants/time-slot";
+import { AppointmentService } from "../../shared/services/appointment.service";
+import { ActivatedRoute, Router } from "@angular/router";
+import { UserStreamService } from "../../shared/services/user-stream.service";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 
 @Component({
   selector: 'add-new-order',
@@ -33,6 +36,7 @@ import { SLOT_CONFIGS } from "../../shared/constants/time-slot";
     MatAutocompleteModule,
     MatIconModule,
     MatCardModule,
+    MatProgressSpinnerModule
   ],
   templateUrl: './add-new-order.html',
   styleUrl: './add-new-order.less'
@@ -41,8 +45,14 @@ export class AddNewOrder {
   searchControl = new FormControl();
   allMedicines: Medicine[] = [];
   private searchTerms = new Subject<{ term: string, med: PrescriptionMedicine }>();
-  selectedPatient = { id: 'PAT-001', name: 'Mary Francis' };
+  appointmentId: string = '';
+  patientName: string = '';
+  patientId: string = '';
+  doctorId: string = '';
+  type: string = '';
+  totalMedicines = 1;
   SLOT_OPTIONS: TimeSlot[] = SLOT_CONFIGS.map(c => ({ ...c, selected: false }));
+  loading =false;
   medicines: PrescriptionMedicine[] = [
     {
       selectedMedicine: null,
@@ -55,7 +65,14 @@ export class AddNewOrder {
   totalPrice = 0;
   searchMessage: string = '';
 
-  constructor(private medicineService: MedicineService, private snackbar: SnackbarService) {
+  constructor(
+    private appointmentService: AppointmentService,
+    private medicineService: MedicineService,
+    private snackbar: SnackbarService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private userStreamService: UserStreamService,
+    ) {
     this.searchTerms.pipe(
       debounceTime(500),
       distinctUntilChanged(),
@@ -71,22 +88,53 @@ export class AddNewOrder {
       )
     ).subscribe(({ results, med }) => {
       med.filteredOptions = results;
-      this.allMedicines = results; 
-      if(med.filteredOptions.length === 0 && med.medicineInput) {
-        this.searchMessage = "No results found";  
-      }       
+      this.allMedicines = results;
+      if (med.filteredOptions.length === 0 && med.medicineInput) {
+        this.searchMessage = "No results found";
+      }
     });
     this.addMedicine();
   }
 
 
   ngOnInit(): void {
-    this.medicines = [];
-    this.addMedicine(); 
+    this.getUserDetails();
+    this.getAppoinmentDetails();    
+    this.medicines = [];    
+  }
+
+  getUserDetails() {
+    const storedUser = this.userStreamService.getCurrentUserFromStorage() as any;    
+    this.type = storedUser?.type;
+  }
+
+  getAppoinmentDetails() {
+    this.loading =true;
+    this.appointmentId = this.route.snapshot.paramMap.get('id') || '' ;
+    const data = this.appointmentService.getAppointmentDetails(this.type, this.appointmentId || '')
+      .subscribe({
+        next: (res: any) => { 
+          this.loading = false;
+          if (res && res.data) {            
+            this.appointmentId = res.data.appointmentId;
+            this.patientId = res.data.patient.id;
+            this.patientName = res.data.patient.name;
+            this.doctorId = res.data.doctor.id;
+            this.addMedicine();
+            console.log(res.data);
+          }
+        },
+        error: (err) => {
+          this.loading = false;
+          this.router.navigate(['/view-appointments']);
+          console.error('Error fetching appointment details:', err);
+        }
+      });  
+
   }
 
   addMedicine() {
-    if (!this.selectedPatient) return;
+    if (!this.patientId) return;
     this.medicines.push({
       selectedMedicine: null,
       quantity: 1,
@@ -103,7 +151,7 @@ export class AddNewOrder {
     const value = med.medicineInput?.trim() || '';
     this.updateSearchMessage(med, value);
     if (value.length >= 4) {
-       console.log('value', value, this.allMedicines, med.selectedMedicine);
+      console.log('value', value, this.allMedicines, med.selectedMedicine);
       this.searchTerms.next({ term: value, med });
     } else {
       med.filteredOptions = [];
@@ -113,10 +161,10 @@ export class AddNewOrder {
     }
   }
 
-  updateSearchMessage(med: any, value?: string,): void {   
+  updateSearchMessage(med: any, value?: string,): void {
     if (value && value?.length < 4 && value.length !== 0) {
       this.searchMessage = "Enter at least 4 letters to search";
-    }    
+    }
     else {
       this.searchMessage = '';
     }
@@ -141,7 +189,9 @@ export class AddNewOrder {
     option.selected = !option.selected;
   }
 
-  removeMedicine(med: PrescriptionMedicine) {
+  removeMedicine(med: PrescriptionMedicine, index: number) {
+    this.totalMedicines = index;
+    console.log(this.totalMedicines);
     this.medicines = this.medicines.filter(m => m !== med);
     this.updateTotalPrice();
   }
@@ -174,9 +224,9 @@ export class AddNewOrder {
   submit() {
     const { medicines } = this.generatePrescriptionOutput();
     const res = {
-      appointment_id: 'APT-0001',
-      patient_id: 'PAT-0001',
-      doctor_id: 'DOC-005',
+      appointment_id: this.appointmentId,
+      patient_id: this.patientId,
+      doctor_id: this.doctorId,
       pharma_id: 'PHAR-001',
       medicines
     }
@@ -198,7 +248,7 @@ export class AddNewOrder {
 
   reset() {
     this.medicines = [];
-    this.addMedicine(); 
+    this.addMedicine();
   }
 
   /** Rules */
@@ -207,7 +257,7 @@ export class AddNewOrder {
   }
 
   canSubmit() {
-    return !!this.selectedPatient &&
+    return !!this.patientId &&
       this.medicines.length > 0 &&
       this.medicines.every(m => m.selectedMedicine && m.options.some(o => o.selected));
   }
