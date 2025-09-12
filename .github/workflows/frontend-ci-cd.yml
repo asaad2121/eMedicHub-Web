@@ -56,15 +56,20 @@ jobs:
 
   # --- Secrets scan on every PR/push ---
   gitleaks:
-    name: Secret scan (gitleaks)
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with: { fetch-depth: 0 }
-      - name: Scan for secrets
-        uses: gitleaks/gitleaks-action@v2
-        with:
-          args: detect --redact
+   name: Secret scan (gitleaks)
+   runs-on: ubuntu-latest
+   steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    - name: Scan for secrets
+      uses: gitleaks/gitleaks-action@v2
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        # Just enable detection; no 'args' anymore
+        config-path: ""   # optional, only if you have custom config
+
 
   # --- Deploy to S3 + CloudFront when main is updated ---
   deploy:
