@@ -43,7 +43,7 @@ export class EmhLoginComponent implements OnInit {
     private userStream: UserStreamService,
     private snackbar: SnackbarService,
     private userRoleService: UserRoleService,
-    private router: Router
+    private router: Router,
   ) {}
 
   ngOnInit(): void {
@@ -68,7 +68,7 @@ export class EmhLoginComponent implements OnInit {
         user = await this.userStream.loginUserAndGetMesage(
           this.userType,
           email,
-          password
+          password,
         );
         this.toastMessage = user.message;
 
@@ -76,6 +76,8 @@ export class EmhLoginComponent implements OnInit {
       } catch (error) {
         this.toastMessage = "Login failed. Invalid credentials.";
       }
+    } else {
+      this.toastMessage = "Please fill in all fields.";
     }
     this.snackbar.openSnackbarWithAction(this.toastMessage);
     this.loading = false;
