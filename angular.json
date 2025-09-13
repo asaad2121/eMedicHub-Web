@@ -20,7 +20,7 @@
             "polyfills": ["zone.js"],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "less",
-            "assets": ["src/assets"],
+            "assets": ["src/emh.ico", "src/assets"],
             "outputPath": "dist/eMedicHub-Web",
             "baseHref": "/",
             "outputHashing": "all",

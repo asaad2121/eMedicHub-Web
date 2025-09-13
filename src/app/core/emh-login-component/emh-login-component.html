@@ -17,9 +17,11 @@
         required
       />
       <mat-icon matSuffix>email</mat-icon>
-      @if(loginForm.get('email')?.hasError('email') &&
-      loginForm.get('email')?.touched){
-      <mat-error> Please enter a valid email address. </mat-error>
+      @if (
+        loginForm.get("email")?.hasError("email") &&
+        loginForm.get("email")?.touched
+      ) {
+        <mat-error> Please enter a valid email address. </mat-error>
       }
     </mat-form-field>
 
@@ -32,6 +34,7 @@
         matInput
         formControlName="password"
         [type]="hidePassword ? 'password' : 'text'"
+        (keydown)="$event.key === 'Enter' ? onLogin() : null"
         required
       />
       <button
@@ -44,9 +47,11 @@
           hidePassword ? "visibility_off" : "visibility"
         }}</mat-icon>
       </button>
-      @if(loginForm.get('password')?.hasError('required') &&
-      loginForm.get('password')?.touched){
-      <mat-error> Password is required. </mat-error>
+      @if (
+        loginForm.get("password")?.hasError("required") &&
+        loginForm.get("password")?.touched
+      ) {
+        <mat-error> Password is required. </mat-error>
       }
     </mat-form-field>
 
