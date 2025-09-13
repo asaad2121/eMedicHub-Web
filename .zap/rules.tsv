@@ -1,0 +1,3 @@
+# ruleId<TAB>action<TAB>reason
+# Example to ignore a noisy rule:
+# 10054	IGNORE	False positive in environment (Cookie Without Secure flag on non-auth cookie)
