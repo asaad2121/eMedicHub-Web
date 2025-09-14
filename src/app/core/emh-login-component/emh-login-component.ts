@@ -14,6 +14,8 @@ import { UserStreamService } from "../../shared/services/user-stream.service";
 import { SnackbarService } from "../../shared/services/snackbar.service";
 import { UserRoleService } from "../../shared/services/user-role.service";
 import { Router } from "@angular/router";
+import { MatCheckbox } from "@angular/material/checkbox";
+import { EmhLoadingComponent } from "../../shared/components/emh-loading-component/emh-loading-component";
 
 @Component({
   selector: "emh-login-component",
@@ -23,6 +25,8 @@ import { Router } from "@angular/router";
     ReactiveFormsModule,
     MatInputModule,
     MatIcon,
+    MatCheckbox,
+    EmhLoadingComponent,
   ],
   templateUrl: "./emh-login-component.html",
   styleUrl: "./emh-login-component.less",
@@ -33,7 +37,6 @@ export class EmhLoginComponent implements OnInit {
   public hidePassword = true;
   public toastMessage = "";
 
-  // TODO: Implement a spinner later, maybe.
   public loading = false;
 
   public userType: UserTypes = UserTypes.DOCTOR;
@@ -47,11 +50,14 @@ export class EmhLoginComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.userStream.clearUserData();
+
     const role = this.userRoleService.getRole();
     this.userType = role ?? UserTypes.DOCTOR;
     this.loginForm = this.fb.group({
       email: ["", [Validators.required, Validators.email]],
       password: ["", Validators.required],
+      rememberMe: [false],
     });
   }
 
@@ -60,15 +66,17 @@ export class EmhLoginComponent implements OnInit {
 
     const email = this.loginForm.get("email")?.value;
     const password = this.loginForm.get("password")?.value;
+    const rememberMe = this.loginForm.get("rememberMe")?.value;
 
     this.loading = true;
 
     if (this.loginForm.valid && email && password) {
       try {
-        user = await this.userStream.loginUserAndGetMesage(
+        user = await this.userStream.loginUserAndGetMessage(
           this.userType,
           email,
           password,
+          rememberMe,
         );
         this.toastMessage = user.message;
 

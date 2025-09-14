@@ -5,6 +5,7 @@ import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { catchError, lastValueFrom, map, of } from "rxjs";
 import { Patient } from "../DTO/patient";
 import { ApiResponse } from "../DTO/common";
+import { User, UserResponseTypes, UserTypes } from "../DTO/user";
 
 @Injectable({
   providedIn: "root",
@@ -13,6 +14,25 @@ export class UserService {
   private apiUrl = `${environment.apiUrl}`;
 
   constructor(private http: HttpClient) {}
+
+  public async getUserDetails(
+    id: string,
+    userType: UserResponseTypes,
+  ): Promise<any> {
+    const userTypePath =
+      userType === UserResponseTypes.DOCTOR
+        ? "doctors"
+        : userType === UserResponseTypes.PHARMACY
+          ? "pharma"
+          : "patients";
+    return await lastValueFrom(
+      this.http
+        .get<{
+          data: User;
+        }>(`${this.apiUrl}/${userTypePath}/getUserProfile/${id}`)
+        .pipe(map((res) => res.data)),
+    );
+  }
 
   public getAllDoctors(): Promise<Doctor[]> {
     return lastValueFrom(
@@ -29,9 +49,6 @@ export class UserService {
   }
 
   public async createPatient(patient: Patient): Promise<ApiResponse> {
-    // Remove this
-    patient.last_gp_visited = "haha_remove";
-
     return await lastValueFrom(
       this.http
         .post<ApiResponse>(`${this.apiUrl}/doctors/addNewPatient`, patient)

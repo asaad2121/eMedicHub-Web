@@ -7,6 +7,10 @@
   <p class="login-subtitle">Enter your credentials to login to your account</p>
 
   <form class="login-form" [formGroup]="loginForm" (ngSubmit)="onLogin()">
+    @if (loading) {
+      <emh-loading-component></emh-loading-component>
+    }
+
     <mat-form-field appearance="outline" class="full-width-input">
       <mat-label>Email</mat-label>
       <input
@@ -55,12 +59,17 @@
       }
     </mat-form-field>
 
-    <a href="#" class="forgot-password">Forgot Password?</a>
+    <div class="options-row">
+      <mat-checkbox class="remember-me-checkbox" formControlName="rememberMe"
+        >Remember me</mat-checkbox
+      >
+      <a href="#" class="forgot-password">Forgot Password?</a>
+    </div>
 
     <button
       mat-button
       color="primary"
-      [disabled]="loginForm.invalid"
+      [disabled]="loginForm.invalid || loading"
       class="sign-in-button"
     >
       Sign In

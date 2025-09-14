@@ -63,8 +63,14 @@ emh-welcome-card-component {
       border: none;
     }
 
+    .options-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+    }
+
     .forgot-password {
-      align-self: flex-end;
       color: #3498db;
       text-decoration: none;
       font-size: 0.9rem;
@@ -79,7 +85,7 @@ emh-welcome-card-component {
       height: 35px;
 
       font-size: 1.1rem;
-      margin-bottom: 1rem;
+      margin: 1rem 0;
       background-color: #151f42;
       color: white;
     }
@@ -99,6 +105,9 @@ emh-welcome-card-component {
         }
       }
     }
+  }
+  .mat-mdc-form-field-subscript-wrapper {
+    display: none !important;
   }
 }
 

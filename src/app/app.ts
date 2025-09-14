@@ -5,16 +5,20 @@ import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { filter } from "rxjs";
 import { UserStreamService } from "./shared/services/user-stream.service";
 import { User } from "./shared/DTO/user";
+import { EmhLoadingComponent } from "./shared/components/emh-loading-component/emh-loading-component";
 
 @Component({
   selector: "app-root",
-  imports: [RouterOutlet, MatSnackBarModule],
+  imports: [RouterOutlet, MatSnackBarModule, EmhLoadingComponent],
   templateUrl: "./app.html",
   styleUrl: "./app.less",
 })
 export class App {
   showHeader = true;
   fullName: string = "";
+  routerPath: string = "";
+
+  public loading = false;
 
   private user!: User;
 
@@ -24,17 +28,29 @@ export class App {
   ) {
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
-      .subscribe((event: any) => {
+      .subscribe(async (event: any) => {
         const url = event.urlAfterRedirects;
+        this.routerPath = url;
 
-        // Hide header only if URL ends with '/login' or is root '/'
         this.showHeader = !(url === "/" || url.endsWith("/login"));
+
+        if (this.user) {
+          if (url === "/" || url === "") {
+            this.loading = true;
+            try {
+              await this.userStreamService.getCurrentUserDetails(this.user);
+              this.goHome();
+            } finally {
+              this.loading = false;
+            }
+          }
+        }
       });
   }
 
   ngOnInit() {
     this.user = this.userStreamService.getCurrentUserFromStorage();
-    this.fullName = [this.user.first_name, this.user.last_name]
+    this.fullName = [this.user?.first_name, this.user?.last_name]
       .filter((name) => name)
       .join(" ");
   }
