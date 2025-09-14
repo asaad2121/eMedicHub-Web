@@ -49,7 +49,7 @@ export const routes: Routes = [
   {
     path: ":role/orders",
     component: ViewOrder,
-    canActivate: [loggedInUserGuard, userRoleGuard],
+    canActivate: [loggedInUserGuard],
   },
   { path: "error", component: EmhErrorPageComponent },
   { path: "**", redirectTo: "/error" },
