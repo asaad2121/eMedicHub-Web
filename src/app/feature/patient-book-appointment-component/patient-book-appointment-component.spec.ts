@@ -15,7 +15,7 @@ import { SnackbarService } from "../../shared/services/snackbar.service";
 import { Router } from "@angular/router";
 import { Doctor, VisitingHours } from "../../shared/DTO/doctor";
 import { BookingDetails } from "../../shared/DTO/patient";
-import { User, UserTypes } from "../../shared/DTO/user";
+import { User, UserResponseTypes, UserTypes } from "../../shared/DTO/user";
 
 // Mock data to be used in tests
 const mockDoctors: Doctor[] = [
@@ -43,7 +43,7 @@ const mockPatient: User = {
   lastname: "Doe",
   last_name: "Doe",
   email: "jane.doe@example.com",
-  type: UserTypes.PATIENT,
+  type: UserResponseTypes.PATIENT,
 };
 
 const mockAvailableSlots = ["9:00 AM", "9:30 AM", "10:00 AM"];

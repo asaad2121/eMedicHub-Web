@@ -22,5 +22,5 @@ export class User {
   first_name: string = "";
   last_name: string = "";
   email: string = "";
-  type: UserTypes | UserResponseTypes = UserTypes.PATIENT;
+  type: UserResponseTypes = UserResponseTypes.PATIENT;
 }

@@ -10,7 +10,11 @@
       </div>
     </div>
   }
-  <div [class.main-content]="showHeader">
-    <router-outlet />
-  </div>
+  @if (loading) {
+    <emh-loading-component></emh-loading-component>
+  } @else {
+    <div [class.main-content]="showHeader">
+      <router-outlet />
+    </div>
+  }
 </div>

@@ -30,7 +30,7 @@ export class MockUserService {
     return Promise.resolve({} as DoctorsDTO);
   };
 
-  createPatient = (patient: Patient): Promise<ApiResponse> => {
+  createPatient = (): Promise<ApiResponse> => {
     return Promise.resolve({} as ApiResponse);
   };
 }
@@ -55,6 +55,8 @@ export class MockUserStreamService {
   createNewPatient = (): Promise<ApiResponse> => {
     return Promise.resolve({} as ApiResponse);
   };
+
+  clearUserData = (): void => {};
 }
 
 export class MockMedicineService {
