@@ -1,0 +1,60 @@
+@background-color: #f7f9fc;
+@primary-text: #2c3e50;
+@secondary-text: #7f8c8d;
+@accent-color: #3498db;
+
+.error-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  text-align: center;
+  font-family: Arial, sans-serif;
+  background-color: @background-color;
+  padding: 20px;
+}
+
+.error-content {
+  max-width: 500px;
+  background-color: white;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.error-title {
+  font-size: 6rem;
+  font-weight: bold;
+  color: @primary-text;
+  margin: 0;
+  line-height: 1;
+}
+
+.error-subtitle {
+  font-size: 1.8rem;
+  font-weight: 500;
+  color: @primary-text;
+  margin: 10px 0 20px 0;
+}
+
+.error-message {
+  font-size: 1rem;
+  color: @secondary-text;
+  line-height: 1.5;
+  margin-bottom: 30px;
+}
+
+// Button styling
+.home-button {
+  display: inline-block;
+  background-color: @accent-color;
+  color: white;
+  padding: 12px 24px;
+  text-decoration: none;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: darken(@accent-color, 10%);
+  }
+}

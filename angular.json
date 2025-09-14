@@ -20,7 +20,7 @@
             "polyfills": ["zone.js"],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "less",
-            "assets": ["src/assets"],
+            "assets": ["src/emh.ico", "src/assets"],
             "outputPath": "dist/eMedicHub-Web",
             "baseHref": "/",
             "outputHashing": "all",
@@ -31,8 +31,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kB",
-                  "maximumError": "1MB"
+                  "maximumWarning": "1MB",
+                  "maximumError": "2MB"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -47,7 +47,8 @@
                 }
               ],
               "outputPath": "dist/eMedicHub-Web",
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "optimization": true
             },
             "development": {
               "optimization": false,

@@ -19,12 +19,18 @@ export class UserStreamService {
     private userService: UserService,
   ) {}
 
-  public async loginUserAndGetMesage(
+  public async loginUserAndGetMessage(
     userType: UserTypes,
     email: string,
     password: string,
+    rememberMe: boolean = false,
   ): Promise<UserLoginDTO> {
-    const user = await this.authentication.userLogin(userType, email, password);
+    const user = await this.authentication.userLogin(
+      userType,
+      email,
+      password,
+      rememberMe,
+    );
 
     this.currentUserSignal.set(user.data);
 
@@ -50,5 +56,16 @@ export class UserStreamService {
 
   public async createNewPatient(patient: Patient): Promise<ApiResponse> {
     return await this.userService.createPatient(patient);
+  }
+
+  public async getCurrentUserDetails(user: User): Promise<User> {
+    const userData = user || this.getCurrentUserFromStorage();
+
+    return await this.userService.getUserDetails(userData.id, userData.type);
+  }
+
+  public clearUserData() {
+    this.currentUserSignal.set({} as User);
+    localStorage.removeItem("currentUser");
   }
 }

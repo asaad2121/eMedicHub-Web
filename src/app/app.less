@@ -4,10 +4,10 @@
   justify-content: space-between;
   background-color: #151f42;
   border-bottom: 1px solid #ddd;
-  height: 70px;
-  position: fixed;
+  max-height: 10vh;
+  position: sticky;
   width: 100%;
-  z-index: 11;
+  z-index: 9999;
 }
 
 .img-class img {
@@ -34,5 +34,6 @@
 }
 
 .main-content {
-  padding-top: 70px;
+  max-height: 90vh;
+  overflow: auto;
 }

@@ -16,8 +16,9 @@ export class AuthenticationService {
     userType: UserTypes,
     email: string,
     password: string,
+    stayLoggedIn: boolean,
   ): Promise<UserLoginDTO> {
-    const loginPayload = { email, password };
+    const loginPayload = { email, password, stayLoggedIn };
 
     return lastValueFrom(
       this.http.post<UserLoginDTO>(

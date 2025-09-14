@@ -48,6 +48,7 @@ export class NewPatientEntryComponent implements OnInit {
   private patientId!: string;
   public bloodGroups!: string[];
   public patientIdTypes!: string[]; // Identity, not Id for DB.
+  public currentDate!: Date;
 
   public availableDoctors!: Doctor[];
 
@@ -62,12 +63,18 @@ export class NewPatientEntryComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     this.patientForm = new FormGroup({
       // Personal Details
-      first_name: new FormControl("", Validators.required),
-      last_name: new FormControl("", Validators.required),
+      first_name: new FormControl("", [
+        Validators.required,
+        Validators.pattern("^[a-zA-Z]*$"),
+      ]),
+      last_name: new FormControl("", [
+        Validators.required,
+        Validators.pattern("^[a-zA-Z]*$"),
+      ]),
       dob: new FormControl("", Validators.required),
       phone_no: new FormControl("", [
         Validators.required,
-        Validators.pattern("^[0-9]{9,}$"), // At least 9 digits
+        Validators.pattern("^[0-9]{9,}$"),
       ]),
       email: new FormControl("", [Validators.required, Validators.email]),
       password: new FormControl("", [
@@ -84,6 +91,7 @@ export class NewPatientEntryComponent implements OnInit {
       id_number: new FormControl("", Validators.required),
     });
 
+    this.currentDate = new Date();
     this.loading = true;
     this.userStreamService.getAvailableDoctors().then((dto) => {
       this.availableDoctors = dto.data.doctors;
