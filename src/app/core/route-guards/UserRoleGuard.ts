@@ -1,5 +1,6 @@
 import { inject } from "@angular/core";
 import { CanActivateFn, ActivatedRouteSnapshot, Router } from "@angular/router";
+import { mapUserResponseTypeToUserType } from "../../shared/utils";
 
 export const userRoleGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
   const router = inject(Router);
@@ -11,15 +12,17 @@ export const userRoleGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
     return false;
   }
 
-  const currentUser = JSON.parse(currentUserString);
+  const currentUserType = mapUserResponseTypeToUserType(
+    JSON.parse(currentUserString).type,
+  ).toLowerCase();
   const routeRole = route.params["role"];
 
-  if (currentUser.type === routeRole) {
+  if (currentUserType === routeRole) {
     // User's role matches the role in the URL, allow access.
     return true;
   } else {
-    // User's role does not match, redirect.
-    router.navigate(["/"]);
+    // User's role does not match, redirect to error page.
+    router.navigate(["/error"]);
     return false;
   }
 };
