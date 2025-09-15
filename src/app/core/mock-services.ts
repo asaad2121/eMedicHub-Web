@@ -38,7 +38,12 @@ export class MockUserService {
 export class MockUserStreamService {
   currentUser$: Signal<User> = signal({} as User);
 
-  loginUserAndGetMesage = (): Promise<UserLoginDTO> => {
+  loginUserAndGetMessage = (
+    userType: UserTypes,
+    email: string,
+    password: string,
+    rememberMe: boolean = false,
+  ): Promise<UserLoginDTO> => {
     return Promise.resolve({} as UserLoginDTO);
   };
 
@@ -52,7 +57,10 @@ export class MockUserStreamService {
     return Promise.resolve({} as DoctorsDTO);
   };
 
-  createNewPatient = (): Promise<ApiResponse> => {
+  createNewPatient = (
+    patient: Patient,
+    isSignUp: boolean = false,
+  ): Promise<ApiResponse> => {
     return Promise.resolve({} as ApiResponse);
   };
 
@@ -96,4 +104,12 @@ export class MockOrderService {
   updateOrderStatus = (): Promise<ApiResponse> => {
     return Promise.resolve({} as ApiResponse);
   };
+}
+
+export class MockSnackbarService {
+  openSnackbarWithAction = (message: string): void => {};
+}
+
+export class MockRouter {
+  navigate = (routes: string[]): void => {};
 }

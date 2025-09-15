@@ -32,7 +32,11 @@ export class Http_Interceptor implements HttpInterceptor {
     const apiUrl = `${environment.apiUrl}`;
     let userType: UserTypes;
 
-    if (!request.url.includes("/login") && !request.url.includes("/logout")) {
+    if (
+      !request.url.includes("/login") &&
+      !request.url.includes("/logout") &&
+      !request.url.includes("/signup")
+    ) {
       userType = mapUserResponseTypeToUserType(
         this.userService.getCurrentUserFromStorage()?.type as UserResponseTypes,
       );
@@ -67,7 +71,10 @@ export class Http_Interceptor implements HttpInterceptor {
                 return throwError(() => refreshError);
               }),
             );
-        } else if (error.status === 401 || !userType) {
+        } else if (
+          (error.status === 401 || !userType) &&
+          !request.url.includes("/signup")
+        ) {
           console.error("Unauthorized request. Redirecting to login.");
 
           this.snackbar.openSnackbarWithAction(

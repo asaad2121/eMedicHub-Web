@@ -81,13 +81,33 @@ emh-welcome-card-component {
     }
 
     .sign-in-button {
-      width: 80px;
-      height: 35px;
-
+      width: 100%;
+      height: 45px;
       font-size: 1.1rem;
+      border: 1px solid #151f42;
+      border-radius: 8px;
       margin: 1rem 0;
       background-color: #151f42;
       color: white;
+
+      &:hover {
+        background-color: #0d1226;
+        border-color: #0d1226;
+      }
+    }
+
+    .sign-up-button {
+      width: 100%;
+      height: 45px;
+      font-size: 1.1rem;
+      border: 1px solid #151f42;
+      background-color: transparent;
+      color: #151f42;
+      border-radius: 8px;
+
+      &:hover {
+        background-color: rgba(21, 31, 66, 0.1);
+      }
     }
 
     .signup-text {

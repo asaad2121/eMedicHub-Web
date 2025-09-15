@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { EmhWelcomeCardComponent } from "./emh-welcome-card-component/emh-welcome-card-component";
-import { CommonModule } from "@angular/common";
+import { CommonModule, TitleCasePipe } from "@angular/common";
 import {
   FormBuilder,
   FormGroup,
@@ -12,7 +12,6 @@ import { MatIcon } from "@angular/material/icon";
 import { UserLoginDTO, UserTypes } from "../../shared/DTO/user";
 import { UserStreamService } from "../../shared/services/user-stream.service";
 import { SnackbarService } from "../../shared/services/snackbar.service";
-import { UserRoleService } from "../../shared/services/user-role.service";
 import { Router } from "@angular/router";
 import { MatCheckbox } from "@angular/material/checkbox";
 import { EmhLoadingComponent } from "../../shared/components/emh-loading-component/emh-loading-component";
@@ -27,6 +26,7 @@ import { EmhLoadingComponent } from "../../shared/components/emh-loading-compone
     MatIcon,
     MatCheckbox,
     EmhLoadingComponent,
+    TitleCasePipe,
   ],
   templateUrl: "./emh-login-component.html",
   styleUrl: "./emh-login-component.less",
@@ -41,24 +41,27 @@ export class EmhLoginComponent implements OnInit {
 
   public userType: UserTypes = UserTypes.DOCTOR;
 
+  // Expose enum to template
+  UserTypes = UserTypes;
+
   constructor(
     private fb: FormBuilder,
     private userStream: UserStreamService,
     private snackbar: SnackbarService,
-    private userRoleService: UserRoleService,
     private router: Router,
   ) {}
 
   ngOnInit(): void {
-    this.userStream.clearUserData();
+    const role = this.getRoleFromUrl();
 
-    const role = this.userRoleService.getRole();
-    this.userType = role ?? UserTypes.DOCTOR;
+    this.userType = role || UserTypes.DOCTOR;
     this.loginForm = this.fb.group({
       email: ["", [Validators.required, Validators.email]],
       password: ["", Validators.required],
       rememberMe: [false],
     });
+
+    this.userStream.clearUserData();
   }
 
   public async onLogin() {
@@ -89,5 +92,31 @@ export class EmhLoginComponent implements OnInit {
     }
     this.snackbar.openSnackbarWithAction(this.toastMessage);
     this.loading = false;
+  }
+
+  private getRoleFromUrl(): UserTypes {
+    let role: string;
+
+    const state = this.router.getCurrentNavigation()?.extras.state;
+
+    if (state && state["role"]) {
+      role = state["role"];
+    } else {
+      role = this.router.url.split("/")[1];
+    }
+
+    if (
+      !Object.values(UserTypes)
+        .map((type) => type.toLowerCase())
+        .includes(role)
+    ) {
+      this.router.navigate(["/error"]);
+    }
+
+    return role as UserTypes;
+  }
+
+  public onSignUp() {
+    this.router.navigate(["/patients/sign-up"]);
   }
 }
