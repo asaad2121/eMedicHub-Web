@@ -14,8 +14,8 @@ import { Router, RouterModule } from '@angular/router';
 import { DoctorAppointment, PatientAppointment } from '../../shared/DTO/appointment';
 import { UserStreamService } from '../../shared/services/user-stream.service';
 import { AppointmentService } from '../../shared/services/appointment.service';
-import { UserRoleService } from '../../shared/services/user-role.service';
-import { UserResponseTypes } from '../../shared/DTO/user';
+import { UserResponseTypes, UserTypes } from '../../shared/DTO/user';
+import { EmhLoadingComponent } from '../../shared/components/emh-loading-component/emh-loading-component';
 
 type Appointment = PatientAppointment | DoctorAppointment;
 
@@ -34,7 +34,8 @@ type Appointment = PatientAppointment | DoctorAppointment;
     MatPaginatorModule,
     MatTableModule,
     MatProgressSpinnerModule,
-    RouterModule
+    RouterModule,
+    EmhLoadingComponent
   ],
   templateUrl: './view-appointments.html',
   styleUrls: ['./view-appointments.less'],
@@ -53,6 +54,7 @@ export class ViewAppointments implements OnInit {
   name = '';
   type = '';
   UserTypes = UserResponseTypes;
+  UserType = UserTypes;
     
   constructor(
     private appointmentService: AppointmentService,
@@ -72,7 +74,7 @@ export class ViewAppointments implements OnInit {
   }
 
   setColumns() {
-    if (this.type === 'patient') {
+    if (this.type === UserResponseTypes.PATIENT) {
       this.columns = [
         { key: 'date', label: 'Date' },
         { key: 'start_time', label: 'Time' },
@@ -80,7 +82,7 @@ export class ViewAppointments implements OnInit {
         { key: 'speciality', label: 'Speciality' }
       ];
       this.appointments = [] as PatientAppointment[];
-    } else if (this.type === 'doctor') {
+    } else if (this.type === UserResponseTypes.DOCTOR) {
       this.columns = [
         { key: 'date', label: 'Date' },
         { key: 'start_time', label: 'Time' },
@@ -92,8 +94,7 @@ export class ViewAppointments implements OnInit {
   }
 
   getAppointments() {
-    this.loading = true;
-
+    this.loading = true;    
     this.appointmentService.getAppointments(this.type, this.Id, this.currentPage, this.pageSize)
       .subscribe({
         next: (res) => {

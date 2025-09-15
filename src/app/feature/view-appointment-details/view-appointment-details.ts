@@ -40,10 +40,8 @@ export class ViewAppointmentDetails implements OnInit {
     this.appointmentService.getAppointmentDetails(this.userType, this.appointmentId || '')
       .subscribe({
         next: (res: any) => {
-          if (res) {
-            console.log(res.data)
-            this.appointment = res.data;
-            console.log(this.appointment);
+          if (res) {            
+            this.appointment = res.data;            
           }
         },
         error: (err) => {

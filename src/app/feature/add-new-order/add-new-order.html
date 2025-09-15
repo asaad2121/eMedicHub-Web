@@ -3,8 +3,7 @@
         <h2>Prescription Management</h2>
         <!-- Spinner -->
         <div *ngIf="loading" class="spinner-container">
-            <mat-progress-spinner mode="indeterminate" diameter="50" color="primary">
-            </mat-progress-spinner>
+            <emh-loading-component></emh-loading-component>            
         </div>
         <!-- Medicines Table -->
         <div class="section medicine-section" *ngIf="patientId">

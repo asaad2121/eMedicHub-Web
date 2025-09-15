@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
-import { Observable } from 'rxjs';
+import { catchError, map, Observable, throwError } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { DoctorAppointment, PatientAppointment } from '../DTO/appointment';
-import { UserResponseTypes } from '../DTO/user';
+import { UserResponseTypes, UserTypes } from '../DTO/user';
 type Appointment = PatientAppointment | DoctorAppointment;
 @Injectable({
   providedIn: 'root'
@@ -14,6 +14,7 @@ export class AppointmentService {
   }
   
   getAppointments(type: string, Id: string, page: number, limit: number): Observable<any> {
+    const userType = type == UserResponseTypes.DOCTOR ? UserTypes.DOCTOR.toLowerCase() :  UserTypes.PATIENT.toLowerCase();
     let params = new HttpParams().set('type', type);
 
     if (type === UserResponseTypes.PATIENT) {
@@ -28,8 +29,13 @@ export class AppointmentService {
         .set('currentPageNo', page.toString());
     }
 
-    const url = `${this.apiUrl}/patients/viewAppointments`;
-    return this.http.get<any>(url, { params });
+    const url = `${this.apiUrl}/${userType}/viewAppointments`;
+    return this.http.get<any>(url, { params }).pipe(
+      catchError((error: any) => {
+       const mappedError = error?.error?.message || "An unexpected error occurred";        
+        return throwError(() => new Error(mappedError));    
+      }
+    ));;
   }
 
   getAppointmentDetails(type: string, appointmentId: string): Observable<{ appointment: any }> {
@@ -38,6 +44,23 @@ export class AppointmentService {
       .set('type', type)
       .set('appointment_id', appointmentId);
 
-    return this.http.get<{ appointment: any }>(`${this.apiUrl}/${urlType}/viewAppointmentData`, { params });
+    return this.http.get<{ appointment: any }>(`${this.apiUrl}/${urlType}/viewAppointmentData`, { params }).pipe(
+      catchError((error: any) => {
+       const mappedError = error?.error?.message || "An unexpected error occurred";        
+        return throwError(() => new Error(mappedError));    
+      }
+    ));
   }
+  
+ getPharamDetails(): Observable<Pharma[]> {
+  return this.http.get<any>(`${this.apiUrl}/orders/getPharmacy`).pipe(
+    map((response: any) => {     
+      return response?.data ?? [];
+    }),
+    catchError((error: any) => {
+      const mappedError = error?.error?.message || error.message || 'An unexpected error occurred during search';      
+      return throwError(() => new Error(mappedError));
+    })
+  );
+}
 }

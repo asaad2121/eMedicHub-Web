@@ -20,6 +20,7 @@ import { AppointmentService } from "../../shared/services/appointment.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { UserStreamService } from "../../shared/services/user-stream.service";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import { EmhLoadingComponent } from "../../shared/components/emh-loading-component/emh-loading-component";
 
 @Component({
   selector: 'add-new-order',
@@ -36,7 +37,8 @@ import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
     MatAutocompleteModule,
     MatIconModule,
     MatCardModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    EmhLoadingComponent
   ],
   templateUrl: './add-new-order.html',
   styleUrl: './add-new-order.less'
@@ -64,7 +66,7 @@ export class AddNewOrder {
   ];
   totalPrice = 0;
   searchMessage: string = '';
-
+  pharma: Pharma = {id : '', name : ''};
   constructor(
     private appointmentService: AppointmentService,
     private medicineService: MedicineService,
@@ -72,6 +74,7 @@ export class AddNewOrder {
     private router: Router,
     private route: ActivatedRoute,
     private userStreamService: UserStreamService,
+
     ) {
     this.searchTerms.pipe(
       debounceTime(500),
@@ -100,13 +103,25 @@ export class AddNewOrder {
   ngOnInit(): void {
     this.appointmentId = this.route.snapshot.paramMap.get('id') || '' ;    
     this.getUserDetails();
-    this.getAppoinmentDetails();    
+     this.getPharmaDetails();
+    this.getAppoinmentDetails();   
     this.medicines = [];    
   }
 
   getUserDetails() {
-    const storedUser = this.userStreamService.getCurrentUserFromStorage() as any;    
+    const storedUser  = this.userStreamService.getCurrentUserFromStorage();    
     this.type = storedUser?.type;
+  }
+
+   getPharmaDetails() {
+    this.appointmentService.getPharamDetails().subscribe({
+      next: (item) => {
+        this.pharma = item[0] ?? {};
+      },
+      error: (err) => {
+        console.error("Error", err);
+      },  
+      });
   }
 
   getAppoinmentDetails() {
@@ -121,8 +136,7 @@ export class AddNewOrder {
             this.patientId = res.data.patient.id;
             this.patientName = res.data.patient.name;
             this.doctorId = res.data.doctor.id;
-            this.addMedicine();
-            console.log(res.data);
+            this.addMedicine();           
           }
         },
         error: (err) => {
@@ -151,8 +165,7 @@ export class AddNewOrder {
   filterMedicines(med: PrescriptionMedicine) {
     const value = med.medicineInput?.trim() || '';
     this.updateSearchMessage(med, value);
-    if (value.length >= 4) {
-      console.log('value', value, this.allMedicines, med.selectedMedicine);
+    if (value.length >= 4) {   
       this.searchTerms.next({ term: value, med });
     } else {
       med.filteredOptions = [];
@@ -191,8 +204,7 @@ export class AddNewOrder {
   }
 
   removeMedicine(med: PrescriptionMedicine, index: number) {
-    this.totalMedicines = index;
-    console.log(this.totalMedicines);
+    this.totalMedicines = index;    
     this.medicines = this.medicines.filter(m => m !== med);
     this.updateTotalPrice();
   }
@@ -229,20 +241,19 @@ export class AddNewOrder {
       appointment_id: this.appointmentId,
       patient_id: this.patientId,
       doctor_id: this.doctorId,
-      pharma_id: 'PHAR-001',
+      pharma_id: this.pharma.id,
       medicines
     }
     
     this.medicineService.addMedicine(res)
       .subscribe({
-        next: (response: ApiResponse) => {
-          console.log('Order created successfully:', response);
+        next: (response: ApiResponse) => {          
           if (response.success)
-            this.snackbar.openSnackbarWithAction(response.message);
+          this.snackbar.openSnackbarWithAction(response.message);
           this.reset();
         },
-        error: (err) => {
-          this.snackbar.openSnackbarWithAction(err.message);
+        error: (err) => { 
+          this.snackbar.openSnackbarWithAction(err);
           this.reset();
         }
       });

@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { Medicine, PatientMedicines } from '../DTO/medicine';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
-import { map } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { ApiResponse } from '../DTO/common';
 @Injectable({
   providedIn: 'root'
@@ -23,11 +23,21 @@ export class MedicineService {
         } else {
           return [];
         }
-      })
+      }),
+      catchError((error: any) => {
+      const mappedError = error?.error?.message || error.message || 'An unexpected error occurred during search';      
+      return throwError(() => new Error(mappedError));
+    })
     );
   }
 
   addMedicine(prescription : PatientMedicines): Observable<ApiResponse> {
-    return this.http.post<ApiResponse>(`${this.apiUrl}/orders/createNewOrder`, prescription);
+    return this.http.post<ApiResponse>(`${this.apiUrl}/orders/createNewOrder`, prescription).pipe(
+      catchError((error: any) => {
+       const mappedError = error?.error?.message || "An unexpected error occurred";        
+        return throwError(() => new Error(mappedError));    
+      }
+    ));
   }
 }
+
