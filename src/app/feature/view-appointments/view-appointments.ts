@@ -62,7 +62,7 @@ export class ViewAppointments implements OnInit {
     private datePipe: DatePipe,
     private router: Router,    
   ) {
-    const storedUser = this.userStreamService.getCurrentUserFromStorage() as any;
+    const storedUser = this.userStreamService.getCurrentUserFromStorage();
     this.Id = storedUser?.id;
     this.name = [storedUser?.first_name, storedUser?.last_name].filter(n => n).join(' ');
     this.type = storedUser?.type;  
