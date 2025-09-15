@@ -13,7 +13,7 @@
   @if (loading) {
     <emh-loading-component></emh-loading-component>
   } @else {
-    <div [class.main-content]="showHeader">
+    <div [class.main-content]="showHeader" class="router-outlet-container">
       <router-outlet />
     </div>
   }

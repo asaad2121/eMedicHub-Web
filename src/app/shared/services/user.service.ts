@@ -44,7 +44,7 @@ export class UserService {
 
   public async getAvailableDoctors(): Promise<DoctorsDTO> {
     return lastValueFrom(
-      this.http.get<DoctorsDTO>(`${this.apiUrl}/doctors/addNewPatient`),
+      this.http.get<DoctorsDTO>(`${this.apiUrl}/patients/signup`),
     );
   }
 
@@ -52,6 +52,25 @@ export class UserService {
     return await lastValueFrom(
       this.http
         .post<ApiResponse>(`${this.apiUrl}/doctors/addNewPatient`, patient)
+        .pipe(
+          catchError((error: HttpErrorResponse) => {
+            return of({
+              success: false,
+              message:
+                error.error?.error[0].msg ||
+                `An error occurred: ${error.statusText}`,
+              statusCode: error.status,
+              error: error.error || { message: error.message },
+            } as ApiResponse);
+          }),
+        ),
+    );
+  }
+
+  public async patientSignup(patient: Patient): Promise<ApiResponse> {
+    return await lastValueFrom(
+      this.http
+        .post<ApiResponse>(`${this.apiUrl}/patients/signup`, patient)
         .pipe(
           catchError((error: HttpErrorResponse) => {
             return of({

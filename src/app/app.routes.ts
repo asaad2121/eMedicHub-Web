@@ -13,6 +13,7 @@ import { loggedInUserGuard } from "./core/route-guards/LoggedInUserGuard";
 import { userRoleGuard } from "./core/route-guards/UserRoleGuard";
 import { ViewAppointments } from "./feature/view-appointments/view-appointments";
 import { ViewAppointmentDetails } from "./feature/view-appointment-details/view-appointment-details";
+import { PatientSignUpComponent } from "./core/emh-login-component/patient-sign-up-component/patient-sign-up-component";
 
 export const routes: Routes = [
   {
@@ -22,6 +23,10 @@ export const routes: Routes = [
   {
     path: ":role/login",
     component: EmhLoginComponent,
+  },
+  {
+    path: "patients/sign-up",
+    component: PatientSignUpComponent,
   },
   {
     path: ":role/dashboard",

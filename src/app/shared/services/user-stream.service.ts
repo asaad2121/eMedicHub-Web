@@ -54,8 +54,13 @@ export class UserStreamService {
     return await this.userService.getAvailableDoctors();
   }
 
-  public async createNewPatient(patient: Patient): Promise<ApiResponse> {
-    return await this.userService.createPatient(patient);
+  public async createNewPatient(
+    patient: Patient,
+    isSignUp: boolean = false,
+  ): Promise<ApiResponse> {
+    return isSignUp
+      ? await this.userService.patientSignup(patient)
+      : await this.userService.createPatient(patient);
   }
 
   public async getCurrentUserDetails(user: User): Promise<User> {
