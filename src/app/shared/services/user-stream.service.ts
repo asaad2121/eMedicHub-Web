@@ -32,11 +32,15 @@ export class UserStreamService {
       rememberMe,
     );
 
-    this.currentUserSignal.set(user.data);
+    this.setCurrentUser(user.data);
 
     localStorage.setItem("currentUser", JSON.stringify(user.data));
 
     return user;
+  }
+
+  public setCurrentUser(user: User) {
+    this.currentUserSignal.set(user);
   }
 
   public getCurrentUserFromStorage(): User {
@@ -64,9 +68,30 @@ export class UserStreamService {
   }
 
   public async getCurrentUserDetails(user: User): Promise<User> {
-    const userData = user || this.getCurrentUserFromStorage();
+    const userInStorage = this.getCurrentUserFromStorage();
+    const userData = user.id ? user : userInStorage;
 
-    return await this.userService.getUserDetails(userData.id, userData.type);
+    userData.type = userData.type || userInStorage.type;
+
+    if (
+      userData.type &&
+      (userData.first_name?.length || userData.name?.length)
+    ) {
+      this.setCurrentUser(userData);
+      return Promise.resolve(userData);
+    }
+
+    try {
+      this.userService
+        .getUserDetails(userData.id, userData.type)
+        .then((userRes) => {
+          userRes.type = user.type;
+          this.setCurrentUser(userRes);
+          return userRes;
+        });
+    } finally {
+      return userData;
+    }
   }
 
   public clearUserData() {

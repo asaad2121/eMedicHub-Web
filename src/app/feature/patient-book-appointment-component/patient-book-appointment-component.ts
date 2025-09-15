@@ -91,6 +91,8 @@ export class PatientBookAppointmentComponent implements OnInit {
   }
 
   public async bookAppointment() {
+    this.loading = true;
+
     const bookingDetails = {
       patient_id: this.userStreamService.getCurrentUserFromStorage().id,
       doctor_id: this.selectedDoctor().id,
@@ -162,6 +164,7 @@ export class PatientBookAppointmentComponent implements OnInit {
   }
 
   public back() {
+    this.loading = false;
     this.router.navigate(["patients/dashboard"]);
   }
 }

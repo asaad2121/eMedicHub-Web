@@ -9,7 +9,12 @@ import {
 } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
 import { MatCardModule } from "@angular/material/card";
-import { MatNativeDateModule } from "@angular/material/core";
+import {
+  DateAdapter,
+  MAT_DATE_FORMATS,
+  MAT_DATE_LOCALE,
+  MatNativeDateModule,
+} from "@angular/material/core";
 import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatIconModule } from "@angular/material/icon";
@@ -21,6 +26,19 @@ import { Patient } from "../../shared/DTO/patient";
 import { Router } from "@angular/router";
 import { EmhLoadingComponent } from "../../shared/components/emh-loading-component/emh-loading-component";
 import { SnackbarService } from "../../shared/services/snackbar.service";
+import { MomentDateAdapter } from "@angular/material-moment-adapter";
+
+const MY_DATE_FORMAT = {
+  parse: {
+    dateInput: "DD/MM/YYYY",
+  },
+  display: {
+    dateInput: "DD/MM/YYYY",
+    monthYearLabel: "MMMM YYYY",
+    dateA11yLabel: "LL",
+    monthYearA11yLabel: "MMMM YYYY",
+  },
+};
 
 @Component({
   selector: "new-patient-entry-component",
@@ -37,6 +55,14 @@ import { SnackbarService } from "../../shared/services/snackbar.service";
     MatSelectModule,
     MatIconModule,
     EmhLoadingComponent,
+  ],
+  providers: [
+    {
+      provide: DateAdapter,
+      useClass: MomentDateAdapter,
+      deps: [MAT_DATE_LOCALE],
+    },
+    { provide: MAT_DATE_FORMATS, useValue: MY_DATE_FORMAT },
   ],
   templateUrl: "./new-patient-entry-component.html",
   styleUrl: "./new-patient-entry-component.less",

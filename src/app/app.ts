@@ -1,4 +1,4 @@
-import { Component, signal } from "@angular/core";
+import { Component, effect, signal } from "@angular/core";
 import { NavigationEnd, Router, RouterOutlet } from "@angular/router";
 
 import { MatSnackBarModule } from "@angular/material/snack-bar";
@@ -27,6 +27,19 @@ export class App {
     private router: Router,
     private userStreamService: UserStreamService,
   ) {
+    effect(async () => {
+      this.user = this.userStreamService.currentUser$();
+
+      if (!this.user.id && this.routerPath !== "/") {
+        await this.userStreamService.getCurrentUserDetails({} as User);
+      }
+      this.fullName =
+        this.user.name ||
+        [this.user.first_name, this.user.last_name]
+          .filter((name) => name)
+          .join(" ");
+    });
+
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe(async (event: any) => {
@@ -39,7 +52,7 @@ export class App {
           url.endsWith("/sign-up")
         );
 
-        if (this.user) {
+        if (this.user.type) {
           if (url === "/" || url === "") {
             this.loading = true;
             try {
@@ -51,13 +64,6 @@ export class App {
           }
         }
       });
-  }
-
-  ngOnInit() {
-    this.user = this.userStreamService.getCurrentUserFromStorage();
-    this.fullName = [this.user?.first_name, this.user?.last_name]
-      .filter((name) => name)
-      .join(" ");
   }
 
   public goHome() {
