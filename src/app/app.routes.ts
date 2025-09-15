@@ -11,6 +11,7 @@ import { ViewPatients } from "./feature/view-patients/view-patients";
 import { EmhErrorPageComponent } from "./core/emh-error-page-component/emh-error-page-component";
 import { loggedInUserGuard } from "./core/route-guards/LoggedInUserGuard";
 import { userRoleGuard } from "./core/route-guards/UserRoleGuard";
+import { PatientSignUpComponent } from "./core/emh-login-component/patient-sign-up-component/patient-sign-up-component";
 
 export const routes: Routes = [
   {
@@ -20,6 +21,10 @@ export const routes: Routes = [
   {
     path: ":role/login",
     component: EmhLoginComponent,
+  },
+  {
+    path: "patients/sign-up",
+    component: PatientSignUpComponent,
   },
   {
     path: ":role/dashboard",

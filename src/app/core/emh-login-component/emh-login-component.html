@@ -3,7 +3,7 @@
 <div class="login-container">
   <div class="logo-section"></div>
 
-  <h1 class="login-title">{{ userType }} Login</h1>
+  <h1 class="login-title">{{ userType | titlecase }} Login</h1>
   <p class="login-subtitle">Enter your credentials to login to your account</p>
 
   <form class="login-form" [formGroup]="loginForm" (ngSubmit)="onLogin()">
@@ -43,6 +43,7 @@
       />
       <button
         class="toggle-password"
+        type="button"
         mat-icon-button
         matSuffix
         (click)="hidePassword = !hidePassword"
@@ -74,5 +75,15 @@
     >
       Sign In
     </button>
+    @if (userType === UserTypes.PATIENT.toLowerCase()) {
+      <button
+        mat-button
+        type="button"
+        class="sign-up-button"
+        (click)="onSignUp()"
+      >
+        Sign Up
+      </button>
+    }
   </form>
 </div>

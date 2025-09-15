@@ -6,6 +6,7 @@ import { filter } from "rxjs";
 import { UserStreamService } from "./shared/services/user-stream.service";
 import { User } from "./shared/DTO/user";
 import { EmhLoadingComponent } from "./shared/components/emh-loading-component/emh-loading-component";
+import { mapUserResponseTypeToUserType } from "./shared/utils";
 
 @Component({
   selector: "app-root",
@@ -32,7 +33,11 @@ export class App {
         const url = event.urlAfterRedirects;
         this.routerPath = url;
 
-        this.showHeader = !(url === "/" || url.endsWith("/login"));
+        this.showHeader = !(
+          url === "/" ||
+          url.endsWith("/login") ||
+          url.endsWith("/sign-up")
+        );
 
         if (this.user) {
           if (url === "/" || url === "") {
@@ -56,6 +61,10 @@ export class App {
   }
 
   public goHome() {
-    this.router.navigate([`${this.user.type}/dashboard`]);
+    const userType = mapUserResponseTypeToUserType(
+      this.user.type,
+    ).toLowerCase();
+
+    this.router.navigate([`${userType}/dashboard`]);
   }
 }

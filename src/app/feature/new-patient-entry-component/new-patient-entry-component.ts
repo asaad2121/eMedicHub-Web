@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, OnInit } from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import {
   FormControl,
   FormGroup,
@@ -42,6 +42,9 @@ import { SnackbarService } from "../../shared/services/snackbar.service";
   styleUrl: "./new-patient-entry-component.less",
 })
 export class NewPatientEntryComponent implements OnInit {
+  @Input()
+  isSignUp: boolean = false;
+
   public patientForm!: FormGroup;
 
   private patient!: Patient;
@@ -93,6 +96,7 @@ export class NewPatientEntryComponent implements OnInit {
 
     this.currentDate = new Date();
     this.loading = true;
+
     this.userStreamService.getAvailableDoctors().then((dto) => {
       this.availableDoctors = dto.data.doctors;
       this.bloodGroups = dto.data.bloodGroups;
@@ -108,16 +112,25 @@ export class NewPatientEntryComponent implements OnInit {
     this.patient.id = this.patientId;
 
     this.loading = true;
-    this.userStreamService.createNewPatient(this.patient).then((res) => {
-      if (res.success) {
-        this.back();
-        this.snackbar.openSnackbarWithAction(res.message);
-      } else {
-        this.snackbar.openSnackbarWithAction(res.message);
-      }
+    this.userStreamService
+      .createNewPatient(this.patient, this.isSignUp)
+      .then((res) => {
+        if (res.success) {
+          if (this.isSignUp) {
+            this.back();
+            this.snackbar.openSnackbarWithAction(
+              "Sign in successful. Please log in with your credentials.",
+            );
 
-      this.loading = false;
-    });
+            this.router.navigate(["patients/login"]);
+          } else {
+            this.back();
+            this.snackbar.openSnackbarWithAction(res.message);
+          }
+        }
+
+        this.loading = false;
+      });
   }
 
   public onCancel() {
