@@ -97,21 +97,13 @@ export class ViewAppointments implements OnInit {
     this.loading = true;    
     this.appointmentService.getAppointments(this.type, this.Id, this.currentPage, this.pageSize)
       .subscribe({
-        next: (res) => {
-          this.loading = false;
-
-          if (res.success && res.data?.length) {
-
-            res.data.forEach((p: any) => {
+        next: (data) => {
+          this.loading = false;         
+          if (data?.length > 0) {
+            data.forEach((p: any) => {
               if (p.date) p.date = this.formatDate(p.date);
             });
-            // Assign based on type
-            if (this.type === 'patient') {
-              this.appointments = res.data as PatientAppointment[];
-            } else {
-              this.appointments = res.data as DoctorAppointment[];
-
-            }
+            this.appointments = data;
             this.totalAppointments = this.totalAppointments || 0;
           } else {
             this.appointments = [];

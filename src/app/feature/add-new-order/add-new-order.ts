@@ -21,6 +21,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { UserStreamService } from "../../shared/services/user-stream.service";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { EmhLoadingComponent } from "../../shared/components/emh-loading-component/emh-loading-component";
+import { AppointmentDetails } from "../../shared/DTO/appointment";
 
 @Component({
   selector: 'add-new-order',
@@ -129,13 +130,13 @@ export class AddNewOrder {
     this.appointmentId = this.route.snapshot.paramMap.get('id') || '' ;  
     const data = this.appointmentService.getAppointmentDetails(this.type, this.appointmentId || '')
       .subscribe({
-        next: (res: any) => { 
+        next: (data: AppointmentDetails) => { 
           this.loading = false;
-          if (res && res.data) {            
-            this.appointmentId = res.data.appointmentId;
-            this.patientId = res.data.patient.id;
-            this.patientName = res.data.patient.name;
-            this.doctorId = res.data.doctor.id;
+          if (data) {            
+            this.appointmentId = data?.appointment_id;
+            this.patientId = data?.patient.id;
+            this.patientName = data?.patient?.name;
+            this.doctorId = data?.doctor?.id;
             this.addMedicine();           
           }
         },
@@ -235,7 +236,7 @@ export class AddNewOrder {
 
   /** Submit */
   submit() {
-    this.appointmentId = this.route.snapshot.paramMap.get('id') || '' ;
+    //this.appointmentId = this.route.snapshot.paramMap.get('id') || '' ;
     const { medicines } = this.generatePrescriptionOutput();
     const res = {
       appointment_id: this.appointmentId,

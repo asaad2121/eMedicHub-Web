@@ -82,7 +82,7 @@ export class ViewPatients implements OnInit {
     private datePipe: DatePipe,
   ) {
     const storedUser =
-      this.userStreamService.getCurrentUserFromStorage() as any;
+      this.userStreamService.getCurrentUserFromStorage();
     this.doctorId = storedUser?.id;
     this.doctorName = [storedUser?.first_name, storedUser?.last_name]
       .filter((n) => n)
@@ -236,7 +236,7 @@ export class ViewPatients implements OnInit {
         this.searchText,
       )
       .subscribe(
-        (res: { success: boolean; data: Patient[]; totalPatients: number }) => {
+        (res: { success: boolean; data: Patient[]; totalPatients: number }) => {          
           this.loading = false;
           if (res.success) {
             if (res.data?.length) {

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { catchError, map, Observable, throwError } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { DoctorAppointment, PatientAppointment } from '../DTO/appointment';
+import { AppointmentDetails, DoctorAppointment, PatientAppointment } from '../DTO/appointment';
 import { UserResponseTypes, UserTypes } from '../DTO/user';
 type Appointment = PatientAppointment | DoctorAppointment;
 @Injectable({
@@ -13,7 +13,7 @@ export class AppointmentService {
   constructor(private http: HttpClient) {
   }
   
-  getAppointments(type: string, Id: string, page: number, limit: number): Observable<any> {
+  getAppointments(type: string, Id: string, page: number, limit: number): Observable<Appointment[]> {
     const userType = type == UserResponseTypes.DOCTOR ? UserTypes.DOCTOR.toLowerCase() :  UserTypes.PATIENT.toLowerCase();
     let params = new HttpParams().set('type', type);
 
@@ -30,21 +30,27 @@ export class AppointmentService {
     }
 
     const url = `${this.apiUrl}/${userType}/viewAppointments`;
-    return this.http.get<any>(url, { params }).pipe(
-      catchError((error: any) => {
-       const mappedError = error?.error?.message || "An unexpected error occurred";        
-        return throwError(() => new Error(mappedError));    
-      }
-    ));;
+    return this.http.get<Appointment[]>(url, { params }).pipe(
+      map((response: any) => { 
+       return response?.data ?? [];
+    }),
+  catchError((error: any) => {
+    const mappedError = error?.error?.message || "An unexpected error occurred";
+      return throwError(() => new Error(mappedError));
+    })
+    );
   }
 
-  getAppointmentDetails(type: string, appointmentId: string): Observable<{ appointment: any }> {
-    const urlType = (type === UserResponseTypes.PATIENT) ? 'patients' : 'doctors';
+  getAppointmentDetails(type: string, appointmentId: string): Observable<AppointmentDetails> {
+    const urlType = (type === UserResponseTypes.PATIENT) ? UserTypes.PATIENT.toLowerCase() : UserTypes.DOCTOR.toLowerCase();
     const params = new HttpParams()
       .set('type', type)
       .set('appointment_id', appointmentId);
 
-    return this.http.get<{ appointment: any }>(`${this.apiUrl}/${urlType}/viewAppointmentData`, { params }).pipe(
+    return this.http.get<{data : AppointmentDetails}>(`${this.apiUrl}/${urlType}/viewAppointmentData`, { params }).pipe(
+      map((response) => {        
+        return response?.data ?? {};
+      }),
       catchError((error: any) => {
        const mappedError = error?.error?.message || "An unexpected error occurred";        
         return throwError(() => new Error(mappedError));    

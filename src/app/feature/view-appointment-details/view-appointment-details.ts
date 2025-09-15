@@ -7,6 +7,8 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { UserStreamService } from '../../shared/services/user-stream.service';
+import { AppointmentDetails } from '../../shared/DTO/appointment';
+import { EmhLoadingComponent } from '../../shared/components/emh-loading-component/emh-loading-component';
 
 @Component({
   selector: 'view-appointment-details',
@@ -14,17 +16,19 @@ import { UserStreamService } from '../../shared/services/user-stream.service';
     RouterModule,
     MatCardModule,
     MatButtonModule,
-    MatDividerModule
+    MatDividerModule,
+    EmhLoadingComponent
   ],
   templateUrl: './view-appointment-details.html',
   styleUrl: './view-appointment-details.less'
 })
 export class ViewAppointmentDetails implements OnInit {
-  appointment: any = null;
+  appointment!: AppointmentDetails;
   UserTypes = UserResponseTypes;
   userType : string = '';
   appointmentId: string | null = null;
-  
+  loading: boolean = false;
+
   constructor(private route: ActivatedRoute, 
     private router: Router, 
     private appointmentService: AppointmentService, 
@@ -36,15 +40,18 @@ export class ViewAppointmentDetails implements OnInit {
     this.userType = role ?? UserResponseTypes.DOCTOR;
     this.getDetails();
   }
-  getDetails() {    
+  getDetails() {   
+    this.loading = true; 
     this.appointmentService.getAppointmentDetails(this.userType, this.appointmentId || '')
       .subscribe({
-        next: (res: any) => {
-          if (res) {            
-            this.appointment = res.data;            
+        next: (data: AppointmentDetails) => {
+          this.loading = false;
+          if (data) {                           
+            this.appointment = data;            
           }
         },
         error: (err) => {
+          this.loading = false;
           this.router.navigate(['/view-appointments']);
           console.error('Error fetching appointment details:', err);
         }
@@ -54,8 +61,7 @@ export class ViewAppointmentDetails implements OnInit {
   onBack() {
     this.router.navigate(['/view-appointments']);
   }
-  onCreateOrder() {
-    
+  onCreateOrder() {    
     const id = this.appointment.appointment_id; 
     if(this.userType === UserResponseTypes.DOCTOR) {  
     this.router.navigate(['/add-new-order', id]);
