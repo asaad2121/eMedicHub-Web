@@ -18,7 +18,7 @@ export class UserService {
   public async getUserDetails(
     id: string,
     userType: UserResponseTypes,
-  ): Promise<any> {
+  ): Promise<User> {
     const userTypePath =
       userType === UserResponseTypes.DOCTOR
         ? "doctors"
@@ -28,9 +28,9 @@ export class UserService {
     return await lastValueFrom(
       this.http
         .get<{
-          data: User;
+          data: ApiResponse;
         }>(`${this.apiUrl}/${userTypePath}/getUserProfile/${id}`)
-        .pipe(map((res) => res.data)),
+        .pipe(map((res) => res.data.data as User)),
     );
   }
 

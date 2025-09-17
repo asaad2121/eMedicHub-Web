@@ -73,7 +73,9 @@ export class Http_Interceptor implements HttpInterceptor {
             );
         } else if (
           (error.status === 401 || !userType) &&
-          !request.url.includes("/signup")
+          !request.url.includes("/signup") &&
+          !request.url.includes("/login") &&
+          request.url !== "/"
         ) {
           console.error("Unauthorized request. Redirecting to login.");
 

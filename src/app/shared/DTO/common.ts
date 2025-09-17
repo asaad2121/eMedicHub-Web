@@ -8,4 +8,5 @@ export type ApiResponse = {
     path: string;
     location: string;
   }[];
+  data?: any;
 };

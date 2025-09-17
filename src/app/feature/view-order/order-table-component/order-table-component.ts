@@ -12,7 +12,6 @@ import { MatCardModule } from "@angular/material/card";
 import { MatIconModule } from "@angular/material/icon";
 import { MatTableModule } from "@angular/material/table";
 import { MatTooltip } from "@angular/material/tooltip";
-import { Router } from "@angular/router";
 import { OrderStreamService } from "../../../shared/services/order-stream.service";
 import { EmhLoadingComponent } from "../../../shared/components/emh-loading-component/emh-loading-component";
 import { SnackbarService } from "../../../shared/services/snackbar.service";
@@ -29,6 +28,7 @@ import {
   MatPaginatorIntl,
   PageEvent,
 } from "@angular/material/paginator";
+import { MatOption, MatSelect } from "@angular/material/select";
 
 export class CustomPaginatorIntl extends MatPaginatorIntl {
   override itemsPerPageLabel = "Max. orders per page:";
@@ -49,6 +49,8 @@ export class CustomPaginatorIntl extends MatPaginatorIntl {
     MatInputModule,
     FormsModule,
     MatPaginator,
+    MatSelect,
+    MatOption,
   ],
   templateUrl: "./order-table-component.html",
   styleUrl: "./order-table-component.less",

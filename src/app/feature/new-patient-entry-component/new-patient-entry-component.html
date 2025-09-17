@@ -3,14 +3,26 @@
 } @else {
   <div class="new-patient-entry-container">
     <mat-card class="new-patient-card">
-      <mat-card-header class="new-patient-card-header">
-        <mat-card-title class="new-patient-card-title"
-          >Add New Patient</mat-card-title
-        >
-        <mat-card-subtitle class="new-patient-card-subtitle"
-          >Register a New Patient in the system</mat-card-subtitle
-        >
-      </mat-card-header>
+      @if (isSignUp) {
+        <mat-card-header class="new-patient-card-header">
+          <mat-card-title class="new-patient-card-title"
+            >Patient sign up</mat-card-title
+          >
+          <mat-card-subtitle class="new-patient-card-subtitle"
+            >Register as a new patient</mat-card-subtitle
+          >
+        </mat-card-header>
+      } @else {
+        <mat-card-header class="new-patient-card-header">
+          <mat-card-title class="new-patient-card-title"
+            >Add New Patient</mat-card-title
+          >
+          <mat-card-subtitle class="new-patient-card-subtitle"
+            >Register a New Patient in the system</mat-card-subtitle
+          >
+        </mat-card-header>
+      }
+
       <mat-card-content>
         <form
           class="new-patient-form"
