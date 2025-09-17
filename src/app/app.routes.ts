@@ -11,6 +11,8 @@ import { ViewPatients } from "./feature/view-patients/view-patients";
 import { EmhErrorPageComponent } from "./core/emh-error-page-component/emh-error-page-component";
 import { loggedInUserGuard } from "./core/route-guards/LoggedInUserGuard";
 import { userRoleGuard } from "./core/route-guards/UserRoleGuard";
+import { ViewAppointments } from "./feature/view-appointments/view-appointments";
+import { ViewAppointmentDetails } from "./feature/view-appointment-details/view-appointment-details";
 import { PatientSignUpComponent } from "./core/emh-login-component/patient-sign-up-component/patient-sign-up-component";
 
 export const routes: Routes = [
@@ -37,7 +39,7 @@ export const routes: Routes = [
     canActivate: [loggedInUserGuard],
   },
   {
-    path: "add-new-order",
+    path: "add-new-order/:id",
     component: AddNewOrder,
     canActivate: [loggedInUserGuard],
   },
@@ -55,6 +57,15 @@ export const routes: Routes = [
     path: ":role/orders",
     component: ViewOrder,
     canActivate: [loggedInUserGuard],
+  },
+  {
+    path: "view-appointments",
+    component: ViewAppointments,
+	canActivate: [loggedInUserGuard],
+  },
+  { path: 'appointment-details/:id', 
+    component: ViewAppointmentDetails,
+	canActivate: [loggedInUserGuard],
   },
   { path: "error", component: EmhErrorPageComponent },
   { path: "**", redirectTo: "/error" },
