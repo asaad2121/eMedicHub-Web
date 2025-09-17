@@ -42,11 +42,11 @@ jobs:
           aws-region:            ${{ env.AWS_REGION }}
 
       - name: Sync build to S3
-        run: aws s3 sync "${{ env.DIST_DIR }}" "s3://${S3_BUCKET}" --delete
+        run: aws s3 sync "$DIST_DIR" "s3://${{ secrets.S3_BUCKET }}" --delete
 
       - name: Verify CloudFront distribution
         run: |
-          DIST_ID=$(echo "${CLOUDFRONT_DISTRIBUTION_ID}" | tr -d '[:space:]')
+          DIST_ID=$(echo "$CLOUDFRONT_DISTRIBUTION_ID" | tr -d '[:space:]')
           aws cloudfront get-distribution --id "$DIST_ID"
 
       - name: Invalidate CloudFront cache
