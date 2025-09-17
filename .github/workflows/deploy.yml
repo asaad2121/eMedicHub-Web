@@ -1,4 +1,4 @@
-name: Deploy Angular to S3 + CloudFront (+ ZAP)
+name: Deploy Angular to S3 + CloudFront
 
 on:
   push:
@@ -12,14 +12,13 @@ concurrency:
 env:
   NODE_VERSION: '22'
   DIST_DIR: dist/eMedicHub-Web/browser
+  AWS_REGION: ${{ secrets.AWS_REGION }}
+  S3_BUCKET:  ${{ secrets.S3_BUCKET }}
+  CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    env:
-      AWS_REGION: ${{ secrets.AWS_REGION }}
-      S3_BUCKET: ${{ secrets.S3_BUCKET }}
-      CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
     steps:
       - uses: actions/checkout@v4
 
@@ -29,7 +28,7 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
 
-      - name: Install deps (lockfile)
+      - name: Install dependencies
         run: npm ci
 
       - name: Build (production)
@@ -43,31 +42,33 @@ jobs:
           aws-region:            ${{ env.AWS_REGION }}
 
       - name: Sync build to S3
-        run: aws s3 sync "${{ env.DIST_DIR }}" "s3://$S3_BUCKET" --delete
+        run: aws s3 sync "${{ env.DIST_DIR }}" "s3://${S3_BUCKET}" --delete
+
+      - name: Verify CloudFront distribution
+        run: |
+          DIST_ID=$(echo "${CLOUDFRONT_DISTRIBUTION_ID}" | tr -d '[:space:]')
+          aws cloudfront get-distribution --id "$DIST_ID"
 
       - name: Invalidate CloudFront cache
         if: ${{ env.CLOUDFRONT_DISTRIBUTION_ID != '' }}
         run: |
-          aws cloudfront create-invalidation \
-            --distribution-id "$CLOUDFRONT_DISTRIBUTION_ID" \
-            --paths "/*"
-
+          DIST_ID=$(echo "${CLOUDFRONT_DISTRIBUTION_ID}" | tr -d '[:space:]')
+          echo "Using CloudFront distribution ID: $DIST_ID"
+          aws cloudfront create-invalidation --distribution-id "$DIST_ID" --paths "/*"
+     
   zap-scan:
     needs: deploy
     if: ${{ needs.deploy.result == 'success' }}
     runs-on: ubuntu-latest
-    env:
-      ZAP_TARGET: ${{ secrets.ZAP_TARGET }}   # e.g. https://<your-cloudfront-domain>
     steps:
-      - uses: actions/checkout@v4            # to access .zap/rules.tsv if you add one
+      - uses: actions/checkout@v4   
 
-      - name: ZAP Baseline Scan (non-blocking)
+      - name: OWASP ZAP Baseline Scan (non-blocking)
         uses: zaproxy/action-baseline@v0.10.0
         with:
-          target: ${{ env.ZAP_TARGET }}
-          rules_file_name: .zap/rules.tsv     # optional, if you commit a suppressions file
-          cmd_options: -a                     # aggressive passive scan
-          fail_action: false                  # keep non-blocking for now
+          target: ${{ secrets.ZAP_TARGET }}        
+          cmd_options: -a                          
+          fail_action: false
 
       - name: Upload ZAP report
         uses: actions/upload-artifact@v4
