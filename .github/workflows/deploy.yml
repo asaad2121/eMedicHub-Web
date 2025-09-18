@@ -69,7 +69,6 @@ jobs:
           target: ${{ secrets.ZAP_TARGET }}        
           cmd_options: -a                          
           fail_action: false
-          issue_title: ''
 
       - name: Upload ZAP report
         uses: actions/upload-artifact@v4
