@@ -72,4 +72,4 @@ jobs:
         cmd_options: -a
         fail_action: false
         allow_issue_writing: false
-        artifact_name: zap-scan-report
+        artifact_name: zap_scan_report
