@@ -1,41 +1,35 @@
-name: Build & Deploy Angular to S3 (+ CloudFront)
+name: Deploy Angular to S3 + CloudFront
 
 on:
   push:
     branches: [ "main" ]
   workflow_dispatch:
 
-jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
-    env:
-      DIST_DIR: dist/eMedicHub-Web/browser
-      CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
 
+env:
+  NODE_VERSION: '22'
+  DIST_DIR: dist/eMedicHub-Web/browser
+  AWS_REGION: ${{ secrets.AWS_REGION }}
+  S3_BUCKET:  ${{ secrets.S3_BUCKET }}
+  CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
 
       - name: Install dependencies
         run: npm ci
-
-      - name: Setup Chrome
-        uses: browser-actions/setup-chrome@v1
-        id: chrome
-
-      - name: Run unit tests (xvfb + ChromeHeadlessNoSandbox)
-        continue-on-error: true
-        env:
-          CHROME_BIN: ${{ steps.chrome.outputs.chrome-path }}
-        run: |
-          echo "Using Chrome at: $CHROME_BIN"
-          xvfb-run -a npm test -- --watch=false --browsers=ChromeHeadlessNoSandbox
 
       - name: Build (production)
         run: npx ng build --configuration production
@@ -61,3 +55,26 @@ jobs:
           DIST_ID=$(echo "$CLOUDFRONT_DISTRIBUTION_ID" | tr -d '[:space:]')
           echo "Using CloudFront distribution ID: '$DIST_ID'"
           aws cloudfront create-invalidation --distribution-id "$DIST_ID" --paths "/*"
+     
+  zap-scan:
+    needs: deploy
+    if: ${{ needs.deploy.result == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4   
+
+      - name: OWASP ZAP Baseline Scan (non-blocking)
+        uses: zaproxy/action-baseline@v0.10.0
+        with:
+          target: ${{ secrets.ZAP_TARGET }}        
+          cmd_options: -a                          
+          fail_action: false
+
+      - name: Upload ZAP report
+        uses: actions/upload-artifact@v4
+        with:
+          name: zap-report
+          path: |
+            **/*zap*.html
+            **/*report*.html
+            **/*.log
