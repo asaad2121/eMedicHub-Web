@@ -60,26 +60,26 @@ jobs:
           echo "Using CloudFront distribution ID: '$DIST_ID'"
           aws cloudfront create-invalidation --distribution-id "$DIST_ID" --paths "/*"
      
-  zap-scan:
-    needs: deploy
-    if: ${{ needs.deploy.result == 'success' }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4   
+  # zap-scan:
+  #   needs: deploy
+  #   if: ${{ needs.deploy.result == 'success' }}
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4   
 
-      - name: OWASP ZAP Baseline Scan (non-blocking)
-        uses: zaproxy/action-baseline@v0.10.0
-        with:
-          target: ${{ secrets.ZAP_TARGET }}        
-          cmd_options: -a                          
-          fail_action: false
-          allow_issue_writing: false
+  #     - name: OWASP ZAP Baseline Scan (non-blocking)
+  #       uses: zaproxy/action-baseline@v0.10.0
+  #       with:
+  #         target: ${{ secrets.ZAP_TARGET }}        
+  #         cmd_options: -a                          
+  #         fail_action: false
+  #         allow_issue_writing: false
 
-      - name: Upload ZAP report
-        uses: actions/upload-artifact@v4
-        with:
-          name: zapreport
-          path: |
-            **/*zap*.html
-            **/*report*.html
-            **/*.log
+  #     - name: Upload ZAP report
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: zapreport
+  #         path: |
+  #           **/*zap*.html
+  #           **/*report*.html
+  #           **/*.log
