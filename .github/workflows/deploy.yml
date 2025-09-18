@@ -65,17 +65,18 @@ jobs:
    if: ${{ needs.deploy.result == 'success' }}
    runs-on: ubuntu-latest
    steps:
-    - name: OWASP ZAP Baseline Scan
-      uses: zaproxy/action-baseline@v0.13.0
-      with:
-        target: ${{ secrets.ZAP_TARGET }}
-        cmd_options: -a
-        fail_action: false
-        allow_issue_writing: false
-        artifact_name: zap-scan-report
-        
+    - uses: actions/checkout@v4
+
+    - name: Run ZAP Baseline Scan
+      run: |
+        docker run --rm \
+          -v $(pwd):/zap/wrk/:rw \
+          owasp/zap2docker-weekly zap-baseline.py \
+          -t ${{ secrets.ZAP_TARGET }} \
+          -a
+          
     - name: Upload ZAP report
       uses: actions/upload-artifact@v4
       with:
-          name: zap-scan-report
-          path: ZAP-Baseline-Report.html
+        name: zap-scan-report
+        path: ZAP-Baseline-Report.html
