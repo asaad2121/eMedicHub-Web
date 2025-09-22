@@ -66,6 +66,12 @@ jobs:
    runs-on: ubuntu-latest
    steps:
     - uses: actions/checkout@v4
+    
+    - name: Verify ZAP Target Accessibility
+      run: |
+        echo "Attempting to access target: ${{ secrets.ZAP_TARGET }}"
+        curl --head --fail ${{ secrets.ZAP_TARGET }}
+        echo "Target is accessible! Continuing with ZAP scan."
 
     - name: Run ZAP Baseline Scan
       run: |
