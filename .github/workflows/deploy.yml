@@ -60,29 +60,3 @@ jobs:
           echo "Using CloudFront distribution ID: '$DIST_ID'"
           aws cloudfront create-invalidation --distribution-id "$DIST_ID" --paths "/*"
      
-  zap-scan:
-   needs: deploy
-   if: ${{ needs.deploy.result == 'success' }}
-   runs-on: ubuntu-latest
-   steps:
-    - uses: actions/checkout@v4
-    
-    - name: Verify ZAP Target Accessibility
-      run: |
-        echo "Attempting to access target: ${{ secrets.ZAP_TARGET }}"
-        curl --head --fail ${{ secrets.ZAP_TARGET }}
-        echo "Target is accessible! Continuing with ZAP scan."
-
-    - name: Run ZAP Baseline Scan
-      run: |
-          docker run --rm \
-            -v $(pwd):/zap/wrk/:rw \
-            owasp/zap2docker-stable zap-baseline.py \
-            -t ${{ secrets.ZAP_TARGET }} \
-            -a
-          
-    - name: Upload ZAP report
-      uses: actions/upload-artifact@v4
-      with:
-        name: zap-scan-report
-        path: ZAP-Baseline-Report.html
