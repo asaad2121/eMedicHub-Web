@@ -21,31 +21,32 @@ export class OrderService {
     limit: number,
     currentPageNo: number,
   ): Promise<OrderResponse> {
-    let params = new HttpParams();
-    let idParam = "";
+    const requestBody: any = {};
+
     switch (userType) {
       case UserResponseTypes.PATIENT:
-        idParam = "patient_id";
-        params = params.set("type", UserResponseTypes.PATIENT);
+        requestBody.patient_id = userId;
+        requestBody.type = UserResponseTypes.PATIENT;
         break;
       case UserResponseTypes.DOCTOR:
-        idParam = "doctor_id";
-        params = params.set("type", UserResponseTypes.DOCTOR);
+        requestBody.doctor_id = userId;
+        requestBody.type = UserResponseTypes.DOCTOR;
         break;
       case UserResponseTypes.PHARMACY:
-        idParam = "pharma_id";
-        params = params.set("type", UserResponseTypes.PHARMACY);
+        requestBody.pharma_id = userId;
+        requestBody.type = UserResponseTypes.PHARMACY;
         break;
     }
-    params = params.set(idParam, userId);
-    params = params.set("patientSearch", patientSearch);
-    params = params.set("limit", limit.toString());
-    params = params.set("currentPageNo", currentPageNo.toString());
+
+    requestBody.patientSearch = patientSearch;
+    requestBody.limit = limit;
+    requestBody.currentPageNo = currentPageNo;
 
     return await lastValueFrom(
-      this.http.get<OrderResponse>(`${this.apiUrl}/orders/getOrders`, {
-        params,
-      }),
+      this.http.post<OrderResponse>(
+        `${this.apiUrl}/orders/getOrders`,
+        requestBody,
+      ),
     );
   }
 

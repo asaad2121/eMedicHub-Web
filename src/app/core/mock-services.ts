@@ -65,6 +65,8 @@ export class MockUserStreamService {
   };
 
   clearUserData = (): void => {};
+
+  setCsrfToken = (): void => {};
 }
 
 export class MockMedicineService {

@@ -18,15 +18,18 @@ export class PatientService {
     doctor_id: string,
     date: string,
   ): Promise<string[]> {
+    const requestBody = {
+      doctor_id: doctor_id,
+      date: date,
+    };
+
     return lastValueFrom(
       this.http
-        .get<{
+        .post<{
           success: boolean;
           data: string[];
           message: string;
-        }>(
-          `${this.apiUrl}/patients/checkDoctorAvailability?doctor_id=${doctor_id}&date=${date}`,
-        )
+        }>(`${this.apiUrl}/patients/checkDoctorAvailability`, requestBody)
         .pipe(
           map((response) => {
             if (response.success && Array.isArray(response.data)) {

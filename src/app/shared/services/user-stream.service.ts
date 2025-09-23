@@ -5,6 +5,7 @@ import { UserService } from "./user.service";
 import { Doctor, DoctorsDTO } from "../DTO/doctor";
 import { Patient } from "../DTO/patient";
 import { ApiResponse } from "../DTO/common";
+import { BehaviorSubject } from "rxjs";
 
 @Injectable({
   providedIn: "root",
@@ -13,6 +14,8 @@ export class UserStreamService {
   private readonly currentUserSignal: WritableSignal<User> = signal({} as User);
 
   public readonly currentUser$ = this.currentUserSignal.asReadonly();
+
+  public csrfTokenSubject = new BehaviorSubject<string | null>(null);
 
   constructor(
     private authentication: AuthenticationService,
@@ -97,5 +100,11 @@ export class UserStreamService {
   public clearUserData() {
     this.currentUserSignal.set({} as User);
     localStorage.removeItem("currentUser");
+  }
+
+  public async setCsrfToken() {
+    const token = await this.userService.getCsrfToken();
+
+    this.csrfTokenSubject.next(token);
   }
 }
