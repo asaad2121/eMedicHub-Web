@@ -1,4 +1,4 @@
-import { Component, effect, signal } from "@angular/core";
+import { Component, effect, OnInit, signal } from "@angular/core";
 import { NavigationEnd, Router, RouterOutlet } from "@angular/router";
 
 import { MatSnackBarModule } from "@angular/material/snack-bar";
@@ -19,25 +19,34 @@ export class App {
   fullName: string = "";
   routerPath: string = "";
 
-  public loading = false;
-
+  public loading = signal(true);
   private user!: User;
 
   constructor(
     private router: Router,
     private userStreamService: UserStreamService,
   ) {
-    effect(async () => {
-      this.user = this.userStreamService.currentUser$();
+    const csrfTokenReady = signal(false);
 
-      if (!this.user.id && this.routerPath !== "/") {
-        await this.userStreamService.getCurrentUserDetails({} as User);
+    this.userStreamService.setCsrfToken().finally(() => {
+      csrfTokenReady.set(true);
+      this.loading.set(false);
+    });
+
+    effect(async () => {
+      if (csrfTokenReady()) {
+        this.user = this.userStreamService.currentUser$();
+
+        if (!this.user.id && this.routerPath !== "/") {
+          await this.userStreamService.getCurrentUserDetails({} as User);
+        }
+
+        this.fullName =
+          this.user.name ||
+          [this.user.first_name, this.user.last_name]
+            .filter((name) => name)
+            .join(" ");
       }
-      this.fullName =
-        this.user.name ||
-        [this.user.first_name, this.user.last_name]
-          .filter((name) => name)
-          .join(" ");
     });
 
     this.router.events
@@ -52,14 +61,14 @@ export class App {
           url.endsWith("/sign-up")
         );
 
-        if (this.user.type) {
+        if (csrfTokenReady() && this.user.type) {
           if (url === "/" || url === "") {
-            this.loading = true;
+            this.loading.set(true);
             try {
               await this.userStreamService.getCurrentUserDetails(this.user);
               this.goHome();
             } finally {
-              this.loading = false;
+              this.loading.set(false);
             }
           }
         }

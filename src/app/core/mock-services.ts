@@ -65,6 +65,10 @@ export class MockUserStreamService {
   };
 
   clearUserData = (): void => {};
+
+  setCsrfToken = (): Promise<string> => {
+    return Promise.resolve("" as string);
+  };
 }
 
 export class MockMedicineService {

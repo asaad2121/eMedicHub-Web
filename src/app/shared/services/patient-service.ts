@@ -19,25 +19,27 @@ export class PatientService {
     limit: number,
     search?: string,
   ): Observable<any> {
-    let params = new HttpParams()
-      .set("type", "doctor")
-      .set("doctor_id", doctorId)
-      .set("limit", limit.toString())
-      .set("currentPageNo", page.toString());
+    const requestBody: any = {
+      type: "doctor",
+      doctor_id: doctorId,
+      limit: limit,
+      currentPageNo: page,
+    };
 
     if (search && search.trim().length > 0) {
-      params = params.set("searchPatient", search);
+      requestBody.searchPatient = search;
     }
 
-    return this.http.get<any>(this.baseUrl, { params });
+    return this.http.post<any>(this.baseUrl, requestBody);
   }
 
   searchPatients(doctorId: string, searchPatient: string) {
-    const params: any = { doctor_id: doctorId };
+    const requestBody: any = { doctor_id: doctorId };
     if (searchPatient) {
-      params.searchPatient = searchPatient;
+      requestBody.searchPatient = searchPatient;
     }
-    return this.http.get<any>(this.baseUrl, { params });
+
+    return this.http.post<any>(this.baseUrl, requestBody);
   }
 
   searchPatientsWithCurrentPage(
@@ -46,12 +48,14 @@ export class PatientService {
     page: number,
     limit: number,
   ): Observable<any> {
-    let params = new HttpParams()
-      .set("doctor_id", doctorId)
-      .set("searchPatient", search)
-      .set("limit", limit.toString())
-      .set("currentPageNo", page.toString());
-    return this.http.get<any>(this.baseUrl, { params });
+    const requestBody = {
+      doctor_id: doctorId,
+      searchPatient: search,
+      limit: limit,
+      currentPageNo: page,
+    };
+
+    return this.http.post<any>(this.baseUrl, requestBody);
   }
 
   getPatientsByFilter(
@@ -61,26 +65,28 @@ export class PatientService {
     page: number,
     searchPatient: string,
   ) {
-    let params = new HttpParams().set("doctor_id", doctorId);
+    const requestBody: any = {
+      doctor_id: doctorId,
+      limit: limit,
+      currentPageNo: page,
+    };
 
     if (result.blood) {
-      params = params.set("bloodGrp", result.blood);
+      requestBody.bloodGrp = result.blood;
     }
 
     if (result.age) {
-      params = params.set("ageRange", result.age);
+      requestBody.ageRange = result.age;
     }
+
     if (result.time) {
-      params = params.set("lastAppointmentStart", result.time);
+      requestBody.lastAppointmentStart = result.time;
     }
+
     if (searchPatient) {
-      params = params.set("searchPatient", searchPatient);
+      requestBody.searchPatient = searchPatient;
     }
 
-    params = params
-      .set("limit", limit.toString())
-      .set("currentPageNo", page.toString());
-
-    return this.http.get<any>(this.baseUrl, { params });
+    return this.http.post<any>(this.baseUrl, requestBody);
   }
 }
