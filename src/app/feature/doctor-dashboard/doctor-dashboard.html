@@ -1,20 +1,126 @@
-<button mat-flat-button color="primary" (click)="onAddNewPatient()">
-  <mat-icon>add</mat-icon>
-  Add new patient
-</button>
+<div class="dashboard-container">
+  <mat-sidenav-container class="sidenav-container">
+    <mat-sidenav
+      #drawer
+      [mode]="isMobile ? 'over' : 'side'"
+      [opened]="!isMobile"
+      class="sidebar"
+    >
+      <mat-nav-list>
+        <div class="sidebar-header" [ngClass]="{ 'phone-drawer': isMobile }">
+          @if (isMobile) {
+            <button mat-button (click)="drawer.close()">
+              <mat-icon>close</mat-icon>
+            </button>
+          }
+          <h2 class="mat-h2 text-white p-4">Dashboard</h2>
+        </div>
 
-<button mat-flat-button color="primary" (click)="onViewOrders()">
-  <mat-icon>add</mat-icon>
-  View Orders
-</button>
+        <mat-list-item>
+          <button
+            mat-button
+            class="sidebar-button"
+            (click)="onViewAppointments()"
+          >
+            <mat-icon>calendar_today</mat-icon> View Appointments
+          </button>
+        </mat-list-item>
+        <mat-list-item>
+          <button mat-button class="sidebar-button" (click)="onViewPatient()">
+            <mat-icon>person_pin</mat-icon> View Patients
+          </button>
+        </mat-list-item>
+        <mat-list-item>
+          <button mat-button class="sidebar-button" (click)="onViewOrders()">
+            <mat-icon>receipt</mat-icon> View Orders
+          </button>
+        </mat-list-item>
+        <mat-list-item>
+          <button mat-button class="sidebar-button" (click)="onAddNewPatient()">
+            <mat-icon>person_add</mat-icon> Add New Patient
+          </button>
+        </mat-list-item>
+      </mat-nav-list>
+    </mat-sidenav>
 
-<button mat-flat-button color="primary" (click)="viewPatient()">
-  <mat-icon>add</mat-icon>
-  Viewpatient
-</button>
+    <mat-sidenav-content class="dashboard-main-content">
+      <div class="header-container">
+        @if (isMobile) {
+          <button
+            mat-icon-button
+            (click)="drawer.toggle()"
+            aria-label="Toggle menu"
+          >
+            <mat-icon>menu</mat-icon>
+          </button>
+        }
 
-<button mat-flat-button color="primary" (click)="viewAppoinment()">
-  <mat-icon>add</mat-icon>
-  ViewAppoimnment
-</button>
+        <h1 class="welcome-text">
+          Welcome, Dr. {{ user.first_name }} {{ user.last_name }}.
+        </h1>
+        <div class="search-container">
+          <view-patients [isDashboardView]="true"></view-patients>
+        </div>
+      </div>
 
+      <mat-divider></mat-divider>
+
+      @if (!loading) {
+        <h2 class="section-title">Today's Appointments</h2>
+        <div class="stats-container">
+          <mat-card
+            class="stat-card"
+            (click)="viewTodayCards = !viewTodayCards"
+          >
+            <div class="stat-value">{{ dashboardData.totalToday }}</div>
+            <div class="stat-label">Total Today</div>
+          </mat-card>
+
+          <mat-card class="stat-card" (click)="onViewAppointments()">
+            <div class="stat-value">{{ dashboardData.completed }}</div>
+            <div class="stat-label">Completed</div>
+          </mat-card>
+
+          <mat-card class="stat-card" (click)="onViewAppointments()">
+            <div class="stat-value">{{ dashboardData.upcoming }}</div>
+            <div class="stat-label">Upcoming</div>
+          </mat-card>
+        </div>
+
+        <!-- Appointment Cards -->
+        @if (viewTodayCards) {
+          <div class="appointments-container">
+            @for (
+              appointment of dashboardData.appointments;
+              track appointment.patient_id
+            ) {
+              <mat-card class="appointment-card">
+                <mat-card-content>
+                  <h3 class="patient-name">{{ appointment.patient_id }}</h3>
+                  <p class="appointment-details">
+                    {{ appointment.start_time }}
+                  </p>
+                  <p class="appointment-details-sub">
+                    {{ appointment.date }}
+                  </p>
+                </mat-card-content>
+              </mat-card>
+            }
+          </div>
+        }
+
+        <div class="view-all-button-container">
+          <button
+            mat-button
+            class="view-all-button"
+            (click)="onViewAppointments()"
+          >
+            View All Appointments
+          </button>
+        </div>
+      } @else {
+        <emh-loading-component></emh-loading-component>
+      }
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>

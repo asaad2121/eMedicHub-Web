@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, Input, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { FormControl, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { debounceTime, distinctUntilChanged, switchMap } from "rxjs/operators";
@@ -21,6 +21,7 @@ import { PatientFilterDialog } from "../../shared/components/dialog/patient-filt
 import { Patient } from "../../shared/DTO/patient";
 import { RouterModule } from "@angular/router";
 import { PatientDetailsDialog } from "../../shared/components/dialog/patient-details-dialog/patient-details-dialog";
+import { EmhLoadingComponent } from "../../shared/components/emh-loading-component/emh-loading-component";
 
 @Component({
   selector: "view-patients",
@@ -40,14 +41,18 @@ import { PatientDetailsDialog } from "../../shared/components/dialog/patient-det
     MatCardModule,
     MatPaginatorModule,
     MatTableModule,
-    MatProgressSpinnerModule,
+    EmhLoadingComponent,
     RouterModule,
+    EmhLoadingComponent,
   ],
   templateUrl: "./view-patients.html",
   styleUrls: ["./view-patients.less"],
   providers: [DatePipe],
 })
 export class ViewPatients implements OnInit {
+  @Input()
+  isDashboardView: boolean = false;
+
   columns = [
     { key: "id", label: "Patient ID" },
     { key: "first_name", label: "First Name" },
@@ -67,11 +72,11 @@ export class ViewPatients implements OnInit {
   pageSize = 10;
   currentPage = 1;
   loading = false;
+  isTableHidden = true;
 
   searchControl = new FormControl("");
 
   doctorId = "";
-  doctorName = "";
   type = "";
   searchText = "";
 
@@ -81,17 +86,19 @@ export class ViewPatients implements OnInit {
     private userStreamService: UserStreamService,
     private datePipe: DatePipe,
   ) {
-    const storedUser =
-      this.userStreamService.getCurrentUserFromStorage();
+    const storedUser = this.userStreamService.getCurrentUserFromStorage();
     this.doctorId = storedUser?.id;
-    this.doctorName = [storedUser?.first_name, storedUser?.last_name]
-      .filter((n) => n)
-      .join(" ");
     this.type = storedUser?.type;
   }
 
   ngOnInit(): void {
-    this.loadPatients();
+    if (!this.isDashboardView) {
+      this.isTableHidden = false;
+      this.loadPatients();
+    } else {
+      this.isTableHidden = true;
+    }
+
     this.searchControl.valueChanges
       .pipe(
         debounceTime(300),
@@ -119,6 +126,15 @@ export class ViewPatients implements OnInit {
             this.patients = res.data || [];
             this.totalPatients = res.totalPatients || 0;
             this.selectedPatient = null;
+
+            if (this.isDashboardView) {
+              this.patients = this.patients.slice(0, 3);
+              this.isTableHidden = false;
+
+              if (!this.searchText.length) {
+                this.isTableHidden = true;
+              }
+            }
           } else {
             this.patients = [];
             this.totalPatients = 0;
@@ -236,7 +252,7 @@ export class ViewPatients implements OnInit {
         this.searchText,
       )
       .subscribe(
-        (res: { success: boolean; data: Patient[]; totalPatients: number }) => {          
+        (res: { success: boolean; data: Patient[]; totalPatients: number }) => {
           this.loading = false;
           if (res.success) {
             if (res.data?.length) {

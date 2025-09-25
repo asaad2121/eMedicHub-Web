@@ -38,7 +38,8 @@ export class Http_Interceptor implements HttpInterceptor {
         if (
           !request.url.includes("/login") &&
           !request.url.includes("/logout") &&
-          !request.url.includes("/signup")
+          !request.url.includes("/signup") &&
+          !request.url.includes("/refresh")
         ) {
           userType = mapUserResponseTypeToUserType(
             this.userService.getCurrentUserFromStorage()

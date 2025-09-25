@@ -1,11 +1,12 @@
 import { Injectable } from "@angular/core";
 import { environment } from "../../../environments/environment";
-import { Doctor, DoctorsDTO } from "../DTO/doctor";
+import { Doctor, DoctorDashboardData, DoctorsDTO } from "../DTO/doctor";
 import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { catchError, firstValueFrom, lastValueFrom, map, of } from "rxjs";
-import { Patient } from "../DTO/patient";
+import { Patient, PatientDashboardData } from "../DTO/patient";
 import { ApiResponse } from "../DTO/common";
 import { User, UserResponseTypes, UserTypes } from "../DTO/user";
+import { PharmaDashboardData } from "../DTO/pharma";
 
 @Injectable({
   providedIn: "root",
@@ -26,16 +27,11 @@ export class UserService {
           ? "pharma"
           : "patients";
 
-    const requestBody = {
-      id: id,
-      userType: userType,
-    };
+    const url = `${this.apiUrl}/${userTypePath}/getUserProfile/${id}`;
 
     return await lastValueFrom(
       this.http
-        .post<{
-          data: ApiResponse;
-        }>(`${this.apiUrl}/${userTypePath}/getUserProfile`, requestBody)
+        .post<{ data: ApiResponse }>(url, {})
         .pipe(map((res) => res.data.data as User)),
     );
   }
@@ -89,6 +85,37 @@ export class UserService {
             } as ApiResponse);
           }),
         ),
+    );
+  }
+
+  public async getUserData(
+    userId: string,
+    userType: UserTypes | UserResponseTypes,
+  ): Promise<DoctorDashboardData | PatientDashboardData | PharmaDashboardData> {
+    let url: string;
+    let body: {};
+
+    if (
+      userType === UserTypes.DOCTOR ||
+      userType === UserResponseTypes.DOCTOR
+    ) {
+      url = `${this.apiUrl}/doctors/getDoctorAppointmentsDashboard`;
+      body = { doctor_id: userId };
+    } else if (
+      userType === UserTypes.PATIENT ||
+      userType === UserResponseTypes.PATIENT
+    ) {
+      url = `${this.apiUrl}/patients/getPatientDashboard`;
+      body = { patient_id: userId };
+    } else {
+      url = `${this.apiUrl}/pharma/getPharmacyDashboard`;
+      body = { pharma_id: userId };
+    }
+
+    return await lastValueFrom(
+      this.http
+        .post<ApiResponse>(url, body)
+        .pipe(map((response) => response.data)),
     );
   }
 

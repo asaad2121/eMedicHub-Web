@@ -39,3 +39,20 @@ export type DoctorsDTO = {
     bloodGroups: string[];
   };
 };
+
+export type DoctorDashboardAppointment = {
+  id: string;
+  doctor_id: string;
+  patient_id: string;
+  date: string;
+  start_time: string;
+  end_time: string;
+  note: string;
+};
+
+export type DoctorDashboardData = {
+  totalToday: string;
+  completed: number;
+  upcoming: number;
+  appointments: DoctorDashboardAppointment[];
+};

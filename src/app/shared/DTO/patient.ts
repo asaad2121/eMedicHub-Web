@@ -1,3 +1,6 @@
+import { AppointmentDetails } from "./appointment";
+import { Order } from "./orders";
+
 export type Patient = {
   id: string;
   first_name: string;
@@ -20,4 +23,11 @@ export type BookingDetails = {
   date: string;
   start_time: string;
   note: string;
+};
+
+export type PatientDashboardData = {
+  patient_id: string;
+  appointments: AppointmentDetails[];
+  ordersReady: Order[];
+  ordersNotReady: Order[];
 };

@@ -3,6 +3,21 @@
   justify-content: center;
   padding: 2px;
 
+  .patient-card {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    background-color: white;
+    margin: 5vw;
+  }
+  .mat-mdc-card-header {
+    margin: 20px 0;
+  }
+
+  .card-title {
+    font-size: 1.5rem;
+    font-weight: 400;
+  }
+
   .view-patients {
     display: flex;
     flex-direction: column;
@@ -26,14 +41,8 @@
     }
 
     .mat-mdc-table .mat-mdc-header-row {
-      background-color: #f0f0f0;
-      color: #000;
-      border-bottom: 2px solid #aaa;
-    }
-
-    .mat-mdc-table {
-      border: 3px solid #ccc;
-      border-collapse: collapse;
+      background-color: #151f42;
+      color: #ffffff;
     }
 
     .mat-mdc-table .mat-mdc-row {
@@ -41,7 +50,7 @@
     }
 
     .mat-mdc-table .mat-mdc-row:hover {
-      background-color: #e0e0e0;
+      background-color: #a4a8d71b;
     }
 
     .mat-row {
@@ -49,7 +58,7 @@
     }
 
     .mat-row:hover {
-      background-color: #e0e0e0;
+      background-color: #a4a8d71b;
     }
 
     mat-paginator {
