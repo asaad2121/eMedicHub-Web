@@ -57,14 +57,14 @@ export class ViewAppointmentDetails implements OnInit {
         },
         error: (err) => {
           this.loading = false;
-          this.router.navigate(["/view-appointments"]);
+          this.router.navigate([`/${this.userType}/view-appointments`]);
           console.error("Error fetching appointment details:", err);
         },
       });
   }
 
   onBack() {
-    this.router.navigate(["/view-appointments"]);
+    this.router.navigate([`/${this.userType}/view-appointments`]);
   }
 
   onCreateOrder() {
@@ -72,7 +72,7 @@ export class ViewAppointmentDetails implements OnInit {
     if (this.userType === UserResponseTypes.DOCTOR) {
       this.router.navigate(["/add-new-order", id]);
     } else {
-      this.router.navigate(["/view-appointments"]);
+      this.router.navigate([`/${this.userType}/view-appointments`]);
     }
   }
 }

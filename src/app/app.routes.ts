@@ -44,7 +44,7 @@ export const routes: Routes = [
     canActivate: [loggedInUserGuard],
   },
   {
-    path: "view-patients",
+    path: ":role/view-patients",
     component: ViewPatients,
     canActivate: [loggedInUserGuard],
   },
@@ -59,13 +59,14 @@ export const routes: Routes = [
     canActivate: [loggedInUserGuard],
   },
   {
-    path: "view-appointments",
+    path: ":role/view-appointments",
     component: ViewAppointments,
-	canActivate: [loggedInUserGuard],
+    canActivate: [loggedInUserGuard],
   },
-  { path: 'appointment-details/:id', 
+  {
+    path: ':role/appointment-details/:id',
     component: ViewAppointmentDetails,
-	canActivate: [loggedInUserGuard],
+    canActivate: [loggedInUserGuard],
   },
   { path: "error", component: EmhErrorPageComponent },
   { path: "**", redirectTo: "/error" },

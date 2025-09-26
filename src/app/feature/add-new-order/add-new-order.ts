@@ -165,7 +165,7 @@ export class AddNewOrder {
         },
         error: (err) => {
           this.loading = false;
-          this.router.navigate(["/view-appointments"]);
+          this.router.navigate([`${this.type}/view-appointments`]);
           console.error("Error fetching appointment details:", err);
         },
       });

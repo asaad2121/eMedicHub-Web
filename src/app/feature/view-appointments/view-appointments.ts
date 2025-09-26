@@ -10,12 +10,14 @@ import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { Router, RouterModule } from '@angular/router';
-import { DoctorAppointment, PatientAppointment } from '../../shared/DTO/appointment';
+import { AppointmentDetails, DoctorAppointment, PatientAppointment } from '../../shared/DTO/appointment';
 import { UserStreamService } from '../../shared/services/user-stream.service';
 import { AppointmentService } from '../../shared/services/appointment.service';
 import { UserResponseTypes, UserTypes } from '../../shared/DTO/user';
 import { EmhLoadingComponent } from '../../shared/components/emh-loading-component/emh-loading-component';
+import { ViewAppointmentDetailsDialog } from '../../shared/components/dialog/view-appointment-details-dialog/view-appointment-details-dialog';
+import { MatDialog } from '@angular/material/dialog';
+import { ViewAppointmentDetails } from '../view-appointment-details/view-appointment-details';
 
 type Appointment = PatientAppointment | DoctorAppointment;
 
@@ -33,8 +35,7 @@ type Appointment = PatientAppointment | DoctorAppointment;
     MatCardModule,
     MatPaginatorModule,
     MatTableModule,
-    MatProgressSpinnerModule,
-    RouterModule,
+    MatProgressSpinnerModule,    
     EmhLoadingComponent
   ],
   templateUrl: './view-appointments.html',
@@ -55,17 +56,17 @@ export class ViewAppointments implements OnInit {
   type = '';
   UserTypes = UserResponseTypes;
   UserType = UserTypes;
-    
+
   constructor(
     private appointmentService: AppointmentService,
     private userStreamService: UserStreamService,
-    private datePipe: DatePipe,
-    private router: Router,    
+    private datePipe: DatePipe,    
+    private dialog: MatDialog
   ) {
     const storedUser = this.userStreamService.getCurrentUserFromStorage();
     this.Id = storedUser?.id;
     this.name = [storedUser?.first_name, storedUser?.last_name].filter(n => n).join(' ');
-    this.type = storedUser?.type;  
+    this.type = storedUser?.type;
   }
 
   ngOnInit(): void {
@@ -94,11 +95,11 @@ export class ViewAppointments implements OnInit {
   }
 
   getAppointments() {
-    this.loading = true;    
+    this.loading = true;
     this.appointmentService.getAppointments(this.type, this.Id, this.currentPage, this.pageSize)
       .subscribe({
         next: (data) => {
-          this.loading = false;         
+          this.loading = false;
           if (data?.length > 0) {
             data.forEach((p: any) => {
               if (p.date) p.date = this.formatDate(p.date);
@@ -128,10 +129,48 @@ export class ViewAppointments implements OnInit {
     this.getAppointments();
   }
 
-  onView(appointment: Appointment) {
-    if (appointment.id) {
-      this.router.navigate(['/appointment-details', appointment.id]);      
-    }
+  onView(appointment: Appointment) {   
+    this.openAppointmentsDialog(appointment.id || '')
+  }
+
+  openAppointmentsDialog(id: string) {
+    if (!id) return;
+      this.appointmentService.getAppointmentDetails(this.type, id).subscribe({
+      next: (data) => {
+       
+        if (!data) return;        
+        const formattedData = this.formatAppointmentDetails(data);        
+        this.dialog.open(ViewAppointmentDetailsDialog, {
+          width: '800px',
+          maxHeight: '90vh',
+          panelClass: 'custom-dialog-container',
+          data: { data: formattedData, type: this.type }
+        });
+      },
+      error: (err) => {
+        this.loading = false;
+        console.error('Error fetching appointment details:', err);
+      }
+    });
+  }
+
+  formatAppointmentDetails(data: AppointmentDetails): any {
+    const mappedData = {
+      'Appointment ID': data?.appointment_id,
+      'Date & Time': `${data?.date} ${data?.start_time} - ${data?.end_time}`,
+      'Notes': data?.note || 'N/A',
+      'Doctor ID': data?.doctor?.id || 'N/A',
+      'Doctor Name': data?.doctor?.name || 'N/A',
+      'Speciality': data?.doctor?.speciality || 'N/A',
+      'Patient Name': data?.patient?.name || 'N/A',
+      'Patient Age': data?.patient?.age || 'N/A',
+      'Blood Group': data.patient?.blood_grp || 'N/A',
+      'Phone': data.patient?.phone_no || 'N/A',
+      'Email': data.patient?.email || 'N/A',
+      'Address': data.patient?.address || 'N/A'
+    };
+
+    return mappedData;
   }
 }
 
