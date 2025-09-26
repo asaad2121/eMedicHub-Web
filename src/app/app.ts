@@ -4,13 +4,20 @@ import { NavigationEnd, Router, RouterOutlet } from "@angular/router";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { filter } from "rxjs";
 import { UserStreamService } from "./shared/services/user-stream.service";
-import { User } from "./shared/DTO/user";
+import { User, UserResponseTypes } from "./shared/DTO/user";
 import { EmhLoadingComponent } from "./shared/components/emh-loading-component/emh-loading-component";
 import { mapUserResponseTypeToUserType } from "./shared/utils";
+import { MatMenuModule } from "@angular/material/menu";
+import { MatButtonModule } from "@angular/material/button";
 
 @Component({
   selector: "app-root",
-  imports: [RouterOutlet, MatSnackBarModule, EmhLoadingComponent],
+  imports: [RouterOutlet,
+    MatSnackBarModule,
+    EmhLoadingComponent,
+    MatMenuModule,
+    MatButtonModule
+  ],
   templateUrl: "./app.html",
   styleUrl: "./app.less",
 })
@@ -18,9 +25,10 @@ export class App {
   showHeader = true;
   fullName: string = "";
   routerPath: string = "";
-
+  userIcon = '';
   public loading = signal(true);
   private user!: User;
+  userResponseType = UserResponseTypes;
 
   constructor(
     private router: Router,
@@ -75,11 +83,41 @@ export class App {
       });
   }
 
+  ngOnInit() {
+    this.setUserIcon();
+  }
+
+  setUserIcon() {
+    const user = this.userStreamService.getCurrentUserFromStorage();
+    switch (user?.type) {
+      case UserResponseTypes.DOCTOR:
+        this.userIcon = 'assets/images/steth.png';
+        break;
+      case UserResponseTypes.PATIENT:
+        this.userIcon = 'assets/images/person.png';
+        break;
+      case UserResponseTypes.PHARMACY:
+        this.userIcon = 'assets/images/medicine.png';
+        break;
+      default:
+        this.userIcon = 'assets/images/person.png';
+    }
+  }
+
+
   public goHome() {
     const userType = mapUserResponseTypeToUserType(
       this.user.type,
     ).toLowerCase();
 
     this.router.navigate([`${userType}/dashboard`]);
+  }
+
+  viewProfile() {
+    this.router.navigate([`/${this.user.type.toLowerCase()}/profile`]);
+  }
+  logout() {
+    this.userStreamService.clearUserData();
+    this.router.navigate(['/'])
   }
 }

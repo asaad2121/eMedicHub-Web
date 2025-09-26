@@ -53,7 +53,7 @@ export class AppointmentService {
       catchError((error: any) => {
         const mappedError =
           error?.error?.message || "An unexpected error occurred";
-        return throwError(() => new Error(mappedError));
+        return throwError(() => mappedError);
       }),
     );
   }
@@ -83,7 +83,7 @@ export class AppointmentService {
         catchError((error: any) => {
           const mappedError =
             error?.error?.message || "An unexpected error occurred";
-          return throwError(() => new Error(mappedError));
+          return throwError(() => mappedError);
         }),
       );
   }
@@ -98,7 +98,7 @@ export class AppointmentService {
           error?.error?.message ||
           error.message ||
           "An unexpected error occurred during search";
-        return throwError(() => new Error(mappedError));
+        return throwError(() => mappedError);
       }),
     );
   }
