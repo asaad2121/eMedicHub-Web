@@ -13,7 +13,7 @@ export class ProfileService {
 
   constructor(private http: HttpClient) { }
 
-  getProfile(userType: string, userId: string): Observable<ApiResponse> {
+  getProfile(userType: string, userId: string): Observable<UserProfile> {
     return this.http.post<ApiResponse>(
       `${this.apiUrl}/${userType}/getUserProfile/${userId}`, {}
     ).pipe(

@@ -133,7 +133,7 @@ export class UserProfileInfo implements OnInit {
         : UserTypes.PATIENT.toLowerCase();
     this.loading = true;
     this.profileService.getProfile(this.userType, this.Id).subscribe({
-      next: (profile: any) => {
+      next: (profile: UserProfile) => {
         this.loading = false;
         this.profileForm.patchValue({
           firstName: profile.first_name,
@@ -176,7 +176,7 @@ export class UserProfileInfo implements OnInit {
   }
 
   onCancelPassword() {
-    this.passwords.reset();
+    this.reset();
   }
 
   checkCurrentPassword() {
@@ -191,9 +191,13 @@ export class UserProfileInfo implements OnInit {
   }
 
   reset() {
-    const passwords = this.profileForm.get("passwords") as FormGroup;
-    passwords.reset();
-    passwords.get("new")?.disable();
-    passwords.get("confirm")?.disable();
-  }
+  const passwords = this.profileForm.get('passwords') as FormGroup;
+  passwords.reset({
+    current: '',
+    new: '',
+    confirm: ''
+  });
+  passwords.get('new')?.disable();
+  passwords.get('confirm')?.disable();
+}
 }
