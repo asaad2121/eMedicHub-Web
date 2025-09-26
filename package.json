@@ -6,7 +6,11 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "build:prod": "ng build -c production",
+    "serve:angular": "http-server ./dist/eMedicHub-Web/browser -p 4200 -S -C ./ssl/cert.pem -K ./ssl/key.pem",
+    "start:api": "cross-env ENVIRONMENT=prod node ../eMedicHub-API/index.js",
+    "prod": "npm run build:prod && concurrently \"npm:serve:angular\" \"npm:start:api\""
   },
   "prettier": {
     "overrides": [
@@ -41,6 +45,9 @@
     "@angular/cli": "^20.1.4",
     "@angular/compiler-cli": "^20.1.0",
     "@types/jasmine": "~5.1.0",
+    "concurrently": "^9.2.1",
+    "cross-env": "^10.0.0",
+    "http-server": "^14.1.1",
     "jasmine-core": "~5.8.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
