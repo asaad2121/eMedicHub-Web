@@ -1,10 +1,28 @@
-@if (user.type === UserResponseTypes.DOCTOR) {
-  <doctor-dashboard [user]="user"></doctor-dashboard>
-}
-@if (user.type === UserResponseTypes.PATIENT) {
-  <patient-dashboard [user]="user"></patient-dashboard>
-}
-@if (user.type === UserResponseTypes.PHARMACY) {
-  {{ user.type }}
-  <pharma-dashboard [user]="user"></pharma-dashboard>
+@if (!isUserLoading) {
+  @if (user.type === UserResponseTypes.DOCTOR) {
+    <doctor-dashboard
+      [user]="user"
+      [loading]="loading"
+      [isMobile]="isMobile"
+      [dashboardData]="doctorDashboardData"
+    ></doctor-dashboard>
+  }
+  @if (user.type === UserResponseTypes.PATIENT) {
+    <patient-dashboard
+      [user]="user"
+      [loading]="loading"
+      [isMobile]="isMobile"
+      [dashboardData]="patientDashboardData"
+    ></patient-dashboard>
+  }
+  @if (user.type === UserResponseTypes.PHARMACY) {
+    <pharma-dashboard
+      [user]="user"
+      [loading]="loading"
+      [isMobile]="isMobile"
+      [dashboardData]="pharmaDashboardData"
+    ></pharma-dashboard>
+  }
+} @else {
+  <emh-loading-component></emh-loading-component>
 }

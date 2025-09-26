@@ -2,10 +2,11 @@ import { Injectable, signal, WritableSignal } from "@angular/core";
 import { User, UserLoginDTO, UserTypes } from "../DTO/user";
 import { AuthenticationService } from "./authentication.service";
 import { UserService } from "./user.service";
-import { Doctor, DoctorsDTO } from "../DTO/doctor";
-import { Patient } from "../DTO/patient";
+import { Doctor, DoctorDashboardData, DoctorsDTO } from "../DTO/doctor";
+import { Patient, PatientDashboardData } from "../DTO/patient";
 import { ApiResponse } from "../DTO/common";
 import { BehaviorSubject } from "rxjs";
+import { PharmaDashboardData } from "../DTO/pharma";
 
 @Injectable({
   providedIn: "root",
@@ -14,6 +15,10 @@ export class UserStreamService {
   private readonly currentUserSignal: WritableSignal<User> = signal({} as User);
 
   public readonly currentUser$ = this.currentUserSignal.asReadonly();
+
+  private userDashboardData$ = new BehaviorSubject<
+    DoctorDashboardData | PatientDashboardData | PharmaDashboardData | null
+  >(null);
 
   public csrfTokenSubject = new BehaviorSubject<string | null>(null);
 
@@ -72,7 +77,7 @@ export class UserStreamService {
 
   public async getCurrentUserDetails(user: User): Promise<User> {
     const userInStorage = this.getCurrentUserFromStorage();
-    const userData = user.id ? user : userInStorage;
+    const userData = user?.id ? user : userInStorage;
 
     userData.type = userData.type || userInStorage.type;
 
@@ -88,7 +93,7 @@ export class UserStreamService {
       this.userService
         .getUserDetails(userData.id, userData.type)
         .then((userRes) => {
-          userRes.type = user.type;
+          userRes.type = user?.type || userRes.type;
           this.setCurrentUser(userRes);
           return userRes;
         });
@@ -100,6 +105,22 @@ export class UserStreamService {
   public clearUserData() {
     this.currentUserSignal.set({} as User);
     localStorage.removeItem("currentUser");
+  }
+
+  public async getUserDashboardData(
+    user: User,
+  ): Promise<DoctorDashboardData | PatientDashboardData | PharmaDashboardData> {
+    let dashboardData = this.userDashboardData$.getValue();
+
+    if (dashboardData) {
+      return dashboardData;
+    }
+
+    dashboardData = await this.userService.getUserData(user.id, user.type);
+
+    this.userDashboardData$.next(dashboardData);
+
+    return dashboardData;
   }
 
   public async setCsrfToken() {

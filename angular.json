@@ -53,6 +53,7 @@
             "development": {
               "optimization": false,
               "extractLicenses": false,
+              "outputHashing": "none",
               "sourceMap": true
             }
           },

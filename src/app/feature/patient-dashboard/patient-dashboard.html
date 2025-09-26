@@ -1,13 +1,111 @@
-<button mat-flat-button color="primary" (click)="onBookAppoinment()">
-  <mat-icon>add</mat-icon>
-  Book Appoinment
-</button>
-<button mat-flat-button color="primary" (click)="viewAppoinment()">
-  <mat-icon>add</mat-icon>
-  ViewAppoimnment
-</button>
+<div class="dashboard-container">
+  <mat-sidenav-container class="sidenav-container">
+    <mat-sidenav
+      #drawer
+      [mode]="isMobile ? 'over' : 'side'"
+      [opened]="!isMobile"
+      class="sidebar"
+    >
+      <mat-nav-list>
+        <div class="sidebar-header" [ngClass]="{ 'phone-drawer': isMobile }">
+          @if (isMobile) {
+            <button mat-button (click)="drawer.close()">
+              <mat-icon>close</mat-icon>
+            </button>
+          }
+          <h2 class="mat-h2 text-white p-4">Dashboard</h2>
+        </div>
 
-<button mat-flat-button color="primary" (click)="onViewOrders()">
-  <mat-icon>add</mat-icon>
-  View Orders
-</button>
+        <mat-list-item>
+          <button
+            mat-button
+            class="sidebar-button"
+            (click)="onBookAppoinment()"
+          >
+            <mat-icon>person_pin</mat-icon> Book Appointment
+          </button>
+        </mat-list-item>
+        <mat-list-item>
+          <button
+            mat-button
+            class="sidebar-button"
+            (click)="onViewAppoinments()"
+          >
+            <mat-icon>calendar_today</mat-icon> View All Appointments
+          </button>
+        </mat-list-item>
+        <mat-list-item>
+          <button mat-button class="sidebar-button" (click)="onViewOrders()">
+            <mat-icon>person_add</mat-icon> Pharmacy Orders
+          </button>
+        </mat-list-item>
+      </mat-nav-list>
+    </mat-sidenav>
+
+    <mat-sidenav-content class="dashboard-main-content">
+      <div class="header-container">
+        @if (isMobile) {
+          <button
+            mat-icon-button
+            (click)="drawer.toggle()"
+            aria-label="Toggle menu"
+          >
+            <mat-icon>menu</mat-icon>
+          </button>
+        }
+
+        <h1 class="welcome-text">
+          Welcome, {{ user.first_name }} {{ user.last_name }}.
+        </h1>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      @if (!loading) {
+        <h2 class="section-title">Your Upcoming Appointments</h2>
+        <div class="stats-container">
+          <mat-card class="stat-card">
+            <div class="stat-value">{{ dashboardData.appointments }}</div>
+            <div class="stat-label">Appointments will be listed here</div>
+          </mat-card>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <h2 class="section-title">Your Previous Appointments</h2>
+        <div class="stats-container">
+          <mat-card class="stat-card">
+            <div class="stat-value">{{ dashboardData.appointments }}</div>
+            <div class="stat-label">Appointments will be listed here</div>
+          </mat-card>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <h2 class="section-title">Orders</h2>
+        @if (!dashboardData.appointments.length) {
+          <div class="no-orders-message">
+            You have no recent appointments with medication orders.
+          </div>
+        }
+
+        @for (
+          appointment of dashboardData.appointments;
+          track appointment.appointment_id
+        ) {
+          <div class="appointment-card">
+            <div class="appointment-header">
+              Appointment with Dr. {{ appointment.doctor.name }}
+            </div>
+            <p class="appointment-details">
+              Time: {{ appointment.start_time }}
+            </p>
+            <p class="appointment-details">Date: {{ appointment.date }}</p>
+          </div>
+        }
+      } @else {
+        <emh-loading-component></emh-loading-component>
+      }
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>

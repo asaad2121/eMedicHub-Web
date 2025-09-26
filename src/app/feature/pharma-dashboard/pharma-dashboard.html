@@ -1,4 +1,86 @@
-<button mat-flat-button color="primary" (click)="onViewOrders()">
-  <mat-icon>add</mat-icon>
-  View Orders
-</button>
+<div class="dashboard-container">
+  <mat-sidenav-container class="sidenav-container">
+    <mat-sidenav
+      #drawer
+      [mode]="isMobile ? 'over' : 'side'"
+      [opened]="!isMobile"
+      class="sidebar"
+    >
+      <mat-nav-list>
+        <div class="sidebar-header" [ngClass]="{ 'phone-drawer': isMobile }">
+          @if (isMobile) {
+            <button mat-button (click)="drawer.close()">
+              <mat-icon>close</mat-icon>
+            </button>
+          }
+          <h2 class="mat-h2 text-white p-4">Dashboard</h2>
+        </div>
+
+        <mat-list-item>
+          <button mat-button class="sidebar-button" (click)="onViewOrders()">
+            <mat-icon>person_add</mat-icon> All Orders
+          </button>
+        </mat-list-item>
+      </mat-nav-list>
+    </mat-sidenav>
+
+    <mat-sidenav-content class="dashboard-main-content">
+      <div class="header-container">
+        @if (isMobile) {
+          <button
+            mat-icon-button
+            (click)="drawer.toggle()"
+            aria-label="Toggle menu"
+          >
+            <mat-icon>menu</mat-icon>
+          </button>
+        }
+
+        <h1 class="welcome-text">
+          Welcome, {{ user.first_name }} {{ user.last_name }}.
+        </h1>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      @if (!loading) {
+        <h2 class="section-title">Your Orders</h2>
+
+        @if (!dashboardData.length) {
+          <div class="no-orders-message">You have no new orders.</div>
+        }
+
+        @for (order of dashboardData; track order.order_id) {
+          <div class="order-container">
+            <mat-card class="order-card" (click)="onViewOrders()">
+              <div class="order-header">
+                <span class="order-id">Order #{{ order.order_id }}</span>
+                <span class="order-time">
+                  {{ order.order_time | date: "MMM d, y, h:mm a" }}
+                </span>
+              </div>
+              <div
+                class="order-status-bar"
+                [class.ready]="order.order_status === OrderStatus.READY"
+                [class.created]="order.order_status === OrderStatus.CREATED"
+                [class.collected]="order.order_status === OrderStatus.COLLECTED"
+              >
+                {{ order.order_status }}
+              </div>
+              <div class="order-info">
+                Patient: {{ order.patient_name }} - Dr. {{ order.doctor_name }}
+              </div>
+            </mat-card>
+          </div>
+        }
+        <div class="view-all-button-container">
+          <button mat-button class="view-all-button" (click)="onViewOrders()">
+            View All Orders
+          </button>
+        </div>
+      } @else {
+        <emh-loading-component></emh-loading-component>
+      }
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>

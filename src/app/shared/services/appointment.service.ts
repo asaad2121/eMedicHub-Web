@@ -8,6 +8,7 @@ import {
   PatientAppointment,
 } from "../DTO/appointment";
 import { UserResponseTypes, UserTypes } from "../DTO/user";
+import { Pharma } from "../DTO/pharma";
 
 type Appointment = PatientAppointment | DoctorAppointment;
 
@@ -87,7 +88,7 @@ export class AppointmentService {
       );
   }
 
-  getPharamDetails(): Observable<Pharma[]> {
+  getPharmaDetails(): Observable<Pharma[]> {
     return this.http.post<any>(`${this.apiUrl}/orders/getPharmacy`, {}).pipe(
       map((response: any) => {
         return response?.data ?? [];

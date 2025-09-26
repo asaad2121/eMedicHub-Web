@@ -1,5 +1,6 @@
 import { CommonModule } from "@angular/common";
 import { Component, Input } from "@angular/core";
+import { MatIcon } from "@angular/material/icon";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 
 @Component({
@@ -36,4 +37,6 @@ export class EmhLoadingComponent {
    * If `false`, it will take an absolute position covering its nearest positioned ancestor.
    */
   @Input() fullscreen: boolean = false;
+
+  public iconPath = "/steth-icon.svg";
 }
