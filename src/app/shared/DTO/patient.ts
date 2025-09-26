@@ -25,9 +25,20 @@ export type BookingDetails = {
   note: string;
 };
 
+export type DashboardAppointmentDetails = {
+  id: string;
+  doctor_id: string;
+  date: string;
+  start_time: string;
+  end_time: string;
+  notes: string;
+  doctor_name: string;
+  speciality: string;
+};
+
 export type PatientDashboardData = {
   patient_id: string;
-  appointments: AppointmentDetails[];
+  appointments: DashboardAppointmentDetails[];
   ordersReady: Order[];
   ordersNotReady: Order[];
 };
