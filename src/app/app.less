@@ -5,31 +5,38 @@
   background-color: #151f42;
   border-bottom: 1px solid #ddd;
   max-height: 10vh;
-  position: sticky;
-  width: 100%;
-  z-index: 9999;
+  position: sticky;  
+   z-index: 100;
+  padding: 0 1rem;
+  position: relative; 
 }
-
 .img-class img {
   max-height: 100px;
-  &:hover {
-    transform: scale(1.02);
-  }
 }
-
 .user-info {
   display: flex;
-  align-items: center;
-  padding: 10px 20px;
-  gap: 10px;
+  align-items: center; 
+  gap: 0.25rem;
+  margin:10px;
+  padding:20px;
 }
 
-.avatar-placeholder {
-  width: 35px;
-  height: 35px;
+.user-avatar {  
+  width:1.7rem;
+  height:1.7rem;   
   border-radius: 50%;
-  background-color: #ccc;
+  object-fit: cover;
+  cursor: pointer;
+  background-color: white;
 }
+
+.user-name {
+  font-weight: bold;
+  color: #ffffffce;
+  display: flex;
+  align-items: center; 
+}
+
 
 .user-name {
   font-weight: bold;
@@ -37,8 +44,7 @@
 }
 
 .main-content {
-  max-height: 90vh;
-  overflow: auto;
+  max-height: 90vh;  
 }
 
 .router-outlet-container {

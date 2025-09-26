@@ -287,6 +287,7 @@ export class AddNewOrder {
 
   reset() {
     this.medicines = [];
+    this.totalPrice = 0
     this.addMedicine();
   }
 
