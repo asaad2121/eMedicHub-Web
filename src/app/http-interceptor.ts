@@ -14,7 +14,7 @@ import { SnackbarService } from "./shared/services/snackbar.service";
 import { environment } from "../environments/environment";
 import { UserStreamService } from "./shared/services/user-stream.service";
 import { mapUserResponseTypeToUserType } from "./shared/utils";
-import { User, UserResponseTypes, UserTypes } from "./shared/DTO/user";
+import { UserResponseTypes, UserTypes } from "./shared/DTO/user";
 
 @Injectable()
 export class Http_Interceptor implements HttpInterceptor {
@@ -29,8 +29,11 @@ export class Http_Interceptor implements HttpInterceptor {
     request: HttpRequest<unknown>,
     next: HttpHandler,
   ): Observable<HttpEvent<unknown>> {
-    const apiUrl = `${environment.apiUrl}`;
+    const apiUrl = environment.apiUrl;
     let userType: UserTypes;
+
+    // Track if this request has already been retried
+    const alreadyRetried = request.headers.get("x-retry") === "true";
 
     return this.userService.csrfTokenSubject.pipe(
       take(1),
@@ -56,8 +59,12 @@ export class Http_Interceptor implements HttpInterceptor {
 
         return next.handle(modifiedRequest).pipe(
           catchError((error: HttpErrorResponse) => {
-            if (error.status === 403 && userType) {
-              // Attempt to refresh the token using refresh token endpoint.
+            // Only retry once
+            if (error.status === 403 && userType && !alreadyRetried) {
+              const retriedRequest = modifiedRequest.clone({
+                headers: modifiedRequest.headers.set("x-retry", "true"),
+              });
+
               return this.http
                 .post(
                   `${apiUrl}/${userType}/auth/refresh`,
@@ -65,15 +72,8 @@ export class Http_Interceptor implements HttpInterceptor {
                   { withCredentials: true },
                 )
                 .pipe(
-                  switchMap(() => {
-                    // If the refresh token was successfully validated, the new access token
-                    // has been set as a cookie by the server.
-                    // Retry original failed request.
-                    return next.handle(modifiedRequest);
-                  }),
+                  switchMap(() => next.handle(retriedRequest)),
                   catchError((refreshError) => {
-                    // If the refresh token is also invalid or expired, the refresh call will fail.
-                    // In this case, the user's session is over, and they must re-authenticate.
                     console.error("Refresh failed. Redirecting to login.");
                     this.router.navigate(["/"]);
                     return throwError(() => refreshError);

@@ -15,6 +15,7 @@ export enum OrderStatus {
 
 export type Order = {
   id: string;
+  order_id: string;
   quantity: number;
   appointment_id: string;
   status: OrderStatus;

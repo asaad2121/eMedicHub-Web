@@ -1,6 +1,5 @@
-
 <div *ngIf="loading" class="spinner-container">
-    <emh-loading-component></emh-loading-component>
+  <emh-loading-component></emh-loading-component>
 </div>
 <div class="appointment-container" *ngIf="appointment">
   <mat-card class="appointment-card">
@@ -8,62 +7,79 @@
       <mat-card-title>Appointment Details</mat-card-title>
     </mat-card-header>
 
-    <mat-card-content class="content" >
+    <mat-card-content class="content">
       <!-- Key-Value Rows -->
       <div class="detail-row">
         <span class="label">Appointment ID:</span>
-        <span class="value">{{ appointment.appointment_id || 'N/A' }}</span>
+        <span class="value">{{ appointment.appointment_id || "N/A" }}</span>
       </div>
       <div class="detail-row">
         <span class="label">Date & Time:</span>
-        <span class="value">{{ appointment.date }} {{ appointment.start_time }} - {{ appointment.end_time }}</span>
+        <span class="value"
+          >{{ appointment.date }} {{ appointment.start_time }} -
+          {{ appointment.end_time }}</span
+        >
       </div>
       <div class="detail-row">
         <span class="label">Notes:</span>
-        <span class="value">{{ appointment.note || 'No notes available' }}</span>
+        <span class="value">{{
+          appointment.note || "No notes available"
+        }}</span>
       </div>
       <div class="detail-row">
         <span class="label">Doctor ID:</span>
-        <span class="value">{{ appointment.doctor.id || 'N/A' }}</span>
+        <span class="value">{{ appointment.doctor.id || "N/A" }}</span>
       </div>
       <div class="detail-row">
         <span class="label">Doctor Name:</span>
-        <span class="value">{{ appointment.doctor.name || 'N/A' }}</span>
+        <span class="value">{{ appointment.doctor.name || "N/A" }}</span>
       </div>
       <div class="detail-row">
         <span class="label">Speciality:</span>
-        <span class="value">{{ appointment.doctor.speciality || 'N/A' }}</span>
+        <span class="value">{{ appointment.doctor.speciality || "N/A" }}</span>
       </div>
       <div class="detail-row">
         <span class="label">Patient Name:</span>
-        <span class="value">{{ appointment.patient.name || 'N/A'}}</span>
+        <span class="value">{{ appointment.patient.name || "N/A" }}</span>
       </div>
       <div class="detail-row">
         <span class="label">Patient Age:</span>
-        <span class="value">{{ appointment.patient.age || 'N/A' }}</span>
+        <span class="value">{{ appointment.patient.age || "N/A" }}</span>
       </div>
       <div class="detail-row">
         <span class="label">Blood Group:</span>
-        <span class="value">{{ appointment.patient.blood_grp || 'N/A' }}</span>
+        <span class="value">{{ appointment.patient.blood_grp || "N/A" }}</span>
       </div>
       <div class="detail-row">
         <span class="label">Phone:</span>
-        <span class="value">{{ appointment.patient.phone_no || 'N/A' }}</span>
+        <span class="value">{{ appointment.patient.phone_no || "N/A" }}</span>
       </div>
       <div class="detail-row">
         <span class="label">Email:</span>
-        <span class="value">{{ appointment.patient.email || 'N/A' }}</span>
+        <span class="value">{{ appointment.patient.email || "N/A" }}</span>
       </div>
       <div class="detail-row">
         <span class="label">Address:</span>
-        <span class="value">{{ appointment.patient.address || 'N/A' }}</span>
+        <span class="value">{{ appointment.patient.address || "N/A" }}</span>
       </div>
-    </mat-card-content>    
+    </mat-card-content>
     <mat-card-actions class="footer">
-      <button *ngIf="userType === UserTypes.DOCTOR" mat-button class="back"(click)="onBack()">Back</button>
-      <button mat-button class="view-button" color="primary" (click)="onCreateOrder()">{{ userType === UserTypes.DOCTOR ? 'Create Order' : 'Back' }}</button>
+      <button
+        *ngIf="userType === UserTypes.DOCTOR"
+        mat-button
+        class="back"
+        (click)="onBack()"
+      >
+        Back
+      </button>
+      <button
+        mat-button
+        class="view-button"
+        color="primary"
+        (click)="onCreateOrder()"
+      >
+        {{ userType === UserTypes.DOCTOR ? "Create Order" : "Back" }}
+      </button>
     </mat-card-actions>
   </mat-card>
 </div>
-
-
