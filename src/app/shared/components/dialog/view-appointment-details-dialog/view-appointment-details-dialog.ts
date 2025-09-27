@@ -43,7 +43,8 @@ export class ViewAppointmentDetailsDialog implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loading = !this.data;
+    this.dataObject = this.data?.data ?? {}; 
+    this.loading = !this.dataObject || Object.keys(this.dataObject).length === 0;    
   }
 
   onBack() {

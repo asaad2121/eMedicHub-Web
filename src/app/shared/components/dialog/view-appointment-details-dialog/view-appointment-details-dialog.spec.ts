@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ViewAppointmentDetailsDialog } from './view-appointment-details-dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 describe('ViewAppointmentDetailsDialog', () => {
   let component: ViewAppointmentDetailsDialog;
@@ -8,7 +9,11 @@ describe('ViewAppointmentDetailsDialog', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ViewAppointmentDetailsDialog]
+      imports: [ViewAppointmentDetailsDialog],
+      providers: [
+        { provide: MatDialogRef, useValue: {} },
+        { provide: MAT_DIALOG_DATA, useValue: {} },
+      ],
     })
       .compileComponents();
 
