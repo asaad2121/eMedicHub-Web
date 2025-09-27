@@ -6,13 +6,11 @@ import { NewPatientEntryComponent } from "./feature/new-patient-entry-component/
 import { AddNewOrder } from "./feature/add-new-order/add-new-order";
 import { PatientBookAppointmentComponent } from "./feature/patient-book-appointment-component/patient-book-appointment-component";
 import { ViewOrder } from "./feature/view-order/view-order";
-
 import { ViewPatients } from "./feature/view-patients/view-patients";
 import { EmhErrorPageComponent } from "./core/emh-error-page-component/emh-error-page-component";
 import { loggedInUserGuard } from "./core/route-guards/LoggedInUserGuard";
 import { userRoleGuard } from "./core/route-guards/UserRoleGuard";
 import { ViewAppointments } from "./feature/view-appointments/view-appointments";
-import { ViewAppointmentDetails } from "./feature/view-appointment-details/view-appointment-details";
 import { PatientSignUpComponent } from "./core/emh-login-component/patient-sign-up-component/patient-sign-up-component";
 import { UserProfileInfo } from "./feature/user-profile-info/user-profile-info";
 
@@ -65,13 +63,8 @@ export const routes: Routes = [
     canActivate: [loggedInUserGuard],
   },
   {
-    path: ':role/appointment-details/:id',
-    component: ViewAppointmentDetails,
-    canActivate: [loggedInUserGuard],
-  },
-  {
     path: ':role/profile',
-    component:UserProfileInfo,
+    component: UserProfileInfo,
     canActivate: [loggedInUserGuard],
   },
   { path: "error", component: EmhErrorPageComponent },

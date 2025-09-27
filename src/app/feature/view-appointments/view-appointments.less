@@ -7,7 +7,7 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     background-color: white;
-    margin: 3vw;
+    margin: 1.5vw;
   }
 
   .mat-mdc-card-header {
@@ -25,6 +25,18 @@
     padding: 1rem;
     width: 100%;
     max-width: 1200px;
+
+    .search-bar-container {
+      display: flex;     
+      
+      .search-bar {
+        width: 100%;        
+      }
+
+      .mat-mdc-form-field-bottom-align {
+        display: none;
+      }
+    }
 
     .view-table {
       overflow-x: auto;
@@ -81,16 +93,7 @@
     align-items: center;
     height: 200px;
   }
-
-  .patient-link {
-    color: #1976d2;
-    text-decoration: underline;
-    cursor: pointer;
-
-    &:hover {
-      color: #0d47a1;
-    }
-  }
+ 
 }
 
 .search-box .mat-mdc-form-field-outline-start,
@@ -99,8 +102,7 @@
 }
 
 @media (max-width: 768px) {
-  .responsive-table {
-    display: block;
+  .responsive-table {   
     width: 100%;
     overflow-x: auto;
     white-space: nowrap;

@@ -1,58 +1,52 @@
+@if (loadingDialog) {
+<emh-loading-component></emh-loading-component>
+}
 <div class="view-appointment-container">
-  <div class="view-appointments appointment-card">   
-      <mat-card-header>
-        <mat-card-title class="card-title">Appointments</mat-card-title>
-      </mat-card-header>    
+  <div class="view-appointments appointment-card">
+    <mat-card-header>
+      <mat-card-title class="card-title">Appointments</mat-card-title>
+    </mat-card-header>
+    <div class="search-bar-container">
+      <mat-form-field class="search-bar" appearance="outline">
+        <input matInput [(ngModel)]="searchText" (keydown.enter)="searchOrdersByPatient(searchText)"
+          placeholder="Search Patients..." (ngModelChange)="onSearchChange($event)" />
+        <mat-icon matSuffix (click)="searchOrdersByPatient(searchText)">search</mat-icon>
+      </mat-form-field>
+    </div>
     @if (loading) {
-      <emh-loading-component></emh-loading-component>
+    <emh-loading-component></emh-loading-component>
     } @else {
-      <div class="view-table">
-        <table
-          mat-table
-          [dataSource]="appointments"
-          class="mat-elevation-z8 responsive-table"
-        >
-          <ng-container
-            *ngFor="let column of columns"
-            [matColumnDef]="column.key"
-          >
-            <th mat-header-cell *matHeaderCellDef>{{ column.label }}</th>
-            <td mat-cell *matCellDef="let row">{{ row[column.key] }}</td>
-          </ng-container>
+    <div class="view-table">
+      <table mat-table [dataSource]="pagedAppointments" class="mat-elevation-z8 responsive-table">
+        <ng-container *ngFor="let column of columns" [matColumnDef]="column.key">
+          <th mat-header-cell *matHeaderCellDef>{{ column.label }}</th>
+          <td mat-cell *matCellDef="let row">{{ row[column.key] }}</td>
+        </ng-container>
 
-          <ng-container matColumnDef="actions">
-            <th mat-header-cell *matHeaderCellDef>Actions</th>
-            <td mat-cell *matCellDef="let row">
-              <button
-                mat-button
-                color="primary"
-                (click)="onView(row)"
-              >
-                View Details
-              </button>
-            </td>
-          </ng-container>
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let row">
+            <button mat-button color="primary" (click)="onView(row)">
+              View Details
+            </button>
+          </td>
+        </ng-container>
 
-          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
 
-          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
 
-          <tr class="mat-row" *matNoDataRow>
-            <td [attr.colspan]="displayedColumns.length">No results found</td>
-          </tr>
-        </table>
-      </div>
+        <tr class="mat-row" *matNoDataRow>
+          <td [attr.colspan]="displayedColumns.length">No results found</td>
+        </tr>
+      </table>
+    </div>
     }
-    
-    @if (!loading) {
-      <mat-paginator
-        [length]="totalAppointments"
-        [pageSize]="pageSize"
-        [pageSizeOptions]="[5, 10, 25, 100]"
-        [pageIndex]="currentPage - 1"
-        (page)="onPageChange($event)"
-      >
-      </mat-paginator>
+
+    @if (!loading && totalAppointments > 0) {
+    <mat-paginator [length]="totalAppointments" [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 25, 100]"
+      [pageIndex]="currentPage - 1" (page)="onPageChange($event)">
+    </mat-paginator>
     }
   </div>
 </div>

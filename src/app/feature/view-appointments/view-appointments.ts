@@ -43,6 +43,7 @@ type Appointment = PatientAppointment | DoctorAppointment;
   providers: [DatePipe]
 })
 export class ViewAppointments implements OnInit {
+  //@ViewChild(MatPaginator) paginator!: MatPaginator;
   columns: { key: string, label: string }[] = [];
   displayedColumns: string[] = [];
   appointments: Appointment[] = []
@@ -50,13 +51,15 @@ export class ViewAppointments implements OnInit {
   pageSize = 10;
   currentPage = 1;
   loading = false;
-
+  loadingDialog = false;
   Id = '';
   name = '';
   type = '';
   UserTypes = UserResponseTypes;
   UserType = UserTypes;
-
+  searchText = '';
+  filteredAppointments: Appointment[] = [];
+  pagedAppointments : Appointment[] = [];
   constructor(
     private appointmentService: AppointmentService,
     private userStreamService: UserStreamService,
@@ -95,8 +98,10 @@ export class ViewAppointments implements OnInit {
   }
 
   getAppointments() {
+    console.log('sixe', this.type, this.Id, this.currentPage, this.pageSize);
     this.loading = true;
-    this.appointmentService.getAppointments(this.type, this.Id, this.currentPage, this.pageSize)
+    this.appointmentService
+      .getAppointments(this.type, this.Id, this.currentPage, this.pageSize)
       .subscribe({
         next: (data) => {
           this.loading = false;
@@ -105,20 +110,48 @@ export class ViewAppointments implements OnInit {
               if (p.date) p.date = this.formatDate(p.date);
             });
             this.appointments = data;
-            this.totalAppointments = this.totalAppointments || 0;
+            this.filteredAppointments = [...this.appointments]; // initialize filtered list
+            this.totalAppointments = this.appointments.length;
+            this.setPagedAppointments();
           } else {
             this.appointments = [];
+            this.filteredAppointments = [];
             this.totalAppointments = 0;
           }
         },
         error: () => {
           this.loading = false;
           this.appointments = [];
+          this.filteredAppointments = [];
           this.totalAppointments = 0;
         }
       });
   }
 
+ 
+  searchOrdersByPatient(searchValue: string) {
+    if (!searchValue) {
+      this.filteredAppointments = [...this.appointments];      
+    } else {
+      const lower = searchValue.toLowerCase();
+      this.filteredAppointments = this.appointments.filter((a: any) => {
+        if (this.type === UserResponseTypes.PATIENT) {
+          return a.doctor_name?.toLowerCase().includes(lower) ||
+                 a.speciality?.toLowerCase().includes(lower);
+        } else if (this.type === UserResponseTypes.DOCTOR) {
+          return a.patient_name?.toLowerCase().includes(lower);
+        }
+        return false;
+      });
+    }
+    this.totalAppointments = this.filteredAppointments.length;
+    this.currentPage = 1;
+    this.setPagedAppointments();
+  }
+
+  onSearchChange(value: string) {
+    this.searchOrdersByPatient(value);
+  }
   formatDate(dob: string | Date) {
     return this.datePipe.transform(new Date(dob), 'yyyy-MM-dd') || '';
   }
@@ -126,8 +159,14 @@ export class ViewAppointments implements OnInit {
   onPageChange(event: PageEvent) {
     this.pageSize = event.pageSize;
     this.currentPage = event.pageIndex + 1;
-    this.getAppointments();
+    this.setPagedAppointments();   
   }
+
+  setPagedAppointments() {
+  const startIndex = (this.currentPage - 1) * this.pageSize;
+  const endIndex = startIndex + this.pageSize;
+  this.pagedAppointments = this.filteredAppointments.slice(startIndex, endIndex);
+}
 
   onView(appointment: Appointment) {   
     this.openAppointmentsDialog(appointment.id || '')
@@ -135,9 +174,10 @@ export class ViewAppointments implements OnInit {
 
   openAppointmentsDialog(id: string) {
     if (!id) return;
+      this.loadingDialog = true;
       this.appointmentService.getAppointmentDetails(this.type, id).subscribe({
       next: (data) => {
-       
+        this.loadingDialog = false;
         if (!data) return;        
         const formattedData = this.formatAppointmentDetails(data);        
         this.dialog.open(ViewAppointmentDetailsDialog, {
@@ -148,7 +188,7 @@ export class ViewAppointments implements OnInit {
         });
       },
       error: (err) => {
-        this.loading = false;
+        this.loadingDialog = false;
         console.error('Error fetching appointment details:', err);
       }
     });

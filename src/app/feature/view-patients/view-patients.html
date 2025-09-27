@@ -67,7 +67,7 @@
     }
 
     <!-- Paginator -->
-    @if (!loading && !isDashboardView) {
+    @if (!loading && !isDashboardView && totalPatients > 0) {
       <mat-paginator
         [length]="totalPatients"
         [pageSize]="pageSize"

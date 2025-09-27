@@ -50,9 +50,9 @@ export class ViewAppointmentDetailsDialog implements OnInit {
     this.dialogRef.close();
   }
 
-  onCreateOrder() {
+  onCreateOrder() {   
     if (this.userType === UserResponseTypes.DOCTOR) {
-      this.router.navigate(['/add-new-order', this.data.data['appointmentId']]);
+      this.router.navigate(['/add-new-order', this.data.data['Appointment ID']]);
     }
     this.dialogRef.close();
   }
