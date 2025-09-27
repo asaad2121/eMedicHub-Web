@@ -4,27 +4,27 @@ This font-end project was generated using [Angular CLI](https://github.com/angul
 
 ## Development server
 
-[Recommended]Start local development server using docker.
-
-Install Docker for your machine, run:
-
-```bash
-docker compose up --build
-```
-
 [Vite] To start a local development server, run:
 
 ```bash
 ng serve
 ```
 
-[Vite] To resolve dependencies and initialize node_modules, run:
+[Vite] But first, to resolve dependencies and initialize node_modules, run:
 
 ```bash
 npm install
 ```
 
 Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+
+## Running unit tests
+
+To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+
+```bash
+ng test
+```
 
 ## GIT workflow
 
@@ -63,14 +63,6 @@ ng build
 ```
 
 This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
 
 ## Running end-to-end tests (currently not setup)
 

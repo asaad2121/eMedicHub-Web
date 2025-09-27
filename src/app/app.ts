@@ -8,14 +8,16 @@ import { EmhLoadingComponent } from "./shared/components/emh-loading-component/e
 import { mapUserResponseTypeToUserType } from "./shared/utils";
 import { MatMenuModule } from "@angular/material/menu";
 import { MatButtonModule } from "@angular/material/button";
+import { SnackbarService } from "./shared/services/snackbar.service";
 
 @Component({
   selector: "app-root",
-  imports: [RouterOutlet,
+  imports: [
+    RouterOutlet,
     MatSnackBarModule,
     EmhLoadingComponent,
     MatMenuModule,
-    MatButtonModule
+    MatButtonModule,
   ],
   templateUrl: "./app.html",
   styleUrl: "./app.less",
@@ -24,14 +26,17 @@ export class App {
   showHeader = true;
   fullName: string = "";
   routerPath: string = "";
-  userIcon = '';
+  userIcon = "";
+
   public loading = signal(true);
   private user!: User;
+
   userResponseType = UserResponseTypes;
 
   constructor(
     private router: Router,
     private userStreamService: UserStreamService,
+    private snackbar: SnackbarService,
   ) {
     const csrfTokenReady = signal(false);
 
@@ -65,7 +70,8 @@ export class App {
         this.showHeader = !(
           url === "/" ||
           url.endsWith("/login") ||
-          url.endsWith("/sign-up")
+          url.endsWith("/sign-up") ||
+          url.endsWith("/error")
         );
 
         if (csrfTokenReady() && this.user.type) {
@@ -86,23 +92,23 @@ export class App {
     this.setUserIcon();
   }
 
-  setUserIcon() {
+  private setUserIcon() {
     const user = this.userStreamService.getCurrentUserFromStorage();
+
     switch (user?.type) {
       case UserResponseTypes.DOCTOR:
-        this.userIcon = 'assets/images/steth.png';
+        this.userIcon = "assets/images/steth.png";
         break;
       case UserResponseTypes.PATIENT:
-        this.userIcon = 'assets/images/person.png';
+        this.userIcon = "assets/images/person.png";
         break;
       case UserResponseTypes.PHARMACY:
-        this.userIcon = 'assets/images/medicine.png';
+        this.userIcon = "assets/images/medicine.png";
         break;
       default:
-        this.userIcon = 'assets/images/person.png';
+        this.userIcon = "assets/images/person.png";
     }
   }
-
 
   public goHome() {
     const userType = mapUserResponseTypeToUserType(
@@ -112,11 +118,13 @@ export class App {
     this.router.navigate([`${userType}/dashboard`]);
   }
 
-  viewProfile() {
+  public viewProfile() {
     this.router.navigate([`/${this.user.type.toLowerCase()}/profile`]);
   }
-  logout() {
+
+  public logout() {
     this.userStreamService.clearUserData();
-    this.router.navigate(['/'])
+    this.snackbar.openSnackbarWithAction("Logout successful");
+    this.router.navigate(["/"]);
   }
 }
