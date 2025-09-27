@@ -1,0 +1,26 @@
+<div class="view-details-container" *ngIf="!loading">
+  <h2 mat-dialog-title class="view-details-header" style="background-color: #36495d; color: white">
+    Appoinment
+  </h2>
+  <mat-dialog-content class="content">
+    <div *ngIf="loading" class="spinner-container">
+      <emh-loading-component></emh-loading-component>
+    </div>
+    <table class="view-details-table">
+      <tr *ngFor="let key of objectKeys(data.data)">
+        <td>
+          <strong>{{ key }}</strong>
+        </td>
+        <td>{{ data.data[key] }}</td>
+      </tr>
+    </table>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button *ngIf="userType === UserTypes.DOCTOR" mat-button class="back" (click)="onBack()">
+      Back
+    </button>
+    <button mat-button class="view-button" color="primary" (click)="onCreateOrder()">
+      {{ userType === UserTypes.DOCTOR ? 'Create Order' : 'Back' }}
+    </button>
+  </mat-dialog-actions>
+</div>

@@ -1,6 +1,5 @@
 import { Component, effect, OnInit, signal } from "@angular/core";
 import { NavigationEnd, Router, RouterOutlet } from "@angular/router";
-
 import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { filter } from "rxjs";
 import { UserStreamService } from "./shared/services/user-stream.service";

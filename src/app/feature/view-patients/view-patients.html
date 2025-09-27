@@ -67,11 +67,12 @@
     }
 
     <!-- Paginator -->
-    @if (!loading && !isDashboardView) {
+    @if (!loading && !isDashboardView && totalPatients > 0) {
       <mat-paginator
         [length]="totalPatients"
         [pageSize]="pageSize"
         [pageSizeOptions]="[5, 10, 25, 100]"
+        [pageIndex]="currentPage - 1"
         (page)="onPageChange($event)"
       >
       </mat-paginator>

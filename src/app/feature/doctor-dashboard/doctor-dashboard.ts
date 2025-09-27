@@ -63,10 +63,10 @@ export class DoctorDashboard {
   }
 
   public onViewPatient() {
-    this.router.navigate(["/view-patients"]);
+    this.router.navigate([`/${this.user.type.toLowerCase()}/view-patients`]);
   }
 
   public onViewAppointments() {
-    this.router.navigate(["/view-appointments"]);
+    this.router.navigate([`/${this.user.type.toLowerCase()}/view-appointments`]);
   }
 }
