@@ -30,9 +30,20 @@ export class UserService {
     const url = `${this.apiUrl}/${userTypePath}/getUserProfile/${id}`;
 
     return await lastValueFrom(
-      this.http
-        .post<{ data: ApiResponse }>(url, {})
-        .pipe(map((res) => res.data.data as User)),
+      this.http.post<ApiResponse>(url, {}).pipe(
+        map((res) => {
+          const user = res.data as User;
+
+          if (!user?.type) {
+            user.type = UserResponseTypes.PHARMACY;
+          }
+          if (!user.first_name?.length) {
+            user.first_name = user.name as string;
+          }
+
+          return user;
+        }),
+      ),
     );
   }
 

@@ -104,6 +104,7 @@ export class UserStreamService {
 
   public clearUserData() {
     this.currentUserSignal.set({} as User);
+    this.userDashboardData$.next(null);
     localStorage.removeItem("currentUser");
   }
 

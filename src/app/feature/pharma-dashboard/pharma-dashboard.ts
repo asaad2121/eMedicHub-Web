@@ -38,11 +38,12 @@ import { OrderStatus } from "../../shared/DTO/orders";
 })
 export class PharmaDashboard {
   constructor(private router: Router) {}
+
   @Input()
   user!: User;
 
   @Input()
-  loading = true;
+  loading = false;
 
   @Input()
   isMobile = false;

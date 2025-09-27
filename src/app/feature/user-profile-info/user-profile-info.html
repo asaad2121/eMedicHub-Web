@@ -1,37 +1,39 @@
 <mat-card class="user-profile-wrapper">
   <div class="user-profile-container">
-    <div *ngIf="loading" class="spinner-container">
-            <emh-loading-component></emh-loading-component>            
-    </div>     
+    @if (loading) {
+      <div class="spinner-container">
+        <emh-loading-component></emh-loading-component>
+      </div>
+    }
     <div class="section account">
-        <div class="section-header">
+      <div class="section-header">
         <h3>Account Details</h3>
-        </div>
-    </div>  
-    <form  *ngIf="!loading" [formGroup]="profileForm">     
-      <!-- Account Section -->
+      </div>
+    </div>
+    <form @if(!loading) [formGroup]="profileForm">
       <div class="section account">
-        <div class="section-header">               
+        <div class="section-header">
           <p class="profile-heading">Personal Details</p>
           <mat-icon class="edit-icon">edit</mat-icon>
         </div>
         <mat-divider class="thick-divider"></mat-divider>
         <p class="section-note">
-          No changes can be made to your personal details once they are verified. 
-          To modify your personal information, please <a href="#">contact us</a>.
+          No changes can be made to your personal details once they are
+          verified. To modify your personal information, please
+          <a href="/contactus">contact us</a>.
         </p>
 
         <div class="profile account-profile">
           <div class="col first-col">
             <mat-form-field appearance="outline" class="full-width">
               <mat-label>First Name</mat-label>
-              <input matInput formControlName="firstName">
+              <input matInput formControlName="firstName" />
             </mat-form-field>
           </div>
           <div class="col second-col">
             <mat-form-field appearance="outline" class="full-width">
               <mat-label>Last Name</mat-label>
-              <input matInput formControlName="lastName">
+              <input matInput formControlName="lastName" />
             </mat-form-field>
           </div>
           <div class="col third-col"></div>
@@ -41,8 +43,11 @@
           <div class="col first-col">
             <mat-form-field appearance="outline" class="full-width">
               <mat-label>Date of Birth</mat-label>
-              <input matInput [matDatepicker]="picker" formControlName="dob">
-              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+              <input matInput [matDatepicker]="picker" formControlName="dob" />
+              <mat-datepicker-toggle
+                matSuffix
+                [for]="picker"
+              ></mat-datepicker-toggle>
               <mat-datepicker #picker></mat-datepicker>
             </mat-form-field>
           </div>
@@ -51,10 +56,9 @@
         </div>
       </div>
 
-      <!-- Contact Section -->
       <div class="section contact">
         <div class="section-header">
-           <p class="profile-heading">Contact Information</p>
+          <p class="profile-heading">Contact Information</p>
           <mat-icon class="edit-icon">edit</mat-icon>
         </div>
         <mat-divider class="thick-divider"></mat-divider>
@@ -63,16 +67,15 @@
           <div class="col first-col">
             <mat-form-field appearance="outline" class="full-width">
               <mat-label>Email</mat-label>
-              <input matInput formControlName="email">
+              <input matInput formControlName="email" />
             </mat-form-field>
           </div>
 
           <div class="col second-col phone-col">
-	
             <span class="fi fi-nz bigger-flag"></span>
             <mat-form-field appearance="outline" class="full-width">
               <mat-label>Phone Number</mat-label>
-              <input matInput formControlName="phone">
+              <input matInput formControlName="phone" />
             </mat-form-field>
           </div>
 
@@ -80,12 +83,14 @@
         </div>
       </div>
 
-      <!-- Password Section -->
       <div class="section pass" formGroupName="passwords">
         <div class="section-header">
-          <p class="profile-heading">Password(Please enter your current password to change your passsword)</p>
+          <p class="profile-heading">Password</p>
         </div>
         <mat-divider class="thick-divider"></mat-divider>
+        <p class="section-note">
+          Please enter your current password to change your passsword.
+        </p>
 
         <div class="profile password-profile">
           <div class="col first-col label-col">
@@ -93,38 +98,60 @@
           </div>
           <div class="col second-col col-input">
             <mat-form-field appearance="outline" class="password-width">
-              <input id="currentPassword" matInput [type]="hideCurrent ? 'password' : 'text'" formControlName="current" (blur)="checkCurrentPassword()">
-              <button mat-icon-button matSuffix (click)="hideCurrent = !hideCurrent">
-                <mat-icon>{{ hideCurrent ? 'visibility_off' : 'visibility' }}</mat-icon>
+              <input
+                id="currentPassword"
+                matInput
+                [type]="hideCurrent ? 'password' : 'text'"
+                formControlName="current"
+                (blur)="checkCurrentPassword()"
+              />
+              <button
+                mat-icon-button
+                matSuffix
+                (click)="hideCurrent = !hideCurrent"
+              >
+                <mat-icon>{{
+                  hideCurrent ? "visibility_off" : "visibility"
+                }}</mat-icon>
               </button>
             </mat-form-field>
           </div>
           <div class="col third-col"></div>
         </div>
- <mat-divider class="thick-divider"></mat-divider>
+        <mat-divider class="thick-divider"></mat-divider>
         <div class="profile password-profile">
           <div class="col first-col label-col">
             <label for="newPassword">New Password</label>
           </div>
           <div class="col second-col col-input">
             <mat-form-field appearance="outline" class="password-width">
-              <input id="newPassword" matInput [type]="hideNew ? 'password' : 'text'" formControlName="new">
+              <input
+                id="newPassword"
+                matInput
+                [type]="hideNew ? 'password' : 'text'"
+                formControlName="new"
+              />
               <button mat-icon-button matSuffix (click)="hideNew = !hideNew">
-                <mat-icon>{{ hideNew ? 'visibility_off' : 'visibility' }}</mat-icon>
-              </button>             
-            </mat-form-field>            
-                     
-           </div> 
-            <div class="col third-col" >            
-            <div class="error-text" *ngIf="passwords.get('new')?.touched && passwords.get('new')?.value && passwords.get('new')?.hasError('passwordStrength')" >               
-              <p >
-                Choose a stronger password
-              </p>
-          </div>          
-        </div>
+                <mat-icon>{{
+                  hideNew ? "visibility_off" : "visibility"
+                }}</mat-icon>
+              </button>
+            </mat-form-field>
           </div>
-          
-          <div class="profile pass">
+          <div class="col third-col">
+            @if (
+              passwords.get("new")?.touched &&
+              passwords.get("new")?.value &&
+              passwords.get("new")?.hasError("passwordStrength")
+            ) {
+              <div class="error-text">
+                <p>Choose a stronger password</p>
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="profile pass">
           <div class="col first-col label-col"></div>
           <div class="col second-col col-input">
             <p>Passwords must include at least:</p>
@@ -138,46 +165,72 @@
           </div>
           <div class="col third-col"></div>
         </div>
- <mat-divider class="thick-divider"></mat-divider>
+        <mat-divider class="thick-divider"></mat-divider>
         <div class="profile password-profile">
           <div class="col first-col label-col">
             <label for="confirmPassword">Confirm Password</label>
           </div>
           <div class="col second-col col-input">
             <mat-form-field appearance="outline" class="password-width">
-              <input id="confirmPassword" matInput formControlName="confirm" [type]="hideConfirm ? 'password' : 'text'" >
-              <button mat-icon-button matSuffix (click)="hideConfirm = !hideConfirm">
-                <mat-icon>{{ hideConfirm ? 'visibility_off' : 'visibility' }}</mat-icon>
+              <input
+                id="confirmPassword"
+                matInput
+                formControlName="confirm"
+                [type]="hideConfirm ? 'password' : 'text'"
+              />
+              <button
+                mat-icon-button
+                matSuffix
+                (click)="hideConfirm = !hideConfirm"
+              >
+                <mat-icon>{{
+                  hideConfirm ? "visibility_off" : "visibility"
+                }}</mat-icon>
               </button>
             </mat-form-field>
-            
           </div>
-          <div class="col third-col" style="max-width:40%">            
-            <div class="error-text" *ngIf="passwords.hasError('passwordMismatch') && passwords.get('confirm')?.touched ">
-              <p >
-                New password and confirm password must be the same
-              </p>
-            </div>
-            <div class="error-text" *ngIf="passwords.hasError('noNewPassword') && passwords.get('confirm')?.touched ">
-              <p >
-               Please enter new password
-              </p>
-          </div>
+          <div class="col third-col" style="max-width: 40%">
+            @if (
+              passwords.hasError("passwordMismatch") &&
+              passwords.get("confirm")?.touched
+            ) {
+              <div class="error-text">
+                <p>New password and confirm password must be the same</p>
+              </div>
+            }
+            @if (
+              passwords.hasError("noNewPassword") &&
+              passwords.get("confirm")?.touched
+            ) {
+              <div class="error-text">
+                <p>Please enter new password</p>
+              </div>
+            }
           </div>
         </div>
-
-        
 
         <div class="buttons-profile">
           <div class="col-label"></div>
           <div class="col-input buttons-col">
-            <button class="cancel-btn" mat-stroked-button color="warn" (click)="onCancelPassword()">Cancel</button>
-            <button class="update-btn" mat-flat-button color="primary" (click)="onUpdatePassword()">Update Password</button>
+            <button
+              class="cancel-btn"
+              mat-stroked-button
+              color="warn"
+              (click)="onCancelPassword()"
+            >
+              Cancel
+            </button>
+            <button
+              class="update-btn"
+              mat-flat-button
+              color="primary"
+              (click)="onUpdatePassword()"
+            >
+              Update Password
+            </button>
           </div>
         </div>
       </div>
-
     </form>
   </div>
 </mat-card>
-
