@@ -37,11 +37,11 @@ export class EmhDashboardComponent implements OnInit {
   constructor(private userStreamService: UserStreamService) {}
 
   async ngOnInit() {
+    this.loading = true;
+
     this.isUserLoading = true;
     this.user = await this.userStreamService.getCurrentUserDetails(this.user);
     this.isUserLoading = false;
-
-    this.loading = true;
 
     this.userStreamService.getUserDashboardData(this.user).then((data) => {
       if (this.user.type === UserResponseTypes.DOCTOR) {

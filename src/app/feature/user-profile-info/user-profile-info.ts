@@ -30,6 +30,7 @@ import { confirmPasswordValidator } from "./confirm-password-validator";
 import { ApiResponse } from "../../shared/DTO/common";
 import { SnackbarService } from "../../shared/services/snackbar.service";
 import { EmhLoadingComponent } from "../../shared/components/emh-loading-component/emh-loading-component";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "user-profile-info",
@@ -50,7 +51,7 @@ import { EmhLoadingComponent } from "../../shared/components/emh-loading-compone
     MatMenuModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    EmhLoadingComponent
+    EmhLoadingComponent,
   ],
   templateUrl: "./user-profile-info.html",
   styleUrls: ["./user-profile-info.less"],
@@ -69,11 +70,13 @@ export class UserProfileInfo implements OnInit {
   name: string = "";
   type: string = "";
   userType: string = "";
+
   constructor(
     private fb: FormBuilder,
     private profileService: ProfileService,
     private userStreamService: UserStreamService,
-    private snackbar: SnackbarService
+    private snackbar: SnackbarService,
+    private router: Router,
   ) {
     const storedUser = this.userStreamService.getCurrentUserFromStorage();
     this.Id = storedUser?.id || "";
@@ -87,11 +90,11 @@ export class UserProfileInfo implements OnInit {
     this.profileForm = this.fb.group({
       firstName: new FormControl(
         { value: "", disabled: true },
-        Validators.required
+        Validators.required,
       ),
       lastName: new FormControl(
         { value: "", disabled: true },
-        Validators.required
+        Validators.required,
       ),
       dob: new FormControl({ value: null, disabled: true }),
       email: new FormControl({ value: "", disabled: true }, [
@@ -100,7 +103,7 @@ export class UserProfileInfo implements OnInit {
       ]),
       phone: new FormControl(
         { value: "+64 225626575", disabled: true },
-        Validators.required
+        Validators.required,
       ),
       passwords: this.fb.group(
         {
@@ -110,11 +113,11 @@ export class UserProfileInfo implements OnInit {
             {
               validators: [passwordStrengthValidator()],
               nonNullable: true,
-            }
+            },
           ),
-          confirm: new FormControl( { value: "", disabled: true },),
+          confirm: new FormControl({ value: "", disabled: true }),
         },
-        { validators: confirmPasswordValidator }
+        { validators: confirmPasswordValidator },
       ),
     });
 
@@ -125,7 +128,6 @@ export class UserProfileInfo implements OnInit {
     return this.profileForm.get("passwords") as FormGroup;
   }
 
- 
   loadProfile() {
     this.userType =
       this.type === UserResponseTypes.DOCTOR
@@ -144,30 +146,29 @@ export class UserProfileInfo implements OnInit {
         });
       },
       error: (err) => {
-        this.loading = false; 
-        console.error("Error fetching profile:", err)
-      }
+        this.loading = false;
+        console.error("Error fetching profile:", err);
+      },
     });
   }
 
   onUpdatePassword() {
     this.passwordUpdated = true;
-    if (this.passwords.valid) {      
+
+    if (this.passwords.valid) {
       const passwords = this.passwords.value;
       const data = {
         id: this.Id,
         oldPassword: passwords?.current ?? "",
         newPassword: passwords?.new ?? "",
-      };      
+      };
+
       this.profileService.resetProfile(this.userType, data).subscribe({
         next: (response: ApiResponse) => {
-          if (response.success) console.log("hi", response);
           this.snackbar.openSnackbarWithAction(response.message);
           this.reset();
         },
         error: (err) => {
-          console.log("hi", err);
-          console.log("hi-eeror", err.Error);
           this.snackbar.openSnackbarWithAction(err);
           this.reset();
         },
@@ -177,6 +178,9 @@ export class UserProfileInfo implements OnInit {
 
   onCancelPassword() {
     this.reset();
+    if (this.userType.length) {
+      this.router.navigate([`/${this.userType.toLowerCase()}/dashboard`]);
+    }
   }
 
   checkCurrentPassword() {
@@ -191,13 +195,13 @@ export class UserProfileInfo implements OnInit {
   }
 
   reset() {
-  const passwords = this.profileForm.get('passwords') as FormGroup;
-  passwords.reset({
-    current: '',
-    new: '',
-    confirm: ''
-  });
-  passwords.get('new')?.disable();
-  passwords.get('confirm')?.disable();
-}
+    const passwords = this.profileForm.get("passwords") as FormGroup;
+    passwords.reset({
+      current: "",
+      new: "",
+      confirm: "",
+    });
+    passwords.get("new")?.disable();
+    passwords.get("confirm")?.disable();
+  }
 }
