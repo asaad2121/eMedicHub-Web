@@ -101,57 +101,67 @@
 
           <mat-divider></mat-divider>
 
-          <h2 class="section-title">Pharmacy Orders</h2>
-          <div class="orders-container">
-            <div class="orders-section">
-              <h3 class="orders-title ready-title">Orders Ready</h3>
-              @if (!dashboardData.ordersReady.length) {
-                <div class="no-orders-message">
-                  No orders are ready for pickup.
-                </div>
-              }
-              @for (order of dashboardData.ordersReady; track order.order_id) {
-                <div class="order-card ready" (click)="onViewOrders()">
-                  <div class="order-body">
-                    <p class="order-header">Order ID: {{ order.order_id }}</p>
-                    <p class="order-details status">
-                      Status:
-                      <span class="status-ready">{{ order.status }}</span>
-                    </p>
-                    <p class="order-details time">
-                      Time: {{ order.time | date: "short" }}
-                    </p>
-                  </div>
-                </div>
-              }
-            </div>
+          @if (
+            dashboardData.ordersReady.length ||
+            dashboardData.ordersNotReady.length
+          ) {
+            <h2 class="section-title">Pharmacy Orders</h2>
+            <div class="orders-container">
+              <div class="orders-section">
+                @if (dashboardData.ordersReady.length) {
+                  <h3 class="orders-title ready-title">Orders Ready</h3>
 
-            <div class="orders-section">
-              <h3 class="orders-title not-ready-title">Other Orders</h3>
-              @if (!dashboardData.ordersNotReady.length) {
-                <div class="no-orders-message">
-                  All orders have been prepared.
-                </div>
-              }
-              @for (
-                order of dashboardData.ordersNotReady;
-                track order.order_id
-              ) {
-                <div class="order-card not-ready" (click)="onViewOrders()">
-                  <div class="order-body">
-                    <p class="order-header">Order ID: {{ order.order_id }}</p>
-                    <p class="order-details status">
-                      Status:
-                      <span class="status-not-ready">{{ order.status }}</span>
-                    </p>
-                    <p class="order-details time">
-                      Time: {{ order.time | date: "short" }}
-                    </p>
-                  </div>
-                </div>
-              }
+                  @for (
+                    order of dashboardData.ordersReady;
+                    track order.order_id
+                  ) {
+                    <div class="order-card ready" (click)="onViewOrders()">
+                      <div class="order-body">
+                        <p class="order-header">
+                          Order ID: {{ order.order_id }}
+                        </p>
+                        <p class="order-details status">
+                          Status:
+                          <span class="status-ready">{{ order.status }}</span>
+                        </p>
+                        <p class="order-details time">
+                          Time: {{ order.time | date: "short" }}
+                        </p>
+                      </div>
+                    </div>
+                  }
+                }
+              </div>
+
+              <div class="orders-section">
+                @if (!dashboardData.ordersNotReady.length) {
+                  <h3 class="orders-title not-ready-title">Other Orders</h3>
+
+                  @for (
+                    order of dashboardData.ordersNotReady;
+                    track order.order_id
+                  ) {
+                    <div class="order-card not-ready" (click)="onViewOrders()">
+                      <div class="order-body">
+                        <p class="order-header">
+                          Order ID: {{ order.order_id }}
+                        </p>
+                        <p class="order-details status">
+                          Status:
+                          <span class="status-not-ready">{{
+                            order.status
+                          }}</span>
+                        </p>
+                        <p class="order-details time">
+                          Time: {{ order.time | date: "short" }}
+                        </p>
+                      </div>
+                    </div>
+                  }
+                }
+              </div>
             </div>
-          </div>
+          }
         </div>
       } @else {
         <emh-loading-component></emh-loading-component>
