@@ -111,13 +111,10 @@ export class UserStreamService {
   public async getUserDashboardData(
     user: User,
   ): Promise<DoctorDashboardData | PatientDashboardData | PharmaDashboardData> {
-    let dashboardData = this.userDashboardData$.getValue();
-
-    if (dashboardData) {
-      return dashboardData;
-    }
-
-    dashboardData = await this.userService.getUserData(user.id, user.type);
+    const dashboardData = await this.userService.getUserData(
+      user.id,
+      user.type,
+    );
 
     this.userDashboardData$.next(dashboardData);
 

@@ -12,6 +12,10 @@
 }
 .img-class img {
   max-height: 100px;
+
+  &:hover {
+    transform: scale(1.02);
+  }
 }
 .user-info {
   display: flex;
@@ -45,6 +49,7 @@
 
 .main-content {
   max-height: 90vh;
+  overflow: auto;
 }
 
 .router-outlet-container {
