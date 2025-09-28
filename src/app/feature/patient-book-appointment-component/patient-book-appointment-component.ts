@@ -75,7 +75,7 @@ export class PatientBookAppointmentComponent implements OnInit {
     } catch (error) {
       this.availableSlots.set([]);
       this.snackbar.openSnackbarWithAction(
-        "Doctot not available on selected date.",
+        "Doctor not available on selected date.",
       );
     }
 

@@ -98,12 +98,12 @@ export class NewPatientEntryComponent implements OnInit {
       ]),
       last_name: new FormControl("", [
         Validators.required,
-        Validators.pattern("^[a-zA-Z]*$"),
+        Validators.pattern("^[a-zA-Z ]*$"),
       ]),
       dob: new FormControl("", Validators.required),
       phone_no: new FormControl("", [
         Validators.required,
-        Validators.pattern("^[0-9]{9,}$"),
+        Validators.pattern("^[0-9]{10,}$"),
       ]),
       email: new FormControl("", [Validators.required, Validators.email]),
       password: new FormControl("", [
@@ -147,15 +147,25 @@ export class NewPatientEntryComponent implements OnInit {
             this.snackbar.openSnackbarWithAction(
               "Sign in successful. Please log in with your credentials.",
             );
-
             this.router.navigate(["patients/login"]);
           } else {
             this.back();
             this.snackbar.openSnackbarWithAction(res.message);
           }
+        } else {
+          console.error("Error creating patient:", res);
+          this.snackbar.openSnackbarWithAction(
+            res.message || "An unexpected error occurred.",
+          );
         }
-
         this.loading = false;
+      })
+      .catch((error) => {
+        console.error("Unexpected error:", error);
+        this.loading = false;
+        this.snackbar.openSnackbarWithAction(
+          error?.message || "An unexpected network error occurred.",
+        );
       });
   }
 
