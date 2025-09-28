@@ -132,7 +132,9 @@ export class UserService {
 
   public async getCsrfToken(): Promise<string> {
     const response = await firstValueFrom(
-      this.http.get<{ csrfToken: string }>(`${this.apiUrl}/csrf-token`),
+      this.http.get<{ csrfToken: string }>(`${this.apiUrl}/csrf-token`, {
+        withCredentials: true,
+      }),
     );
     return response.csrfToken;
   }
