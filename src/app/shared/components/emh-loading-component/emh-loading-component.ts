@@ -37,6 +37,4 @@ export class EmhLoadingComponent {
    * If `false`, it will take an absolute position covering its nearest positioned ancestor.
    */
   @Input() fullscreen: boolean = false;
-
-  public iconPath = "/steth-icon.svg";
 }

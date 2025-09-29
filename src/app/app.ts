@@ -28,7 +28,7 @@ export class App {
   routerPath: string = "";
   userIcon = "";
 
-  public loading = signal(true);
+  public loading = signal(false);
   private user!: User;
 
   userResponseType = UserResponseTypes;
@@ -38,27 +38,18 @@ export class App {
     private userStreamService: UserStreamService,
     private snackbar: SnackbarService,
   ) {
-    const csrfTokenReady = signal(false);
-
-    this.userStreamService.setCsrfToken().finally(() => {
-      csrfTokenReady.set(true);
-      this.loading.set(false);
-    });
-
     effect(async () => {
-      if (csrfTokenReady()) {
-        this.user = this.userStreamService.currentUser$();
+      this.user = this.userStreamService.currentUser$();
 
-        if (!this.user.id && this.routerPath !== "/") {
-          await this.userStreamService.getCurrentUserDetails({} as User);
-        }
-
-        this.fullName =
-          this.user.name ||
-          [this.user.first_name, this.user.last_name]
-            .filter((name) => name)
-            .join(" ");
+      if (!this.user.id && this.routerPath !== "/") {
+        await this.userStreamService.getCurrentUserDetails({} as User);
       }
+
+      this.fullName =
+        this.user.name ||
+        [this.user.first_name, this.user.last_name]
+          .filter((name) => name)
+          .join(" ");
     });
 
     this.router.events
@@ -74,7 +65,7 @@ export class App {
           url.endsWith("/error")
         );
 
-        if (csrfTokenReady() && this.user.type) {
+        if (this.user.type) {
           if (url === "/" || url === "") {
             this.loading.set(true);
             try {

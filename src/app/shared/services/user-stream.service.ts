@@ -5,8 +5,10 @@ import { UserService } from "./user.service";
 import { Doctor, DoctorDashboardData, DoctorsDTO } from "../DTO/doctor";
 import { Patient, PatientDashboardData } from "../DTO/patient";
 import { ApiResponse } from "../DTO/common";
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, map, Observable } from "rxjs";
 import { PharmaDashboardData } from "../DTO/pharma";
+import { environment } from "../../../environments/environment";
+import { HttpClient } from "@angular/common/http";
 
 @Injectable({
   providedIn: "root",
@@ -25,6 +27,7 @@ export class UserStreamService {
   constructor(
     private authentication: AuthenticationService,
     private userService: UserService,
+    private http: HttpClient,
   ) {}
 
   public async loginUserAndGetMessage(
@@ -111,13 +114,10 @@ export class UserStreamService {
   public async getUserDashboardData(
     user: User,
   ): Promise<DoctorDashboardData | PatientDashboardData | PharmaDashboardData> {
-    let dashboardData = this.userDashboardData$.getValue();
-
-    if (dashboardData) {
-      return dashboardData;
-    }
-
-    dashboardData = await this.userService.getUserData(user.id, user.type);
+    const dashboardData = await this.userService.getUserData(
+      user.id,
+      user.type,
+    );
 
     this.userDashboardData$.next(dashboardData);
 
@@ -128,5 +128,13 @@ export class UserStreamService {
     const token = await this.userService.getCsrfToken();
 
     this.csrfTokenSubject.next(token);
+  }
+
+  public fetchCsrfToken(): Observable<string> {
+    return this.http
+      .get<{ csrfToken: string }>(`${environment.apiUrl}/csrf-token`, {
+        withCredentials: true,
+      })
+      .pipe(map((res) => res.csrfToken));
   }
 }

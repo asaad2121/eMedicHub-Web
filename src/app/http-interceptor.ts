@@ -32,11 +32,14 @@ export class Http_Interceptor implements HttpInterceptor {
     const apiUrl = environment.apiUrl;
     let userType: UserTypes;
 
+    if (request.url.includes("/csrf-token")) {
+      return next.handle(request);
+    }
+
     // Track if this request has already been retried
     const alreadyRetried = request.headers.get("x-retry") === "true";
 
-    return this.userService.csrfTokenSubject.pipe(
-      take(1),
+    return this.userService.fetchCsrfToken().pipe(
       switchMap((csrfToken) => {
         if (
           !request.url.includes("/login") &&
