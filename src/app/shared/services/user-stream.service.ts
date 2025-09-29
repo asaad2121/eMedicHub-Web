@@ -5,7 +5,7 @@ import { UserService } from "./user.service";
 import { Doctor, DoctorDashboardData, DoctorsDTO } from "../DTO/doctor";
 import { Patient, PatientDashboardData } from "../DTO/patient";
 import { ApiResponse } from "../DTO/common";
-import { BehaviorSubject, map, Observable } from "rxjs";
+import { BehaviorSubject, catchError, map, Observable, of } from "rxjs";
 import { PharmaDashboardData } from "../DTO/pharma";
 import { environment } from "../../../environments/environment";
 import { HttpClient } from "@angular/common/http";
@@ -22,7 +22,7 @@ export class UserStreamService {
     DoctorDashboardData | PatientDashboardData | PharmaDashboardData | null
   >(null);
 
-  public csrfTokenSubject = new BehaviorSubject<string | null>(null);
+  private cachedCsrfToken: string | null = null;
 
   constructor(
     private authentication: AuthenticationService,
@@ -124,17 +124,28 @@ export class UserStreamService {
     return dashboardData;
   }
 
-  public async setCsrfToken() {
-    const token = await this.userService.getCsrfToken();
+  public fetchCsrfToken(forceRefresh = false): Observable<string> {
+    if (this.cachedCsrfToken && !forceRefresh) {
+      return of(this.cachedCsrfToken);
+    }
 
-    this.csrfTokenSubject.next(token);
-  }
-
-  public fetchCsrfToken(): Observable<string> {
     return this.http
       .get<{ csrfToken: string }>(`${environment.apiUrl}/csrf-token`, {
-        withCredentials: true,
+        withCredentials: true, // include session cookie
       })
-      .pipe(map((res) => res.csrfToken));
+      .pipe(
+        map((res) => {
+          this.cachedCsrfToken = res.csrfToken;
+          return res.csrfToken;
+        }),
+        catchError((err) => {
+          console.warn("Failed to fetch CSRF token", err);
+          return of(""); // fallback empty token
+        }),
+      );
+  }
+
+  public clearCsrfToken() {
+    this.cachedCsrfToken = null;
   }
 }

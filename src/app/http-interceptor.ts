@@ -36,10 +36,8 @@ export class Http_Interceptor implements HttpInterceptor {
       return next.handle(request);
     }
 
-    // Track if this request has already been retried
     const alreadyRetried = request.headers.get("x-retry") === "true";
 
-    // Map user type once
     let userType: UserTypes | undefined;
     if (
       !request.url.includes("/login") &&
@@ -52,16 +50,8 @@ export class Http_Interceptor implements HttpInterceptor {
       );
     }
 
-    // Fetch CSRF token once per request
-    return this.userService.fetchCsrfToken().pipe(
-      // If CSRF fetch fails, still continue with empty token
-      catchError((err) => {
-        console.warn(
-          "Failed to fetch CSRF token, continuing without token",
-          err,
-        );
-        return of(""); // fallback token
-      }),
+    // Fetch CSRF token (force refresh if retrying)
+    return this.userService.fetchCsrfToken(alreadyRetried).pipe(
       switchMap((csrfToken) => {
         const modifiedRequest = request.clone({
           withCredentials: true,
@@ -72,39 +62,30 @@ export class Http_Interceptor implements HttpInterceptor {
 
         return next.handle(modifiedRequest).pipe(
           catchError((error: HttpErrorResponse) => {
-            // Retry once on 403
-            if (error.status === 403 && userType && !alreadyRetried) {
-              const retriedRequest = modifiedRequest.clone({
-                headers: modifiedRequest.headers.set("x-retry", "true"),
-              });
+            // Retry once on 403 (CSRF mismatch)
+            if (error.status === 403 && !alreadyRetried) {
+              return this.userService.fetchCsrfToken(true).pipe(
+                switchMap((newToken) => {
+                  const retriedRequest = modifiedRequest.clone({
+                    headers: modifiedRequest.headers
+                      .set("X-CSRF-Token", newToken)
+                      .set("x-retry", "true"),
+                  });
+                  return next.handle(retriedRequest);
+                }),
+              );
+            }
 
-              // refresh session without another CSRF fetch
-              return this.http
-                .post(
-                  `${apiUrl}/${userType}/auth/refresh`,
-                  {},
-                  { withCredentials: true },
-                )
-                .pipe(
-                  switchMap(() => next.handle(retriedRequest)),
-                  catchError((refreshError) => {
-                    console.error("Refresh failed. Redirecting to login.");
-                    this.router.navigate(["/"]);
-                    return throwError(() => refreshError);
-                  }),
-                );
-            } else if (
-              (error.status === 401 || !userType) &&
-              !request.url.includes("/signup") &&
-              !request.url.includes("/login") &&
-              request.url !== "/"
-            ) {
-              console.error("Unauthorized request. Redirecting to login.");
+            if (error.status === 401) {
               this.snackbar.openSnackbarWithAction(
                 "Session expired. Please log in again.",
               );
               this.userService.clearUserData();
-              this.router.navigate(["/"]);
+
+              if (!request.url.includes("/login")) {
+                this.router.navigate(["/"]);
+              }
+
               return throwError(() => error);
             }
 
