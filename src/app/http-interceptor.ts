@@ -7,8 +7,8 @@ import {
   HttpErrorResponse,
   HttpClient,
 } from "@angular/common/http";
-import { Observable, throwError } from "rxjs";
-import { catchError, switchMap, take } from "rxjs/operators";
+import { Observable, throwError, of } from "rxjs";
+import { catchError, switchMap } from "rxjs/operators";
 import { Router } from "@angular/router";
 import { SnackbarService } from "./shared/services/snackbar.service";
 import { environment } from "../environments/environment";
@@ -30,29 +30,29 @@ export class Http_Interceptor implements HttpInterceptor {
     next: HttpHandler,
   ): Observable<HttpEvent<unknown>> {
     const apiUrl = environment.apiUrl;
-    let userType: UserTypes;
 
+    // Skip CSRF for the CSRF endpoint itself
     if (request.url.includes("/csrf-token")) {
       return next.handle(request);
     }
 
-    // Track if this request has already been retried
     const alreadyRetried = request.headers.get("x-retry") === "true";
 
-    return this.userService.fetchCsrfToken().pipe(
-      switchMap((csrfToken) => {
-        if (
-          !request.url.includes("/login") &&
-          !request.url.includes("/logout") &&
-          !request.url.includes("/signup") &&
-          !request.url.includes("/refresh")
-        ) {
-          userType = mapUserResponseTypeToUserType(
-            this.userService.getCurrentUserFromStorage()
-              ?.type as UserResponseTypes,
-          );
-        }
+    let userType: UserTypes | undefined;
+    if (
+      !request.url.includes("/login") &&
+      !request.url.includes("/logout") &&
+      !request.url.includes("/signup") &&
+      !request.url.includes("/refresh")
+    ) {
+      userType = mapUserResponseTypeToUserType(
+        this.userService.getCurrentUserFromStorage()?.type as UserResponseTypes,
+      );
+    }
 
+    // Fetch CSRF token (force refresh if retrying)
+    return this.userService.fetchCsrfToken(alreadyRetried).pipe(
+      switchMap((csrfToken) => {
         const modifiedRequest = request.clone({
           withCredentials: true,
           setHeaders: {
@@ -62,41 +62,30 @@ export class Http_Interceptor implements HttpInterceptor {
 
         return next.handle(modifiedRequest).pipe(
           catchError((error: HttpErrorResponse) => {
-            // Only retry once
-            if (error.status === 403 && userType && !alreadyRetried) {
-              const retriedRequest = modifiedRequest.clone({
-                headers: modifiedRequest.headers.set("x-retry", "true"),
-              });
+            // Retry once on 403 (CSRF mismatch)
+            if (error.status === 403 && !alreadyRetried) {
+              return this.userService.fetchCsrfToken(true).pipe(
+                switchMap((newToken) => {
+                  const retriedRequest = modifiedRequest.clone({
+                    headers: modifiedRequest.headers
+                      .set("X-CSRF-Token", newToken)
+                      .set("x-retry", "true"),
+                  });
+                  return next.handle(retriedRequest);
+                }),
+              );
+            }
 
-              return this.http
-                .post(
-                  `${apiUrl}/${userType}/auth/refresh`,
-                  {},
-                  { withCredentials: true },
-                )
-                .pipe(
-                  switchMap(() => next.handle(retriedRequest)),
-                  catchError((refreshError) => {
-                    console.error("Refresh failed. Redirecting to login.");
-                    this.router.navigate(["/"]);
-                    return throwError(() => refreshError);
-                  }),
-                );
-            } else if (
-              (error.status === 401 || !userType) &&
-              !request.url.includes("/signup") &&
-              !request.url.includes("/login") &&
-              request.url !== "/"
-            ) {
-              console.error("Unauthorized request. Redirecting to login.");
-
+            if (error.status === 401) {
               this.snackbar.openSnackbarWithAction(
                 "Session expired. Please log in again.",
               );
-
               this.userService.clearUserData();
 
-              this.router.navigate(["/"]);
+              if (!request.url.includes("/login")) {
+                this.router.navigate(["/"]);
+              }
+
               return throwError(() => error);
             }
 
